@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { SITE_CONFIG } from "./site-config";
 
 export type Lang = "en" | "ar";
 
