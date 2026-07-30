@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { SITE_CONFIG } from "./site-config";
 
 export type Accent = "aqua" | "orange" | "crimson" | "emerald";
 export type Mode = "dark" | "light";
@@ -20,7 +21,7 @@ export type Branding = {
 };
 
 const DEFAULT_BRANDING: Branding = {
-  logoText: "United Sport Academy",
+  logoText: SITE_CONFIG.brand.en,
   favicon: "/favicon.ico",
   bannerHeadline: "Master the art of",
   bannerHeadlineAr: "أتقن فن",

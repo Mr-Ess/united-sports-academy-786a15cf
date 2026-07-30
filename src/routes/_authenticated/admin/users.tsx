@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Users, Shield, Search, UserPlus } from "lucide-react";
 import { toast } from "sonner";
+import { branchEmail } from "@/lib/site-config";
 
 export const Route = createFileRoute("/_authenticated/admin/users")({
   component: UsersPage,
@@ -44,11 +45,11 @@ const DEFAULT_MATRIX: Record<Role, string[]> = {
 };
 
 const MOCK_USERS = [
-  { id: "u1", name: "Reem Al-Hashimi", email: "reem@unitedsport.ac", role: "super_admin" as Role, branch: "Main HQ", active: true },
-  { id: "u2", name: "Marcus Feld",      email: "marcus@unitedsport.ac", role: "branch_manager" as Role, branch: "West City", active: true },
-  { id: "u3", name: "Nina Kovač",       email: "nina@unitedsport.ac",   role: "head_coach" as Role,     branch: "Coastal Campus", active: true },
-  { id: "u4", name: "Diego Alvarez",    email: "diego@unitedsport.ac",  role: "head_coach" as Role,     branch: "East Hub", active: true },
-  { id: "u5", name: "Zoe Bennett",      email: "zoe@unitedsport.ac",    role: "editor" as Role,         branch: "Main HQ", active: false },
+  { id: "u1", name: "Reem Al-Hashimi", email: branchEmail("reem"), role: "super_admin" as Role, branch: "Main HQ", active: true },
+  { id: "u2", name: "Marcus Feld",      email: branchEmail("marcus"), role: "branch_manager" as Role, branch: "West City", active: true },
+  { id: "u3", name: "Nina Kovač",       email: branchEmail("nina"),   role: "head_coach" as Role,     branch: "Coastal Campus", active: true },
+  { id: "u4", name: "Diego Alvarez",    email: branchEmail("diego"),  role: "head_coach" as Role,     branch: "East Hub", active: true },
+  { id: "u5", name: "Zoe Bennett",      email: branchEmail("zoe"),    role: "editor" as Role,         branch: "Main HQ", active: false },
 ];
 
 function UsersPage() {

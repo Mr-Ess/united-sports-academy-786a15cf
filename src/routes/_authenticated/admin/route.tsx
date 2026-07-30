@@ -218,7 +218,7 @@ function AdminLayout() {
           </div>
           <div>
             <div className="text-sm font-black leading-none">لوحة التحكم</div>
-            <div className="mt-1 text-[10px] text-muted-foreground">United Sport Academy</div>
+            <div className="mt-1 text-[10px] text-muted-foreground">{SITE_CONFIG.admin.sidebarLabel}</div>
           </div>
         </Link>
 
