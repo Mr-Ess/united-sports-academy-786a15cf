@@ -1,4 +1,5 @@
 import { Waves, Dumbbell, Shield, Volleyball, CircleDot } from "lucide-react";
+import { branchEmail, SITE_CONFIG } from "./site-config";
 
 export const SPORTS = [
   {
@@ -85,9 +86,9 @@ export const BRANCHES = [
     id: "main",
     name: "Main Branch — Downtown HQ",
     nameAr: "الفرع الرئيسي — وسط المدينة",
-    phone: "+971 4 555 1000",
-    whatsapp: "+971 50 555 1000",
-    email: "main@unitedsport.ac",
+    phone: `${SITE_CONFIG.contact.phonePrefix} 1000`,
+    whatsapp: `${SITE_CONFIG.contact.whatsappPrefix} 1000`,
+    email: branchEmail("main"),
     hours: "Sat–Thu · 6am–11pm",
     address: "1 Union Ave, Downtown District",
     map: "https://www.google.com/maps?q=Dubai+Downtown&output=embed",
@@ -96,9 +97,9 @@ export const BRANCHES = [
     id: "west",
     name: "West City Branch",
     nameAr: "فرع غرب المدينة",
-    phone: "+971 4 555 2000",
-    whatsapp: "+971 50 555 2000",
-    email: "west@unitedsport.ac",
+    phone: `${SITE_CONFIG.contact.phonePrefix} 2000`,
+    whatsapp: `${SITE_CONFIG.contact.whatsappPrefix} 2000`,
+    email: branchEmail("west"),
     hours: "Sat–Thu · 7am–10pm",
     address: "West Sports Plaza, Al Barsha",
     map: "https://www.google.com/maps?q=Al+Barsha+Dubai&output=embed",
@@ -107,9 +108,9 @@ export const BRANCHES = [
     id: "coastal",
     name: "Coastal Campus",
     nameAr: "الحرم الساحلي",
-    phone: "+971 4 555 3000",
-    whatsapp: "+971 50 555 3000",
-    email: "coastal@unitedsport.ac",
+    phone: `${SITE_CONFIG.contact.phonePrefix} 3000`,
+    whatsapp: `${SITE_CONFIG.contact.whatsappPrefix} 3000`,
+    email: branchEmail("coastal"),
     hours: "Daily · 5am–midnight",
     address: "Marina Aquatic Center, Beachfront",
     map: "https://www.google.com/maps?q=Dubai+Marina&output=embed",
@@ -118,9 +119,9 @@ export const BRANCHES = [
     id: "east",
     name: "East Hub",
     nameAr: "المركز الشرقي",
-    phone: "+971 4 555 4000",
-    whatsapp: "+971 50 555 4000",
-    email: "east@unitedsport.ac",
+    phone: `${SITE_CONFIG.contact.phonePrefix} 4000`,
+    whatsapp: `${SITE_CONFIG.contact.whatsappPrefix} 4000`,
+    email: branchEmail("east"),
     hours: "Sat–Thu · 7am–11pm",
     address: "Eastside Arena, Al Warqa",
     map: "https://www.google.com/maps?q=Al+Warqa+Dubai&output=embed",
@@ -151,7 +152,7 @@ export const VIDEOS = [
   { id: "v4", title: "White → Yellow Belt Kata", sport: "karate", duration: "8:02", views: "12.7k", cat: "Technical" },
   { id: "v5", title: "20-Min Athlete Mobility Flow", sport: "fitness", duration: "20:15", views: "31.5k", cat: "Technical" },
   { id: "v6", title: "Backstroke Body Position", sport: "swim", duration: "3:44", views: "15.2k", cat: "Technical" },
-  { id: "v7", title: "A Day at United Sport", sport: "fitness", duration: "12:30", views: "58.2k", cat: "Behind the Scenes" },
+  { id: "v7", title: `A Day at ${SITE_CONFIG.brand.en}`, sport: "fitness", duration: "12:30", views: "58.2k", cat: "Behind the Scenes" },
   { id: "v8", title: "Championship Highlight Reel", sport: "basketball", duration: "3:20", views: "94.3k", cat: "Match Highlights" },
 ];
 
