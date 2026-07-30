@@ -14,6 +14,47 @@ export type Database = {
   }
   public: {
     Tables: {
+      academy_notifications: {
+        Row: {
+          audience: string
+          body: string | null
+          branch_id: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          sent_at: string
+          title: string
+        }
+        Insert: {
+          audience?: string
+          body?: string | null
+          branch_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          sent_at?: string
+          title: string
+        }
+        Update: {
+          audience?: string
+          body?: string | null
+          branch_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          sent_at?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "academy_notifications_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       academy_profiles: {
         Row: {
           created_at: string
@@ -80,6 +121,144 @@ export type Database = {
             columns: ["branch_id"]
             isOneToOne: false
             referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      assessments: {
+        Row: {
+          assessed_at: string
+          branch_id: string
+          client_id: string
+          coach_id: string | null
+          created_at: string
+          endurance: number | null
+          id: string
+          level_id: string | null
+          notes: string | null
+          overall: number | null
+          passed: boolean | null
+          speed: number | null
+          technique: number | null
+        }
+        Insert: {
+          assessed_at?: string
+          branch_id: string
+          client_id: string
+          coach_id?: string | null
+          created_at?: string
+          endurance?: number | null
+          id?: string
+          level_id?: string | null
+          notes?: string | null
+          overall?: number | null
+          passed?: boolean | null
+          speed?: number | null
+          technique?: number | null
+        }
+        Update: {
+          assessed_at?: string
+          branch_id?: string
+          client_id?: string
+          coach_id?: string | null
+          created_at?: string
+          endurance?: number | null
+          id?: string
+          level_id?: string | null
+          notes?: string | null
+          overall?: number | null
+          passed?: boolean | null
+          speed?: number | null
+          technique?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assessments_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assessments_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assessments_coach_id_fkey"
+            columns: ["coach_id"]
+            isOneToOne: false
+            referencedRelation: "coaches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assessments_level_id_fkey"
+            columns: ["level_id"]
+            isOneToOne: false
+            referencedRelation: "skill_levels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      attendance: {
+        Row: {
+          branch_id: string
+          checked_in_at: string
+          client_id: string
+          confirmed_at: string | null
+          confirmed_by: string | null
+          created_at: string
+          id: string
+          method: string
+          notes: string | null
+          session_id: string | null
+        }
+        Insert: {
+          branch_id: string
+          checked_in_at?: string
+          client_id: string
+          confirmed_at?: string | null
+          confirmed_by?: string | null
+          created_at?: string
+          id?: string
+          method?: string
+          notes?: string | null
+          session_id?: string | null
+        }
+        Update: {
+          branch_id?: string
+          checked_in_at?: string
+          client_id?: string
+          confirmed_at?: string | null
+          confirmed_by?: string | null
+          created_at?: string
+          id?: string
+          method?: string
+          notes?: string | null
+          session_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attendance_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attendance_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attendance_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "schedule_sessions"
             referencedColumns: ["id"]
           },
         ]
@@ -224,6 +403,147 @@ export type Database = {
         }
         Relationships: []
       }
+      clients: {
+        Row: {
+          active: boolean
+          birth_date: string | null
+          branch_id: string
+          client_code: string
+          coach_id: string | null
+          created_at: string
+          email: string | null
+          full_name: string
+          gender: string | null
+          id: string
+          level_id: string | null
+          medical_notes: string | null
+          notes: string | null
+          parent_name: string | null
+          parent_phone: string | null
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          birth_date?: string | null
+          branch_id: string
+          client_code?: string
+          coach_id?: string | null
+          created_at?: string
+          email?: string | null
+          full_name: string
+          gender?: string | null
+          id?: string
+          level_id?: string | null
+          medical_notes?: string | null
+          notes?: string | null
+          parent_name?: string | null
+          parent_phone?: string | null
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          birth_date?: string | null
+          branch_id?: string
+          client_code?: string
+          coach_id?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string
+          gender?: string | null
+          id?: string
+          level_id?: string | null
+          medical_notes?: string | null
+          notes?: string | null
+          parent_name?: string | null
+          parent_phone?: string | null
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clients_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clients_coach_id_fkey"
+            columns: ["coach_id"]
+            isOneToOne: false
+            referencedRelation: "coaches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clients_level_id_fkey"
+            columns: ["level_id"]
+            isOneToOne: false
+            referencedRelation: "skill_levels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coaches: {
+        Row: {
+          active: boolean
+          branch_id: string
+          certifications: string | null
+          created_at: string
+          email: string | null
+          full_name: string
+          id: string
+          max_sessions: number | null
+          notes: string | null
+          phone: string | null
+          specialty: string | null
+          updated_at: string
+          user_id: string | null
+          work_days: string[] | null
+        }
+        Insert: {
+          active?: boolean
+          branch_id: string
+          certifications?: string | null
+          created_at?: string
+          email?: string | null
+          full_name: string
+          id?: string
+          max_sessions?: number | null
+          notes?: string | null
+          phone?: string | null
+          specialty?: string | null
+          updated_at?: string
+          user_id?: string | null
+          work_days?: string[] | null
+        }
+        Update: {
+          active?: boolean
+          branch_id?: string
+          certifications?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string
+          id?: string
+          max_sessions?: number | null
+          notes?: string | null
+          phone?: string | null
+          specialty?: string | null
+          updated_at?: string
+          user_id?: string | null
+          work_days?: string[] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coaches_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       courses: {
         Row: {
           category: string
@@ -323,6 +643,237 @@ export type Database = {
         }
         Relationships: []
       }
+      hr_attendance: {
+        Row: {
+          branch_id: string
+          check_in: string | null
+          check_out: string | null
+          created_at: string
+          employee_id: string
+          hours: number | null
+          id: string
+          notes: string | null
+          work_date: string
+        }
+        Insert: {
+          branch_id: string
+          check_in?: string | null
+          check_out?: string | null
+          created_at?: string
+          employee_id: string
+          hours?: number | null
+          id?: string
+          notes?: string | null
+          work_date?: string
+        }
+        Update: {
+          branch_id?: string
+          check_in?: string | null
+          check_out?: string | null
+          created_at?: string
+          employee_id?: string
+          hours?: number | null
+          id?: string
+          notes?: string | null
+          work_date?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hr_attendance_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hr_attendance_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "hr_employees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hr_employees: {
+        Row: {
+          active: boolean
+          base_salary: number
+          branch_id: string
+          created_at: string
+          email: string | null
+          full_name: string
+          hired_at: string | null
+          id: string
+          notes: string | null
+          phone: string | null
+          position: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          active?: boolean
+          base_salary?: number
+          branch_id: string
+          created_at?: string
+          email?: string | null
+          full_name: string
+          hired_at?: string | null
+          id?: string
+          notes?: string | null
+          phone?: string | null
+          position?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          active?: boolean
+          base_salary?: number
+          branch_id?: string
+          created_at?: string
+          email?: string | null
+          full_name?: string
+          hired_at?: string | null
+          id?: string
+          notes?: string | null
+          phone?: string | null
+          position?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hr_employees_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hr_leaves: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          branch_id: string
+          created_at: string
+          employee_id: string
+          end_date: string
+          id: string
+          leave_type: string
+          reason: string | null
+          start_date: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          branch_id: string
+          created_at?: string
+          employee_id: string
+          end_date: string
+          id?: string
+          leave_type?: string
+          reason?: string | null
+          start_date: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          branch_id?: string
+          created_at?: string
+          employee_id?: string
+          end_date?: string
+          id?: string
+          leave_type?: string
+          reason?: string | null
+          start_date?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hr_leaves_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hr_leaves_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "hr_employees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      invoices: {
+        Row: {
+          amount: number
+          branch_id: string
+          client_id: string | null
+          created_at: string
+          description: string | null
+          due_date: string | null
+          id: string
+          invoice_no: string
+          status: string
+          subscription_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount?: number
+          branch_id: string
+          client_id?: string | null
+          created_at?: string
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          invoice_no?: string
+          status?: string
+          subscription_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          branch_id?: string
+          client_id?: string | null
+          created_at?: string
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          invoice_no?: string
+          status?: string
+          subscription_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoices_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       join_submissions: {
         Row: {
           age: number | null
@@ -373,6 +924,164 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      lane_logs: {
+        Row: {
+          activity: string | null
+          branch_id: string
+          coach_id: string | null
+          created_at: string
+          end_at: string | null
+          id: string
+          notes: string | null
+          pool_lane: number
+          start_at: string
+        }
+        Insert: {
+          activity?: string | null
+          branch_id: string
+          coach_id?: string | null
+          created_at?: string
+          end_at?: string | null
+          id?: string
+          notes?: string | null
+          pool_lane: number
+          start_at?: string
+        }
+        Update: {
+          activity?: string | null
+          branch_id?: string
+          coach_id?: string | null
+          created_at?: string
+          end_at?: string | null
+          id?: string
+          notes?: string | null
+          pool_lane?: number
+          start_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lane_logs_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lane_logs_coach_id_fkey"
+            columns: ["coach_id"]
+            isOneToOne: false
+            referencedRelation: "coaches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lead_interactions: {
+        Row: {
+          actor_id: string | null
+          created_at: string
+          id: string
+          kind: string
+          lead_id: string
+          note: string | null
+        }
+        Insert: {
+          actor_id?: string | null
+          created_at?: string
+          id?: string
+          kind: string
+          lead_id: string
+          note?: string | null
+        }
+        Update: {
+          actor_id?: string | null
+          created_at?: string
+          id?: string
+          kind?: string
+          lead_id?: string
+          note?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_interactions_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      leads: {
+        Row: {
+          agent_id: string | null
+          attended: boolean | null
+          branch_id: string
+          converted_client_id: string | null
+          created_at: string
+          email: string | null
+          evaluation_date: string | null
+          full_name: string
+          id: string
+          notes: string | null
+          offer_amount: number | null
+          phone: string | null
+          service: string | null
+          source: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          agent_id?: string | null
+          attended?: boolean | null
+          branch_id: string
+          converted_client_id?: string | null
+          created_at?: string
+          email?: string | null
+          evaluation_date?: string | null
+          full_name: string
+          id?: string
+          notes?: string | null
+          offer_amount?: number | null
+          phone?: string | null
+          service?: string | null
+          source?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          agent_id?: string | null
+          attended?: boolean | null
+          branch_id?: string
+          converted_client_id?: string | null
+          created_at?: string
+          email?: string | null
+          evaluation_date?: string | null
+          full_name?: string
+          id?: string
+          notes?: string | null
+          offer_amount?: number | null
+          phone?: string | null
+          service?: string | null
+          source?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leads_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_converted_client_id_fkey"
+            columns: ["converted_client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       media_items: {
         Row: {
@@ -482,6 +1191,203 @@ export type Database = {
         }
         Relationships: []
       }
+      payments: {
+        Row: {
+          amount: number
+          branch_id: string
+          client_id: string | null
+          created_at: string
+          id: string
+          invoice_id: string | null
+          method: string
+          notes: string | null
+          paid_at: string
+          receipt_no: string
+        }
+        Insert: {
+          amount?: number
+          branch_id: string
+          client_id?: string | null
+          created_at?: string
+          id?: string
+          invoice_id?: string | null
+          method?: string
+          notes?: string | null
+          paid_at?: string
+          receipt_no?: string
+        }
+        Update: {
+          amount?: number
+          branch_id?: string
+          client_id?: string | null
+          created_at?: string
+          id?: string
+          invoice_id?: string | null
+          method?: string
+          notes?: string | null
+          paid_at?: string
+          receipt_no?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payroll_items: {
+        Row: {
+          allowances: number
+          base: number
+          created_at: string
+          deductions: number
+          employee_id: string
+          id: string
+          net: number
+          notes: string | null
+          run_id: string
+        }
+        Insert: {
+          allowances?: number
+          base?: number
+          created_at?: string
+          deductions?: number
+          employee_id: string
+          id?: string
+          net?: number
+          notes?: string | null
+          run_id: string
+        }
+        Update: {
+          allowances?: number
+          base?: number
+          created_at?: string
+          deductions?: number
+          employee_id?: string
+          id?: string
+          net?: number
+          notes?: string | null
+          run_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payroll_items_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "hr_employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payroll_items_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "payroll_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payroll_runs: {
+        Row: {
+          branch_id: string
+          created_at: string
+          id: string
+          notes: string | null
+          period_end: string
+          period_start: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          branch_id: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          period_end: string
+          period_start: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          branch_id?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          period_end?: string
+          period_start?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payroll_runs_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pool_sessions: {
+        Row: {
+          branch_id: string
+          chlorine: number | null
+          created_at: string
+          id: string
+          measured_at: string
+          notes: string | null
+          ph: number | null
+          temperature: number | null
+          turbidity: number | null
+        }
+        Insert: {
+          branch_id: string
+          chlorine?: number | null
+          created_at?: string
+          id?: string
+          measured_at?: string
+          notes?: string | null
+          ph?: number | null
+          temperature?: number | null
+          turbidity?: number | null
+        }
+        Update: {
+          branch_id?: string
+          chlorine?: number | null
+          created_at?: string
+          id?: string
+          measured_at?: string
+          notes?: string | null
+          ph?: number | null
+          temperature?: number | null
+          turbidity?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pool_sessions_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       programs: {
         Row: {
           created_at: string
@@ -527,6 +1433,63 @@ export type Database = {
         }
         Relationships: []
       }
+      schedule_sessions: {
+        Row: {
+          branch_id: string
+          capacity: number | null
+          coach_id: string | null
+          created_at: string
+          end_at: string
+          id: string
+          notes: string | null
+          pool_lane: number | null
+          start_at: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          branch_id: string
+          capacity?: number | null
+          coach_id?: string | null
+          created_at?: string
+          end_at: string
+          id?: string
+          notes?: string | null
+          pool_lane?: number | null
+          start_at: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          branch_id?: string
+          capacity?: number | null
+          coach_id?: string | null
+          created_at?: string
+          end_at?: string
+          id?: string
+          notes?: string | null
+          pool_lane?: number | null
+          start_at?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "schedule_sessions_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "schedule_sessions_coach_id_fkey"
+            columns: ["coach_id"]
+            isOneToOne: false
+            referencedRelation: "coaches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       site_settings: {
         Row: {
           key: string
@@ -544,6 +1507,87 @@ export type Database = {
           value?: Json
         }
         Relationships: []
+      }
+      skill_levels: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          name_ar: string
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          name_ar: string
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          name_ar?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          branch_id: string
+          client_id: string
+          created_at: string
+          end_date: string | null
+          id: string
+          notes: string | null
+          plan: string
+          price: number
+          start_date: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          branch_id: string
+          client_id: string
+          created_at?: string
+          end_date?: string | null
+          id?: string
+          notes?: string | null
+          plan: string
+          price?: number
+          start_date: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          branch_id?: string
+          client_id?: string
+          created_at?: string
+          end_date?: string | null
+          id?: string
+          notes?: string | null
+          plan?: string
+          price?: number
+          start_date?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "subscriptions_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
@@ -571,6 +1615,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      gen_client_code: { Args: never; Returns: string }
       has_academy_role: {
         Args: {
           _role: Database["public"]["Enums"]["academy_role"]
