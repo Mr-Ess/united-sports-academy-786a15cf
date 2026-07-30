@@ -206,6 +206,7 @@ export type Database = {
         Row: {
           branch_id: string
           checked_in_at: string
+          client_code: string | null
           client_id: string
           confirmed_at: string | null
           confirmed_by: string | null
@@ -213,11 +214,15 @@ export type Database = {
           id: string
           method: string
           notes: string | null
+          person_name: string | null
+          person_type: string
           session_id: string | null
+          session_label: string | null
         }
         Insert: {
           branch_id: string
           checked_in_at?: string
+          client_code?: string | null
           client_id: string
           confirmed_at?: string | null
           confirmed_by?: string | null
@@ -225,11 +230,15 @@ export type Database = {
           id?: string
           method?: string
           notes?: string | null
+          person_name?: string | null
+          person_type?: string
           session_id?: string | null
+          session_label?: string | null
         }
         Update: {
           branch_id?: string
           checked_in_at?: string
+          client_code?: string | null
           client_id?: string
           confirmed_at?: string | null
           confirmed_by?: string | null
@@ -237,7 +246,10 @@ export type Database = {
           id?: string
           method?: string
           notes?: string | null
+          person_name?: string | null
+          person_type?: string
           session_id?: string | null
+          session_label?: string | null
         }
         Relationships: [
           {
@@ -406,17 +418,24 @@ export type Database = {
       clients: {
         Row: {
           active: boolean
+          address: string | null
+          age: number | null
+          assigned_staff: string | null
           birth_date: string | null
           branch_id: string
+          category: string | null
           client_code: string
           coach_id: string | null
           created_at: string
           email: string | null
+          emergency_contact: string | null
           full_name: string
           gender: string | null
           id: string
+          level: string | null
           level_id: string | null
           medical_notes: string | null
+          membership_id: string | null
           notes: string | null
           parent_name: string | null
           parent_phone: string | null
@@ -425,17 +444,24 @@ export type Database = {
         }
         Insert: {
           active?: boolean
+          address?: string | null
+          age?: number | null
+          assigned_staff?: string | null
           birth_date?: string | null
           branch_id: string
+          category?: string | null
           client_code?: string
           coach_id?: string | null
           created_at?: string
           email?: string | null
+          emergency_contact?: string | null
           full_name: string
           gender?: string | null
           id?: string
+          level?: string | null
           level_id?: string | null
           medical_notes?: string | null
+          membership_id?: string | null
           notes?: string | null
           parent_name?: string | null
           parent_phone?: string | null
@@ -444,17 +470,24 @@ export type Database = {
         }
         Update: {
           active?: boolean
+          address?: string | null
+          age?: number | null
+          assigned_staff?: string | null
           birth_date?: string | null
           branch_id?: string
+          category?: string | null
           client_code?: string
           coach_id?: string | null
           created_at?: string
           email?: string | null
+          emergency_contact?: string | null
           full_name?: string
           gender?: string | null
           id?: string
+          level?: string | null
           level_id?: string | null
           medical_notes?: string | null
+          membership_id?: string | null
           notes?: string | null
           parent_name?: string | null
           parent_phone?: string | null
@@ -485,18 +518,102 @@ export type Database = {
           },
         ]
       }
+      coach_evaluations: {
+        Row: {
+          branch_id: string
+          coach_id: string | null
+          coach_name: string | null
+          communication: number
+          created_at: string
+          evaluated_at: string
+          id: string
+          notes: string | null
+          punctuality: number
+          students: number
+          technical: number
+          updated_at: string
+        }
+        Insert: {
+          branch_id: string
+          coach_id?: string | null
+          coach_name?: string | null
+          communication?: number
+          created_at?: string
+          evaluated_at?: string
+          id?: string
+          notes?: string | null
+          punctuality?: number
+          students?: number
+          technical?: number
+          updated_at?: string
+        }
+        Update: {
+          branch_id?: string
+          coach_id?: string | null
+          coach_name?: string | null
+          communication?: number
+          created_at?: string
+          evaluated_at?: string
+          id?: string
+          notes?: string | null
+          punctuality?: number
+          students?: number
+          technical?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      coach_slots: {
+        Row: {
+          available: boolean
+          branch_id: string
+          coach_id: string | null
+          coach_name: string | null
+          created_at: string
+          day_group: string
+          id: string
+          time_slot: string
+          updated_at: string
+        }
+        Insert: {
+          available?: boolean
+          branch_id: string
+          coach_id?: string | null
+          coach_name?: string | null
+          created_at?: string
+          day_group: string
+          id?: string
+          time_slot: string
+          updated_at?: string
+        }
+        Update: {
+          available?: boolean
+          branch_id?: string
+          coach_id?: string | null
+          coach_name?: string | null
+          created_at?: string
+          day_group?: string
+          id?: string
+          time_slot?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       coaches: {
         Row: {
           active: boolean
           branch_id: string
           certifications: string | null
+          color: string | null
           created_at: string
+          day_groups: string[]
           email: string | null
           full_name: string
           id: string
           max_sessions: number | null
           notes: string | null
           phone: string | null
+          role: string | null
           specialty: string | null
           updated_at: string
           user_id: string | null
@@ -506,13 +623,16 @@ export type Database = {
           active?: boolean
           branch_id: string
           certifications?: string | null
+          color?: string | null
           created_at?: string
+          day_groups?: string[]
           email?: string | null
           full_name: string
           id?: string
           max_sessions?: number | null
           notes?: string | null
           phone?: string | null
+          role?: string | null
           specialty?: string | null
           updated_at?: string
           user_id?: string | null
@@ -522,13 +642,16 @@ export type Database = {
           active?: boolean
           branch_id?: string
           certifications?: string | null
+          color?: string | null
           created_at?: string
+          day_groups?: string[]
           email?: string | null
           full_name?: string
           id?: string
           max_sessions?: number | null
           notes?: string | null
           phone?: string | null
+          role?: string | null
           specialty?: string | null
           updated_at?: string
           user_id?: string | null
@@ -640,6 +763,33 @@ export type Database = {
           updated_at?: string
           venue?: string | null
           venue_ar?: string | null
+        }
+        Relationships: []
+      }
+      group_types: {
+        Row: {
+          branch_id: string
+          created_at: string
+          id: string
+          max_capacity: number
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          branch_id: string
+          created_at?: string
+          id?: string
+          max_capacity?: number
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          branch_id?: string
+          created_at?: string
+          id?: string
+          max_capacity?: number
+          name?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -1014,6 +1164,7 @@ export type Database = {
       leads: {
         Row: {
           agent_id: string | null
+          assigned_staff: string | null
           attended: boolean | null
           branch_id: string
           converted_client_id: string | null
@@ -1024,14 +1175,17 @@ export type Database = {
           id: string
           notes: string | null
           offer_amount: number | null
+          offer_label: string | null
           phone: string | null
           service: string | null
           source: string | null
           status: string
+          subscription_type: string | null
           updated_at: string
         }
         Insert: {
           agent_id?: string | null
+          assigned_staff?: string | null
           attended?: boolean | null
           branch_id: string
           converted_client_id?: string | null
@@ -1042,14 +1196,17 @@ export type Database = {
           id?: string
           notes?: string | null
           offer_amount?: number | null
+          offer_label?: string | null
           phone?: string | null
           service?: string | null
           source?: string | null
           status?: string
+          subscription_type?: string | null
           updated_at?: string
         }
         Update: {
           agent_id?: string | null
+          assigned_staff?: string | null
           attended?: boolean | null
           branch_id?: string
           converted_client_id?: string | null
@@ -1060,10 +1217,12 @@ export type Database = {
           id?: string
           notes?: string | null
           offer_amount?: number | null
+          offer_label?: string | null
           phone?: string | null
           service?: string | null
           source?: string | null
           status?: string
+          subscription_type?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -1193,40 +1352,94 @@ export type Database = {
       }
       payments: {
         Row: {
+          address: string | null
+          age: number | null
           amount: number
           branch_id: string
+          category: string | null
+          client_code: string | null
           client_id: string | null
+          coach_id: string | null
+          coach_name: string | null
           created_at: string
+          emergency_contact: string | null
+          group_type: string | null
           id: string
           invoice_id: string | null
+          level: string | null
+          membership_id: string | null
           method: string
           notes: string | null
           paid_at: string
+          phone: string | null
           receipt_no: string
+          session_time: string | null
+          sessions_total: number
+          sessions_used: number
+          skill_rating: number | null
+          status: string
+          trainee_name: string | null
+          training_days: string | null
         }
         Insert: {
+          address?: string | null
+          age?: number | null
           amount?: number
           branch_id: string
+          category?: string | null
+          client_code?: string | null
           client_id?: string | null
+          coach_id?: string | null
+          coach_name?: string | null
           created_at?: string
+          emergency_contact?: string | null
+          group_type?: string | null
           id?: string
           invoice_id?: string | null
+          level?: string | null
+          membership_id?: string | null
           method?: string
           notes?: string | null
           paid_at?: string
+          phone?: string | null
           receipt_no?: string
+          session_time?: string | null
+          sessions_total?: number
+          sessions_used?: number
+          skill_rating?: number | null
+          status?: string
+          trainee_name?: string | null
+          training_days?: string | null
         }
         Update: {
+          address?: string | null
+          age?: number | null
           amount?: number
           branch_id?: string
+          category?: string | null
+          client_code?: string | null
           client_id?: string | null
+          coach_id?: string | null
+          coach_name?: string | null
           created_at?: string
+          emergency_contact?: string | null
+          group_type?: string | null
           id?: string
           invoice_id?: string | null
+          level?: string | null
+          membership_id?: string | null
           method?: string
           notes?: string | null
           paid_at?: string
+          phone?: string | null
           receipt_no?: string
+          session_time?: string | null
+          sessions_total?: number
+          sessions_used?: number
+          skill_rating?: number | null
+          status?: string
+          trainee_name?: string | null
+          training_days?: string | null
         }
         Relationships: [
           {
@@ -1433,6 +1646,51 @@ export type Database = {
         }
         Relationships: []
       }
+      schedule_bookings: {
+        Row: {
+          branch_id: string
+          client_id: string | null
+          coach_id: string | null
+          coach_name: string | null
+          created_at: string
+          day_group: string
+          group_type_id: string | null
+          group_type_name: string | null
+          id: string
+          student_name: string
+          time_slot: string
+          updated_at: string
+        }
+        Insert: {
+          branch_id: string
+          client_id?: string | null
+          coach_id?: string | null
+          coach_name?: string | null
+          created_at?: string
+          day_group: string
+          group_type_id?: string | null
+          group_type_name?: string | null
+          id?: string
+          student_name: string
+          time_slot: string
+          updated_at?: string
+        }
+        Update: {
+          branch_id?: string
+          client_id?: string | null
+          coach_id?: string | null
+          coach_name?: string | null
+          created_at?: string
+          day_group?: string
+          group_type_id?: string | null
+          group_type_name?: string | null
+          id?: string
+          student_name?: string
+          time_slot?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       schedule_sessions: {
         Row: {
           branch_id: string
@@ -1532,44 +1790,98 @@ export type Database = {
         }
         Relationships: []
       }
+      staff_hours: {
+        Row: {
+          branch_id: string
+          created_at: string
+          day_group: string
+          hours: number
+          id: string
+          staff_name: string
+          staff_role: string | null
+          time_slot: string
+          updated_at: string
+        }
+        Insert: {
+          branch_id: string
+          created_at?: string
+          day_group?: string
+          hours?: number
+          id?: string
+          staff_name: string
+          staff_role?: string | null
+          time_slot: string
+          updated_at?: string
+        }
+        Update: {
+          branch_id?: string
+          created_at?: string
+          day_group?: string
+          hours?: number
+          id?: string
+          staff_name?: string
+          staff_role?: string | null
+          time_slot?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       subscriptions: {
         Row: {
+          assigned_staff: string | null
           branch_id: string
           client_id: string
           created_at: string
           end_date: string | null
           id: string
+          name: string | null
           notes: string | null
+          paid_amount: number
           plan: string
           price: number
+          service_name: string | null
+          service_type: string | null
           start_date: string
           status: string
+          total_amount: number
           updated_at: string
         }
         Insert: {
+          assigned_staff?: string | null
           branch_id: string
           client_id: string
           created_at?: string
           end_date?: string | null
           id?: string
+          name?: string | null
           notes?: string | null
+          paid_amount?: number
           plan: string
           price?: number
+          service_name?: string | null
+          service_type?: string | null
           start_date: string
           status?: string
+          total_amount?: number
           updated_at?: string
         }
         Update: {
+          assigned_staff?: string | null
           branch_id?: string
           client_id?: string
           created_at?: string
           end_date?: string | null
           id?: string
+          name?: string | null
           notes?: string | null
+          paid_amount?: number
           plan?: string
           price?: number
+          service_name?: string | null
+          service_type?: string | null
           start_date?: string
           status?: string
+          total_amount?: number
           updated_at?: string
         }
         Relationships: [
@@ -1588,6 +1900,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      trainee_evaluations: {
+        Row: {
+          branch_id: string
+          client_code: string | null
+          client_id: string | null
+          created_at: string
+          evaluated_at: string
+          evaluator: string | null
+          general: number
+          id: string
+          improvements: string | null
+          trainee_name: string | null
+          updated_at: string
+        }
+        Insert: {
+          branch_id: string
+          client_code?: string | null
+          client_id?: string | null
+          created_at?: string
+          evaluated_at?: string
+          evaluator?: string | null
+          general?: number
+          id?: string
+          improvements?: string | null
+          trainee_name?: string | null
+          updated_at?: string
+        }
+        Update: {
+          branch_id?: string
+          client_code?: string | null
+          client_id?: string | null
+          created_at?: string
+          evaluated_at?: string
+          evaluator?: string | null
+          general?: number
+          id?: string
+          improvements?: string | null
+          trainee_name?: string | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {
@@ -1615,6 +1969,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      convert_lead_to_client: { Args: { _lead_id: string }; Returns: string }
       gen_client_code: { Args: never; Returns: string }
       has_academy_role: {
         Args: {
