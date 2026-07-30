@@ -27,11 +27,22 @@ function AuthPage() {
   const [password, setPassword] = useState("");
 
   useEffect(() => {
+    const claim = async () => {
+      try {
+        await supabase.rpc("claim_super_admin" as any);
+      } catch {
+        /* ignore */
+      }
+    };
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/admin" });
+      if (data.session) {
+        claim().then(() => navigate({ to: "/admin" }));
+      }
     });
     const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_IN" && session) navigate({ to: "/admin" });
+      if (event === "SIGNED_IN" && session) {
+        claim().then(() => navigate({ to: "/admin" }));
+      }
     });
     return () => sub.subscription.unsubscribe();
   }, [navigate]);

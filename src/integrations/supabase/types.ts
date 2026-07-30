@@ -1901,6 +1901,21 @@ export type Database = {
           },
         ]
       }
+      super_admin_allowlist: {
+        Row: {
+          created_at: string
+          email: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+        }
+        Relationships: []
+      }
       trainee_evaluations: {
         Row: {
           branch_id: string
@@ -1969,6 +1984,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      claim_super_admin: { Args: never; Returns: boolean }
       convert_lead_to_client: { Args: { _lead_id: string }; Returns: string }
       gen_client_code: { Args: never; Returns: string }
       has_academy_role: {
