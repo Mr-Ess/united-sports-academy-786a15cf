@@ -14,6 +14,117 @@ export type Database = {
   }
   public: {
     Tables: {
+      academy_profiles: {
+        Row: {
+          created_at: string
+          default_branch_id: string | null
+          full_name: string | null
+          language: string
+          phone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          default_branch_id?: string | null
+          full_name?: string | null
+          language?: string
+          phone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          default_branch_id?: string | null
+          full_name?: string | null
+          language?: string
+          phone?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "academy_profiles_default_branch_id_fkey"
+            columns: ["default_branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      academy_user_roles: {
+        Row: {
+          branch_id: string | null
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["academy_role"]
+          user_id: string
+        }
+        Insert: {
+          branch_id?: string | null
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["academy_role"]
+          user_id: string
+        }
+        Update: {
+          branch_id?: string | null
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["academy_role"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "academy_user_roles_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      audit_log: {
+        Row: {
+          action: string
+          actor_id: string | null
+          branch_id: string | null
+          created_at: string
+          entity: string
+          entity_id: string | null
+          id: string
+          meta: Json
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          branch_id?: string | null
+          created_at?: string
+          entity: string
+          entity_id?: string | null
+          id?: string
+          meta?: Json
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          branch_id?: string | null
+          created_at?: string
+          entity?: string
+          entity_id?: string | null
+          id?: string
+          meta?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_log_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       blog_posts: {
         Row: {
           author_name: string | null
@@ -64,6 +175,51 @@ export type Database = {
           slug?: string
           title?: string
           title_ar?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      branches: {
+        Row: {
+          active: boolean
+          address: string | null
+          created_at: string
+          email: string | null
+          id: string
+          name: string
+          name_ar: string
+          phone: string | null
+          pool_specs: Json
+          settings: Json
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          address?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name: string
+          name_ar: string
+          phone?: string | null
+          pool_specs?: Json
+          settings?: Json
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          address?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string
+          name_ar?: string
+          phone?: string | null
+          pool_specs?: Json
+          settings?: Json
+          sort_order?: number
           updated_at?: string
         }
         Relationships: []
@@ -260,6 +416,36 @@ export type Database = {
         }
         Relationships: []
       }
+      page_permissions: {
+        Row: {
+          allowed_roles: Database["public"]["Enums"]["academy_role"][]
+          created_at: string
+          id: string
+          is_public: boolean
+          label_ar: string | null
+          path: string
+          updated_at: string
+        }
+        Insert: {
+          allowed_roles?: Database["public"]["Enums"]["academy_role"][]
+          created_at?: string
+          id?: string
+          is_public?: boolean
+          label_ar?: string | null
+          path: string
+          updated_at?: string
+        }
+        Update: {
+          allowed_roles?: Database["public"]["Enums"]["academy_role"][]
+          created_at?: string
+          id?: string
+          is_public?: boolean
+          label_ar?: string | null
+          path?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       partners: {
         Row: {
           created_at: string
@@ -385,6 +571,20 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      has_academy_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["academy_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      has_any_academy_role: {
+        Args: {
+          _roles: Database["public"]["Enums"]["academy_role"][]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -393,8 +593,22 @@ export type Database = {
         Returns: boolean
       }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
+      is_super_admin: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
+      academy_role:
+        | "super_admin"
+        | "top_management"
+        | "branch_admin"
+        | "finance"
+        | "hr"
+        | "coach"
+        | "receptionist"
+        | "warehouse"
+        | "procurement"
+        | "maintenance"
+        | "tenant"
+        | "trainee"
       app_role: "admin" | "editor" | "moderator"
     }
     CompositeTypes: {
@@ -523,6 +737,20 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      academy_role: [
+        "super_admin",
+        "top_management",
+        "branch_admin",
+        "finance",
+        "hr",
+        "coach",
+        "receptionist",
+        "warehouse",
+        "procurement",
+        "maintenance",
+        "tenant",
+        "trainee",
+      ],
       app_role: ["admin", "editor", "moderator"],
     },
   },
