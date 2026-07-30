@@ -6,6 +6,7 @@ import { SiteShell } from "@/components/site/SiteShell";
 import { Hero } from "@/components/site/Hero";
 import { GALLERY, SPORTS, VIDEOS } from "@/lib/mock-data";
 import { useT } from "@/lib/i18n";
+import { SITE_CONFIG } from "@/lib/site-config";
 
 export const Route = createFileRoute("/")({
   head: () => ({

@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { LangProvider } from "@/lib/i18n";
 import { ThemeProvider } from "@/lib/theme";
+import { SITE_CONFIG } from "@/lib/site-config";
 
 function NotFoundComponent() {
   return (
