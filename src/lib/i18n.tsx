@@ -7,8 +7,8 @@ type Dict = Record<string, { en: string; ar: string }>;
 
 export const DICT: Dict = {
   // Brand
-  brand: { en: "United Sport Academy", ar: "أكاديمية يونايتد الرياضية" },
-  tagline: { en: "Multi-Sport · All Season", ar: "متعدد الرياضات · كل الفصول" },
+  brand: SITE_CONFIG.brand,
+  tagline: SITE_CONFIG.tagline,
 
   // Nav
   nav_home: { en: "Home", ar: "الرئيسية" },
@@ -32,12 +32,9 @@ export const DICT: Dict = {
   cta_learn_more: { en: "Learn more", ar: "اعرف المزيد" },
 
   // Hero
-  hero_kicker: { en: "2026 Season Enrollment Now Open", ar: "التسجيل مفتوح لموسم ٢٠٢٦" },
+  hero_kicker: SITE_CONFIG.hero.kicker,
   hero_master: { en: "Master the art of", ar: "أتقن فن" },
-  hero_sub: {
-    en: "One academy. Every sport. Every season. Elite coaching for swimming, basketball, karate, volleyball, and fitness — under one roof.",
-    ar: "أكاديمية واحدة. كل الرياضات. كل الفصول. تدريب نخبة للسباحة وكرة السلة والكاراتيه والكرة الطائرة واللياقة تحت سقف واحد.",
-  },
+  hero_sub: SITE_CONFIG.hero.sub,
 
   // Sections
   sec_programs: { en: "Our Programs", ar: "برامجنا" },
@@ -54,7 +51,7 @@ export const DICT: Dict = {
   sec_blog: { en: "Academy Blog", ar: "مدونة الأكاديمية" },
   sec_impact: { en: "Academy Impact", ar: "أثر الأكاديمية" },
   sec_behind: { en: "Behind the Scenes", ar: "من كواليس الأكاديمية" },
-  sec_join: { en: "Join United Sport", ar: "انضم إلى الأكاديمية" },
+  sec_join: { en: `Join ${SITE_CONFIG.brand.en}`, ar: `انضم إلى ${SITE_CONFIG.brand.ar}` },
   sec_contact: { en: "Contact & Branches", ar: "التواصل والفروع" },
 
   // Metrics
