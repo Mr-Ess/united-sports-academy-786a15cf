@@ -14,7 +14,7 @@ export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
       { title: "تسجيل الدخول — لوحة التحكم" },
-      { name: "description", content: "لوحة تحكم United Sport Academy" },
+      { name: "description", content: `لوحة تحكم ${SITE_CONFIG.brand.en}` },
     ],
   }),
   component: AuthPage,

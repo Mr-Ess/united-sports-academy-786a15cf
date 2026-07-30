@@ -11,9 +11,9 @@ import { useState } from "react";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About — United Sport Academy" },
-      { name: "description", content: "Our origin story, vision, values, and the leadership team behind United Sport Academy." },
-      { property: "og:title", content: "About United Sport Academy" },
+      { title: `About — ${SITE_CONFIG.brand.en}` },
+      { name: "description", content: `Our origin story, vision, values, and the leadership team behind ${SITE_CONFIG.brand.en}.` },
+      { property: "og:title", content: `About ${SITE_CONFIG.brand.en}` },
       { property: "og:description", content: "Meet the team building the region's premier multi-sport academy." },
     ],
   }),

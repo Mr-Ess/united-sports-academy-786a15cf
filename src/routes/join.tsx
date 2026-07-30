@@ -8,9 +8,9 @@ import { SITE_CONFIG } from "@/lib/site-config";
 export const Route = createFileRoute("/join")({
   head: () => ({
     meta: [
-      { title: "Join — United Sport Academy" },
+      { title: `Join — ${SITE_CONFIG.brand.en}` },
       { name: "description", content: "Enroll as a member, apply for a coaching or staff role, volunteer, or sign up for a seasonal workshop." },
-      { property: "og:title", content: "Join United Sport Academy" },
+      { property: "og:title", content: `Join ${SITE_CONFIG.brand.en}` },
       { property: "og:description", content: "One portal for members, careers, volunteers, and workshops." },
     ],
   }),

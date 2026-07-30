@@ -11,9 +11,9 @@ import { SITE_CONFIG } from "@/lib/site-config";
 export const Route = createFileRoute("/programs")({
   head: () => ({
     meta: [
-      { title: "Programs & Seasonal Camps — United Sport Academy" },
+      { title: `Programs & Seasonal Camps — ${SITE_CONFIG.brand.en}` },
       { name: "description", content: "All sports and seasonal clinics — filter by season, sport, age, and skill level." },
-      { property: "og:title", content: "Programs — United Sport Academy" },
+      { property: "og:title", content: `Programs — ${SITE_CONFIG.brand.en}` },
       { property: "og:description", content: "Every discipline. Every season. Every level." },
     ],
   }),

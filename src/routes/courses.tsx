@@ -42,13 +42,13 @@ import { SITE_CONFIG } from "@/lib/site-config";
 export const Route = createFileRoute("/courses")({
   head: () => ({
     meta: [
-      { title: "Professional Courses & Masterclasses — United Sport Academy" },
+      { title: `Professional Courses & Masterclasses — ${SITE_CONFIG.brand.en}` },
       {
         name: "description",
         content:
           "Elite masterclasses and professional certifications in swimming, basketball, karate, volleyball, fitness, and sports nutrition. Online, offline, and hybrid formats.",
       },
-      { property: "og:title", content: "Courses & Masterclasses — United Sport Academy" },
+      { property: "og:title", content: `Courses & Masterclasses — ${SITE_CONFIG.brand.en}` },
       { property: "og:description", content: "Certified programs, elite coaches, seats limited." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

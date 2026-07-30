@@ -12,9 +12,9 @@ import { SITE_CONFIG } from "@/lib/site-config";
 export const Route = createFileRoute("/partners")({
   head: () => ({
     meta: [
-      { title: "Success Partners — United Sport Academy" },
-      { name: "description", content: "Federations, sponsors, and institutional partners powering United Sport Academy." },
-      { property: "og:title", content: "Success Partners — United Sport Academy" },
+      { title: `Success Partners — ${SITE_CONFIG.brand.en}` },
+      { name: "description", content: `Federations, sponsors, and institutional partners powering ${SITE_CONFIG.brand.en}.` },
+      { property: "og:title", content: `Success Partners — ${SITE_CONFIG.brand.en}` },
       { property: "og:description", content: "Meet the organizations advancing our mission." },
     ],
   }),
