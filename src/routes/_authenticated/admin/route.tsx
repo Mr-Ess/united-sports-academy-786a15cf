@@ -52,6 +52,7 @@ import { Badge } from "@/components/ui/badge";
 import { BranchProvider } from "@/lib/branch-context";
 import { BranchContextBar } from "@/components/academy/BranchContextBar";
 import { SITE_CONFIG } from "@/lib/site-config";
+import { OPEN_ACCESS, OPEN_ACCESS_ROLES } from "@/lib/access";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminLayout,
@@ -160,10 +161,12 @@ function AdminLayout() {
   const { data: me, isLoading } = useQuery({
     queryKey: ["me-roles"],
     queryFn: () => fetchRoles(),
+    retry: false,
   });
   const { data: academy } = useQuery({
     queryKey: ["academy-context"],
     queryFn: () => fetchAcademy(),
+    retry: false,
   });
 
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -178,13 +181,13 @@ function AdminLayout() {
     navigate({ to: "/auth", replace: true });
   };
 
-  const roles = me?.roles ?? [];
+  const roles = me?.roles?.length ? me.roles : OPEN_ACCESS ? [...OPEN_ACCESS_ROLES] : [];
   const isAdmin = roles.includes("admin");
   const visibleSiteNav = SITE_NAV.filter(
     (n) => !n.roles || isAdmin || n.roles.some((r) => roles.includes(r)),
   );
 
-  if (isLoading) {
+  if (isLoading && !OPEN_ACCESS) {
     return (
       <div dir="rtl" className="grid min-h-screen place-items-center text-muted-foreground" style={{ fontFamily: "'Cairo', sans-serif" }}>
         جاري التحميل...
@@ -207,6 +210,7 @@ function AdminLayout() {
       </div>
     );
   }
+
 
   const SidebarBody = () => {
     const [siteOpen, setSiteOpen] = useState(!onAcademy);
