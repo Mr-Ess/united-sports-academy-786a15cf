@@ -51,6 +51,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { BranchProvider } from "@/lib/branch-context";
 import { BranchContextBar } from "@/components/academy/BranchContextBar";
+import { SITE_CONFIG } from "@/lib/site-config";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminLayout,
