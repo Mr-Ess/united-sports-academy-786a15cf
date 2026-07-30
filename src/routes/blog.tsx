@@ -7,13 +7,14 @@ import { Input } from "@/components/ui/input";
 import { SiteShell } from "@/components/site/SiteShell";
 import { BLOG } from "@/lib/mock-data";
 import { useT } from "@/lib/i18n";
+import { SITE_CONFIG } from "@/lib/site-config";
 
 export const Route = createFileRoute("/blog")({
   head: () => ({
     meta: [
-      { title: "Blog — United Sport Academy" },
-      { name: "description", content: "Sports nutrition, workout routines, mental conditioning, and student spotlights from United Sport Academy." },
-      { property: "og:title", content: "Blog — United Sport Academy" },
+      { title: `Blog — ${SITE_CONFIG.brand.en}` },
+      { name: "description", content: `Sports nutrition, workout routines, mental conditioning, and student spotlights from ${SITE_CONFIG.brand.en}.` },
+      { property: "og:title", content: `Blog — ${SITE_CONFIG.brand.en}` },
       { property: "og:description", content: "Coach-written articles on training, nutrition, and student stories." },
     ],
   }),

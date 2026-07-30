@@ -8,12 +8,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { SITE_CONFIG } from "@/lib/site-config";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
       { title: "تسجيل الدخول — لوحة التحكم" },
-      { name: "description", content: "لوحة تحكم United Sport Academy" },
+      { name: "description", content: `لوحة تحكم ${SITE_CONFIG.brand.en}` },
     ],
   }),
   component: AuthPage,

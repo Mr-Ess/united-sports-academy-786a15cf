@@ -5,14 +5,15 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { SiteShell } from "@/components/site/SiteShell";
 import { TEAM } from "@/lib/mock-data";
 import { useT } from "@/lib/i18n";
+import { SITE_CONFIG } from "@/lib/site-config";
 import { useState } from "react";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About — United Sport Academy" },
-      { name: "description", content: "Our origin story, vision, values, and the leadership team behind United Sport Academy." },
-      { property: "og:title", content: "About United Sport Academy" },
+      { title: `About — ${SITE_CONFIG.brand.en}` },
+      { name: "description", content: `Our origin story, vision, values, and the leadership team behind ${SITE_CONFIG.brand.en}.` },
+      { property: "og:title", content: `About ${SITE_CONFIG.brand.en}` },
       { property: "og:description", content: "Meet the team building the region's premier multi-sport academy." },
     ],
   }),
@@ -33,7 +34,7 @@ function About() {
             Built for <span className="gradient-text">every athlete</span>.
           </h1>
           <p className="mt-5 text-lg text-muted-foreground">
-            United Sport Academy was founded in 2014 by a coalition of Olympic-level coaches and community leaders who believed elite sports education shouldn't be a privilege reserved for the few. A decade later, we run 15+ branches training thousands of athletes across five disciplines every season.
+            {SITE_CONFIG.brand.en} was founded in 2014 by a coalition of Olympic-level coaches and community leaders who believed elite sports education shouldn't be a privilege reserved for the few. A decade later, we run 15+ branches training thousands of athletes across five disciplines every season.
           </p>
         </div>
       </section>

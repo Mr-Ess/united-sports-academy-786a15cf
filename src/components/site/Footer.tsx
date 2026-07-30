@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Zap } from "lucide-react";
 import { useT } from "@/lib/i18n";
+import { SITE_CONFIG } from "@/lib/site-config";
 
 export function Footer() {
   const { t } = useT();
@@ -38,7 +39,7 @@ export function Footer() {
         </div>
         <div>
           <div className="mb-3 text-sm font-bold uppercase tracking-wider text-white">Newsletter</div>
-          <p className="text-sm text-white/60">Season previews, athlete stories, and open enrollment alerts.</p>
+          <p className="text-sm text-white/60">{SITE_CONFIG.footer.newsletterText}</p>
           <form className="mt-3 flex gap-2" onSubmit={(e) => e.preventDefault()}>
             <input
               type="email"
@@ -46,7 +47,7 @@ export function Footer() {
               className="w-full rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-white/40 focus:border-[var(--aqua)] focus:outline-none"
             />
             <button className="rounded-lg bg-gradient-to-r from-[var(--aqua)] to-[var(--aqua-glow)] px-3 py-2 text-xs font-bold text-[var(--navy)]">
-              Join
+              {SITE_CONFIG.footer.newsletterButton}
             </button>
           </form>
         </div>

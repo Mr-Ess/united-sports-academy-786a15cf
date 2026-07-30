@@ -9,13 +9,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SiteShell } from "@/components/site/SiteShell";
 import { GALLERY, RESOURCES, SPORTS, VIDEOS } from "@/lib/mock-data";
 import { useT } from "@/lib/i18n";
+import { SITE_CONFIG } from "@/lib/site-config";
 
 export const Route = createFileRoute("/media")({
   head: () => ({
     meta: [
-      { title: "Media Library — United Sport Academy" },
-      { name: "description", content: "Behind the scenes photos, video reels, and downloadable training guides from United Sport Academy." },
-      { property: "og:title", content: "Behind the Scenes — United Sport Academy" },
+      { title: `Media Library — ${SITE_CONFIG.brand.en}` },
+      { name: "description", content: `Behind the scenes photos, video reels, and downloadable training guides from ${SITE_CONFIG.brand.en}.` },
+      { property: "og:title", content: `Behind the Scenes — ${SITE_CONFIG.brand.en}` },
       { property: "og:description", content: "Photos, videos, and PDF library from every branch and season." },
     ],
   }),

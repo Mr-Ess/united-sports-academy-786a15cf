@@ -51,6 +51,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { BranchProvider } from "@/lib/branch-context";
 import { BranchContextBar } from "@/components/academy/BranchContextBar";
+import { SITE_CONFIG } from "@/lib/site-config";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminLayout,
@@ -218,7 +219,7 @@ function AdminLayout() {
           </div>
           <div>
             <div className="text-sm font-black leading-none">لوحة التحكم</div>
-            <div className="mt-1 text-[10px] text-muted-foreground">United Sport Academy</div>
+            <div className="mt-1 text-[10px] text-muted-foreground">{SITE_CONFIG.admin.sidebarLabel}</div>
           </div>
         </Link>
 

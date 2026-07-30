@@ -9,13 +9,14 @@ import { Label } from "@/components/ui/label";
 import { SiteShell } from "@/components/site/SiteShell";
 import { BRANCHES } from "@/lib/mock-data";
 import { useT } from "@/lib/i18n";
+import { SITE_CONFIG } from "@/lib/site-config";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact & Branches — United Sport Academy" },
-      { name: "description", content: "Reach any United Sport Academy branch — phone, WhatsApp, email, hours, and location." },
-      { property: "og:title", content: "Contact — United Sport Academy" },
+      { title: `Contact & Branches — ${SITE_CONFIG.brand.en}` },
+      { name: "description", content: `Reach any ${SITE_CONFIG.brand.en} branch — phone, WhatsApp, email, hours, and location.` },
+      { property: "og:title", content: `Contact — ${SITE_CONFIG.brand.en}` },
       { property: "og:description", content: "Get in touch with any of our branches." },
     ],
   }),
