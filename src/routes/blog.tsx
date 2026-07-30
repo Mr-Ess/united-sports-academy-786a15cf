@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { SiteShell } from "@/components/site/SiteShell";
 import { BLOG } from "@/lib/mock-data";
 import { useT } from "@/lib/i18n";
+import { SITE_CONFIG } from "@/lib/site-config";
 
 export const Route = createFileRoute("/blog")({
   head: () => ({

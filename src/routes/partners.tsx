@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { SiteShell } from "@/components/site/SiteShell";
 import { PARTNERS } from "@/lib/mock-data";
 import { useT } from "@/lib/i18n";
+import { SITE_CONFIG } from "@/lib/site-config";
 
 export const Route = createFileRoute("/partners")({
   head: () => ({

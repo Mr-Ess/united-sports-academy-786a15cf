@@ -3,6 +3,7 @@ import { Sparkles } from "lucide-react";
 import { SiteShell } from "@/components/site/SiteShell";
 import { FormsWizard } from "@/components/site/FormsWizard";
 import { useT } from "@/lib/i18n";
+import { SITE_CONFIG } from "@/lib/site-config";
 
 export const Route = createFileRoute("/join")({
   head: () => ({

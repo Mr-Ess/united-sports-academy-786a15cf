@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SiteShell } from "@/components/site/SiteShell";
 import { GALLERY, RESOURCES, SPORTS, VIDEOS } from "@/lib/mock-data";
 import { useT } from "@/lib/i18n";
+import { SITE_CONFIG } from "@/lib/site-config";
 
 export const Route = createFileRoute("/media")({
   head: () => ({

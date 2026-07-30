@@ -37,6 +37,7 @@ import {
   type Course,
 } from "@/lib/courses-data";
 import { useT } from "@/lib/i18n";
+import { SITE_CONFIG } from "@/lib/site-config";
 
 export const Route = createFileRoute("/courses")({
   head: () => ({

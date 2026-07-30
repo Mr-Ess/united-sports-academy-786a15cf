@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { SiteShell } from "@/components/site/SiteShell";
 import { SEASONS, SPORTS } from "@/lib/mock-data";
 import { useT } from "@/lib/i18n";
+import { SITE_CONFIG } from "@/lib/site-config";
 
 export const Route = createFileRoute("/programs")({
   head: () => ({
