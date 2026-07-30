@@ -11,13 +11,9 @@ import { SITE_CONFIG } from "@/lib/site-config";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "United Sport Academy — Multi-Sport & All-Season Training" },
-      {
-        name: "description",
-        content:
-          "Swim, basketball, karate, volleyball, and fitness under one roof. Elite coaching and seasonal camps year-round.",
-      },
-      { property: "og:title", content: "United Sport Academy" },
+      { title: `${SITE_CONFIG.brand.en} — ${SITE_CONFIG.meta.defaultTitle}` },
+      { name: "description", content: SITE_CONFIG.meta.defaultDescription },
+      { property: "og:title", content: SITE_CONFIG.brand.en },
       { property: "og:description", content: "One academy. Every sport. Every season." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
