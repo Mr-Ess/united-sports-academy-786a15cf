@@ -1,5 +1,4 @@
 import { createServerFn } from "@tanstack/react-start";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 type JsonValue = string | number | boolean | null | JsonValue[] | { [k: string]: JsonValue };
 type JsonRow = { [k: string]: JsonValue };
@@ -44,13 +43,13 @@ type ListInput = {
 };
 
 export const listRows = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
   .inputValidator((data: ListInput) => {
     if (!ALLOWED.has(data.table)) throw new Error("Table not allowed");
     return data;
   })
-  .handler(async ({ data, context }) => {
-    let q = context.supabase.from(data.table as never).select(data.select ?? "*");
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    let q = supabaseAdmin.from(data.table as never).select(data.select ?? "*");
     if (data.branch_id) q = q.eq("branch_id", data.branch_id);
     if (data.order) q = q.order(data.order.column, { ascending: data.order.ascending ?? false });
     q = q.limit(data.limit ?? 500);
@@ -62,13 +61,13 @@ export const listRows = createServerFn({ method: "POST" })
 type SaveInput = { table: string; payload: Record<string, unknown> };
 
 export const upsertRow = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
   .inputValidator((data: SaveInput) => {
     if (!ALLOWED.has(data.table)) throw new Error("Table not allowed");
     return data;
   })
-  .handler(async ({ data, context }) => {
-    const { error, data: saved } = await context.supabase
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error, data: saved } = await supabaseAdmin
       .from(data.table as never)
       .upsert(data.payload as never)
       .select()
@@ -80,13 +79,13 @@ export const upsertRow = createServerFn({ method: "POST" })
 type DeleteInput = { table: string; id: string };
 
 export const deleteRow = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
   .inputValidator((data: DeleteInput) => {
     if (!ALLOWED.has(data.table)) throw new Error("Table not allowed");
     return data;
   })
-  .handler(async ({ data, context }) => {
-    const { error } = await context.supabase.from(data.table as never).delete().eq("id", data.id);
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin.from(data.table as never).delete().eq("id", data.id);
     if (error) throw error;
     return { ok: true };
   });
