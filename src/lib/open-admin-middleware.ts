@@ -1,11 +1,9 @@
 import { createMiddleware } from "@tanstack/react-start";
-import { OPEN_ACCESS } from "./access";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-export const openAdminAccess = createMiddleware({ type: "function" }).server(async (options) => {
-  if (OPEN_ACCESS) {
+export const openAdminAccess = createMiddleware({ type: "function" }).server(
+  async ({ next }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    return options.next({
+    return next({
       context: {
         supabase: supabaseAdmin,
         userId: "00000000-0000-0000-0000-000000000000",
@@ -13,7 +11,5 @@ export const openAdminAccess = createMiddleware({ type: "function" }).server(asy
         isOpenAccess: true,
       },
     });
-  }
-
-  return requireSupabaseAuth.options.server!(options);
-});
+  },
+);
