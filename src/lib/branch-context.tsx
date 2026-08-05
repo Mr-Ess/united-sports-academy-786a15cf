@@ -33,6 +33,14 @@ export function BranchProvider({
     else localStorage.removeItem(STORAGE_KEY);
   }, [currentBranchId]);
 
+  useEffect(() => {
+    if (branches.length === 0 || branches.some((branch) => branch.id === currentBranchId)) return;
+    const nextBranchId = defaultBranchId && branches.some((branch) => branch.id === defaultBranchId)
+      ? defaultBranchId
+      : branches[0]?.id ?? null;
+    setCurrentBranchIdState(nextBranchId);
+  }, [branches, currentBranchId, defaultBranchId]);
+
   const value = useMemo<BranchContextValue>(() => ({
     branches,
     currentBranchId,

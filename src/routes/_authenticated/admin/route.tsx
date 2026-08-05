@@ -299,20 +299,8 @@ function AdminLayout() {
         </nav>
 
         <div className="space-y-2 border-t p-3">
-          <div className="rounded-xl bg-secondary/50 p-3">
-            <div className="truncate text-xs font-semibold" dir="ltr">
-              {me?.email ?? me?.userId}
-            </div>
-            <div className="mt-1.5 flex flex-wrap gap-1">
-              {roles.map((r) => (
-                <Badge key={r} variant="secondary" className="text-[10px]">
-                  {r === "admin" ? "أدمن" : r === "editor" ? "محرر" : "مشرف"}
-                </Badge>
-              ))}
-              {academy?.isSuperAdmin && (
-                <Badge className="text-[10px]">Super Admin</Badge>
-              )}
-            </div>
+          <div className="rounded-xl bg-secondary/50 p-3 text-center">
+            <Badge variant="secondary" className="text-[10px]">دخول عام — بدون صلاحيات</Badge>
           </div>
           <Link
             to="/"
@@ -320,12 +308,6 @@ function AdminLayout() {
           >
             <ExternalLink className="h-3.5 w-3.5" /> عرض الموقع
           </Link>
-          <button
-            onClick={handleSignOut}
-            className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-destructive hover:bg-destructive/10"
-          >
-            <LogOut className="h-3.5 w-3.5" /> تسجيل الخروج
-          </button>
         </div>
       </div>
     );
