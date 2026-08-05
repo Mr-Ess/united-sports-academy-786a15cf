@@ -14,6 +14,7 @@ import {
   Menu,
   Zap,
   ExternalLink,
+  Users,
   MapPin,
   BarChart3,
   Palette,

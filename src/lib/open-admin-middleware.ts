@@ -7,7 +7,7 @@ export const openAdminAccess = createMiddleware({ type: "function" }).server(asy
     context: {
       supabase: supabaseAdmin,
       userId: "00000000-0000-0000-0000-000000000000",
-      claims: { email: null },
+      claims: { email: undefined },
     },
   });
 });

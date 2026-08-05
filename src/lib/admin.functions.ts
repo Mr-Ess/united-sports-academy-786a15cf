@@ -317,7 +317,7 @@ export const savePartner = createServerFn({ method: "POST" })
   });
 
 export const deletePartner = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([openAdminAccess])
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase.from("partners").delete().eq("id", data.id);
