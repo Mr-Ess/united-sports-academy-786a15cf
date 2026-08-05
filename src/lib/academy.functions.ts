@@ -1,5 +1,4 @@
 import { createServerFn } from "@tanstack/react-start";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 export type AcademyRole =
   | "super_admin"
@@ -16,28 +15,28 @@ export type AcademyRole =
   | "trainee";
 
 export const getMyAcademyContext = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
-    const [rolesRes, profileRes, branchesRes] = await Promise.all([
-      context.supabase.from("academy_user_roles").select("role, branch_id").eq("user_id", context.userId),
-      context.supabase.from("academy_profiles").select("*").eq("user_id", context.userId).maybeSingle(),
-      context.supabase.from("branches").select("id, name, name_ar, active").eq("active", true).order("sort_order"),
-    ]);
-    const roles = (rolesRes.data ?? []).map((r) => r.role as AcademyRole);
+  .handler(async () => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: branches, error } = await supabaseAdmin
+      .from("branches")
+      .select("id, name, name_ar, active")
+      .eq("active", true)
+      .order("sort_order");
+    if (error) throw error;
     return {
-      userId: context.userId,
-      email: (context.claims.email as string | undefined) ?? null,
-      roles,
-      isSuperAdmin: roles.includes("super_admin"),
-      profile: profileRes.data ?? null,
-      branches: branchesRes.data ?? [],
+      userId: null,
+      email: null,
+      roles: [] as AcademyRole[],
+      isSuperAdmin: true,
+      profile: null,
+      branches: branches ?? [],
     };
   });
 
 export const listPagePermissions = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
-    const { data, error } = await context.supabase
+  .handler(async () => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data, error } = await supabaseAdmin
       .from("page_permissions")
       .select("*")
       .order("path");

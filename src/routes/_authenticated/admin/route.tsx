@@ -37,7 +37,6 @@ import {
   FileBarChart,
   UsersRound,
   GitCompare,
-  ShieldCheck,
   MapPinned,
   Globe2,
   Building2,
@@ -76,7 +75,6 @@ const SITE_NAV: NavItem[] = [
   { to: "/admin/partners", label: "الشركاء", icon: Handshake, roles: ["admin", "editor"] },
   { to: "/admin/media", label: "الوسائط", icon: ImageIcon, roles: ["admin", "editor"] },
   { to: "/admin/branches", label: "الفروع (Mock)", icon: MapPin, roles: ["admin"] },
-  { to: "/admin/users", label: "المستخدمين والصلاحيات", icon: Users, roles: ["admin"] },
   { to: "/admin/notifications", label: "الإشعارات", icon: Bell, roles: ["admin"] },
   { to: "/admin/settings/theme", label: "المظهر والهوية", icon: Palette, roles: ["admin"] },
   { to: "/admin/settings", label: "الإعدادات", icon: Settings, roles: ["admin"] },
@@ -146,7 +144,6 @@ const ACADEMY_GROUPS: AcademyGroup[] = [
   {
     label: "النظام",
     items: [
-      { to: "/admin/academy/permissions", label: "الأدوار والصلاحيات", icon: ShieldCheck },
       { to: "/admin/academy/audit-log", label: "سجل التدقيق", icon: ClipboardList },
       { to: "/admin/academy/branches", label: "الفروع", icon: MapPinned },
       { to: "/admin/academy/settings", label: "الإعدادات", icon: Settings },
@@ -302,20 +299,8 @@ function AdminLayout() {
         </nav>
 
         <div className="space-y-2 border-t p-3">
-          <div className="rounded-xl bg-secondary/50 p-3">
-            <div className="truncate text-xs font-semibold" dir="ltr">
-              {me?.email ?? me?.userId}
-            </div>
-            <div className="mt-1.5 flex flex-wrap gap-1">
-              {roles.map((r) => (
-                <Badge key={r} variant="secondary" className="text-[10px]">
-                  {r === "admin" ? "أدمن" : r === "editor" ? "محرر" : "مشرف"}
-                </Badge>
-              ))}
-              {academy?.isSuperAdmin && (
-                <Badge className="text-[10px]">Super Admin</Badge>
-              )}
-            </div>
+          <div className="rounded-xl bg-secondary/50 p-3 text-center">
+            <Badge variant="secondary" className="text-[10px]">دخول عام — بدون صلاحيات</Badge>
           </div>
           <Link
             to="/"
@@ -323,12 +308,6 @@ function AdminLayout() {
           >
             <ExternalLink className="h-3.5 w-3.5" /> عرض الموقع
           </Link>
-          <button
-            onClick={handleSignOut}
-            className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-destructive hover:bg-destructive/10"
-          >
-            <LogOut className="h-3.5 w-3.5" /> تسجيل الخروج
-          </button>
         </div>
       </div>
     );
@@ -337,7 +316,7 @@ function AdminLayout() {
   return (
     <BranchProvider
       branches={academy?.branches ?? []}
-      defaultBranchId={academy?.profile?.default_branch_id ?? null}
+      defaultBranchId={null}
     >
       <div dir="rtl" className="academy-os flex min-h-screen" style={{ fontFamily: "'Readex Pro', 'Tajawal', 'Cairo', sans-serif" }}>
         <aside className="hidden w-64 shrink-0 border-l bg-card lg:block">
