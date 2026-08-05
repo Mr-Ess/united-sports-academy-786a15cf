@@ -1,10 +1,10 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { openAdminAccess } from "@/lib/open-admin-middleware";
 
 // ============ ROLE / IDENTITY ============
 export const getMyRoles = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
+  .middleware([openAdminAccess])
   .handler(async ({ context }) => {
     const { data, error } = await context.supabase
       .from("user_roles")
@@ -20,7 +20,7 @@ export const getMyRoles = createServerFn({ method: "GET" })
 
 // ============ DASHBOARD STATS ============
 export const getDashboardStats = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
+  .middleware([openAdminAccess])
   .handler(async ({ context }) => {
     const [courses, subs, posts, partners] = await Promise.all([
       context.supabase.from("courses").select("id, published", { count: "exact", head: false }),
@@ -70,7 +70,7 @@ const courseSchema = z.object({
 });
 
 export const listCourses = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
+  .middleware([openAdminAccess])
   .handler(async ({ context }) => {
     const { data, error } = await context.supabase
       .from("courses")
@@ -81,7 +81,7 @@ export const listCourses = createServerFn({ method: "GET" })
   });
 
 export const saveCourse = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([openAdminAccess])
   .inputValidator((d: unknown) => courseSchema.parse(d))
   .handler(async ({ data, context }) => {
     const { id, ...fields } = data;
@@ -100,7 +100,7 @@ export const saveCourse = createServerFn({ method: "POST" })
   });
 
 export const deleteCourse = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([openAdminAccess])
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase.from("courses").delete().eq("id", data.id);
@@ -110,7 +110,7 @@ export const deleteCourse = createServerFn({ method: "POST" })
 
 // ============ SUBMISSIONS ============
 export const listSubmissions = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
+  .middleware([openAdminAccess])
   .handler(async ({ context }) => {
     const { data, error } = await context.supabase
       .from("join_submissions")
@@ -121,7 +121,7 @@ export const listSubmissions = createServerFn({ method: "GET" })
   });
 
 export const updateSubmissionStatus = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([openAdminAccess])
   .inputValidator((d: unknown) =>
     z.object({
       id: z.string().uuid(),
@@ -139,7 +139,7 @@ export const updateSubmissionStatus = createServerFn({ method: "POST" })
   });
 
 export const deleteSubmission = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([openAdminAccess])
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase.from("join_submissions").delete().eq("id", data.id);
@@ -164,7 +164,7 @@ const postSchema = z.object({
 });
 
 export const listPosts = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
+  .middleware([openAdminAccess])
   .handler(async ({ context }) => {
     const { data, error } = await context.supabase
       .from("blog_posts")
@@ -175,7 +175,7 @@ export const listPosts = createServerFn({ method: "GET" })
   });
 
 export const savePost = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([openAdminAccess])
   .inputValidator((d: unknown) => postSchema.parse(d))
   .handler(async ({ data, context }) => {
     const { id, ...fields } = data;
@@ -198,7 +198,7 @@ export const savePost = createServerFn({ method: "POST" })
   });
 
 export const deletePost = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([openAdminAccess])
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase.from("blog_posts").delete().eq("id", data.id);
@@ -208,7 +208,7 @@ export const deletePost = createServerFn({ method: "POST" })
 
 // ============ SETTINGS ============
 export const getSiteSettings = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
+  .middleware([openAdminAccess])
   .handler(async ({ context }) => {
     const { data, error } = await context.supabase.from("site_settings").select("*");
     if (error) throw error;
@@ -216,7 +216,7 @@ export const getSiteSettings = createServerFn({ method: "GET" })
   });
 
 export const saveSetting = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([openAdminAccess])
   .inputValidator((d: unknown) =>
     z.object({ key: z.string().min(1).max(80), value: z.record(z.string(), z.any()) }).parse(d),
   )
@@ -242,7 +242,7 @@ const mediaSchema = z.object({
 });
 
 export const listMedia = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
+  .middleware([openAdminAccess])
   .handler(async ({ context }) => {
     const { data, error } = await context.supabase
       .from("media_items").select("*")
@@ -253,7 +253,7 @@ export const listMedia = createServerFn({ method: "GET" })
   });
 
 export const saveMedia = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([openAdminAccess])
   .inputValidator((d: unknown) => mediaSchema.parse(d))
   .handler(async ({ data, context }) => {
     const { id, ...fields } = data;
@@ -269,7 +269,7 @@ export const saveMedia = createServerFn({ method: "POST" })
   });
 
 export const deleteMedia = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([openAdminAccess])
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase.from("media_items").delete().eq("id", data.id);
@@ -289,7 +289,7 @@ const partnerSchema = z.object({
 });
 
 export const listPartners = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
+  .middleware([openAdminAccess])
   .handler(async ({ context }) => {
     const { data, error } = await context.supabase
       .from("partners").select("*")
@@ -300,7 +300,7 @@ export const listPartners = createServerFn({ method: "GET" })
   });
 
 export const savePartner = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([openAdminAccess])
   .inputValidator((d: unknown) => partnerSchema.parse(d))
   .handler(async ({ data, context }) => {
     const { id, ...fields } = data;
