@@ -17,28 +17,8 @@ const createUserSchema = z.object({
 export const createUserWithRole = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => createUserSchema.parse(input))
-  .handler(async ({ data, context }) => {
-    // Authorize: only super_admin or branch_admin can create users.
-    const { data: isSuper } = await context.supabase.rpc("has_role", {
-      _user_id: context.userId,
-      _role: "super_admin" as AppRole,
-    });
-    let allowed = !!isSuper;
-    if (!allowed) {
-      const { data: isBranchAdmin } = await context.supabase.rpc("has_role", {
-        _user_id: context.userId,
-        _role: "branch_admin" as AppRole,
-        ...(data.branch_id ? { _branch_id: data.branch_id } : {}),
-      });
-      allowed = !!isBranchAdmin;
-    }
-    if (!allowed) throw new Error("Forbidden");
-
-    // Non-super admins cannot grant global roles or super_admin.
-    if (!isSuper && (data.role === "super_admin" || !data.branch_id)) {
-      throw new Error("Forbidden: branch admins must scope to their branch");
-    }
-
+  .handler(async ({ data }) => {
+    // OPEN ACCESS MODE — role checks disabled.
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     // Create the auth user (email confirmed so they can sign in immediately).
@@ -77,13 +57,8 @@ export const createUserWithRole = createServerFn({ method: "POST" })
 export const deleteUserAccount = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.object({ user_id: z.string().uuid() }).parse(input))
-  .handler(async ({ data, context }) => {
-    const { data: isSuper } = await context.supabase.rpc("has_role", {
-      _user_id: context.userId,
-      _role: "super_admin" as AppRole,
-    });
-    if (!isSuper) throw new Error("Forbidden");
-    if (data.user_id === context.userId) throw new Error("You cannot delete your own account");
+  .handler(async ({ data }) => {
+    // OPEN ACCESS MODE — role checks disabled.
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.auth.admin.deleteUser(data.user_id);
