@@ -28,6 +28,57 @@ function createSupabaseFetch(supabaseKey: string): typeof fetch {
 }
 
 
+function createSafeQueryChain<T = any>(result: T[] = []) {
+  const base = {
+    data: result,
+    error: null,
+    count: result.length,
+  };
+
+  const chain: any = {
+    select: () => chain,
+    eq: () => chain,
+    neq: () => chain,
+    gt: () => chain,
+    gte: () => chain,
+    lt: () => chain,
+    lte: () => chain,
+    is: () => chain,
+    in: () => chain,
+    order: () => chain,
+    limit: () => chain,
+    range: () => chain,
+    single: async () => ({ data: null, error: null }),
+    maybeSingle: async () => ({ data: null, error: null }),
+    then: (resolve: (value: typeof base) => void) => resolve(base),
+    catch: (onRejected: (reason: unknown) => unknown) => Promise.resolve(base).catch(onRejected),
+    finally: (onFinally: () => void) => Promise.resolve(base).finally(onFinally),
+  };
+
+  return chain;
+}
+
+function createSafeSupabaseFallback() {
+  console.warn('[Supabase] Missing env vars; using safe fallback client for preview/open-access mode.');
+
+  return {
+    auth: {
+      getSession: async () => ({ data: { session: null }, error: null }),
+      onAuthStateChange: () => ({ data: { subscription: { unsubscribe() {} } } }),
+      signOut: async () => ({ error: null }),
+    },
+    from: () => createSafeQueryChain(),
+    rpc: async () => ({ data: null, error: null }),
+    functions: { invoke: async () => ({ data: null, error: null }) },
+    storage: {
+      from: () => ({
+        upload: async () => ({ data: null, error: null }),
+        getPublicUrl: () => ({ data: { publicUrl: '' } }),
+      }),
+    },
+  } as unknown as ReturnType<typeof createClient<Database>>;
+}
+
 function createSupabaseClient() {
   // Use import.meta.env for client-side (Vite build-time replacement)
   // Fall back to process.env for SSR (server-side rendering)
@@ -35,13 +86,7 @@ function createSupabaseClient() {
   const SUPABASE_PUBLISHABLE_KEY = import.meta.env['VITE_SUPABASE_PUBLISHABLE_KEY'] || process.env['SUPABASE_PUBLISHABLE_KEY'];
 
   if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
-    const missing = [
-      ...(!SUPABASE_URL ? ['SUPABASE_URL'] : []),
-      ...(!SUPABASE_PUBLISHABLE_KEY ? ['SUPABASE_PUBLISHABLE_KEY'] : []),
-    ];
-    const message = `Missing Supabase environment variable(s): ${missing.join(', ')}. Connect Supabase in Lovable Cloud.`;
-    console.error(`[Supabase] ${message}`);
-    throw new Error(message);
+    return createSafeSupabaseFallback();
   }
 
   return createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
