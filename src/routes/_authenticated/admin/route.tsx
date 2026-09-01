@@ -40,6 +40,11 @@ import {
   MapPinned,
   Globe2,
   Building2,
+  Package,
+  Truck,
+  Wrench,
+  Bot,
+  ShieldCheck,
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
