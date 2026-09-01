@@ -22,6 +22,7 @@ import { Route as PartnersRouteImport } from './routes/partners'
 import { Route as ProgramsRouteImport } from './routes/programs'
 import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authenticated/admin/route'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
+import { Route as AuthenticatedAdminAcademyRouteRouteImport } from './routes/_authenticated/admin/academy/route'
 import { Route as AuthenticatedAdminBranchesRouteImport } from './routes/_authenticated/admin/branches'
 import { Route as AuthenticatedAdminCoursesRouteImport } from './routes/_authenticated/admin/courses'
 import { Route as AuthenticatedAdminMediaRouteImport } from './routes/_authenticated/admin/media'
@@ -129,6 +130,12 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedAdminRouteRoute,
 } as any)
+const AuthenticatedAdminAcademyRouteRoute =
+  AuthenticatedAdminAcademyRouteRouteImport.update({
+    id: '/academy',
+    path: '/academy',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 const AuthenticatedAdminBranchesRoute =
   AuthenticatedAdminBranchesRouteImport.update({
     id: '/branches',
@@ -200,177 +207,177 @@ const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
 } as any)
 const AuthenticatedAdminAcademyIndexRoute =
   AuthenticatedAdminAcademyIndexRouteImport.update({
-    id: '/academy/',
-    path: '/academy/',
-    getParentRoute: () => AuthenticatedAdminRouteRoute,
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedAdminAcademyRouteRoute,
   } as any)
 const AuthenticatedAdminAcademyAiAgentsRoute =
   AuthenticatedAdminAcademyAiAgentsRouteImport.update({
-    id: '/academy/ai-agents',
-    path: '/academy/ai-agents',
-    getParentRoute: () => AuthenticatedAdminRouteRoute,
+    id: '/ai-agents',
+    path: '/ai-agents',
+    getParentRoute: () => AuthenticatedAdminAcademyRouteRoute,
   } as any)
 const AuthenticatedAdminAcademyAnalyticsRoute =
   AuthenticatedAdminAcademyAnalyticsRouteImport.update({
-    id: '/academy/analytics',
-    path: '/academy/analytics',
-    getParentRoute: () => AuthenticatedAdminRouteRoute,
+    id: '/analytics',
+    path: '/analytics',
+    getParentRoute: () => AuthenticatedAdminAcademyRouteRoute,
   } as any)
 const AuthenticatedAdminAcademyAssessmentsRoute =
   AuthenticatedAdminAcademyAssessmentsRouteImport.update({
-    id: '/academy/assessments',
-    path: '/academy/assessments',
-    getParentRoute: () => AuthenticatedAdminRouteRoute,
+    id: '/assessments',
+    path: '/assessments',
+    getParentRoute: () => AuthenticatedAdminAcademyRouteRoute,
   } as any)
 const AuthenticatedAdminAcademyAttendanceRoute =
   AuthenticatedAdminAcademyAttendanceRouteImport.update({
-    id: '/academy/attendance',
-    path: '/academy/attendance',
-    getParentRoute: () => AuthenticatedAdminRouteRoute,
+    id: '/attendance',
+    path: '/attendance',
+    getParentRoute: () => AuthenticatedAdminAcademyRouteRoute,
   } as any)
 const AuthenticatedAdminAcademyBranchReportsRoute =
   AuthenticatedAdminAcademyBranchReportsRouteImport.update({
-    id: '/academy/branch-reports',
-    path: '/academy/branch-reports',
-    getParentRoute: () => AuthenticatedAdminRouteRoute,
+    id: '/branch-reports',
+    path: '/branch-reports',
+    getParentRoute: () => AuthenticatedAdminAcademyRouteRoute,
   } as any)
 const AuthenticatedAdminAcademyBranchesRoute =
   AuthenticatedAdminAcademyBranchesRouteImport.update({
-    id: '/academy/branches',
-    path: '/academy/branches',
-    getParentRoute: () => AuthenticatedAdminRouteRoute,
+    id: '/branches',
+    path: '/branches',
+    getParentRoute: () => AuthenticatedAdminAcademyRouteRoute,
   } as any)
 const AuthenticatedAdminAcademyCapacityRoute =
   AuthenticatedAdminAcademyCapacityRouteImport.update({
-    id: '/academy/capacity',
-    path: '/academy/capacity',
-    getParentRoute: () => AuthenticatedAdminRouteRoute,
+    id: '/capacity',
+    path: '/capacity',
+    getParentRoute: () => AuthenticatedAdminAcademyRouteRoute,
   } as any)
 const AuthenticatedAdminAcademyClientsRoute =
   AuthenticatedAdminAcademyClientsRouteImport.update({
-    id: '/academy/clients',
-    path: '/academy/clients',
-    getParentRoute: () => AuthenticatedAdminRouteRoute,
+    id: '/clients',
+    path: '/clients',
+    getParentRoute: () => AuthenticatedAdminAcademyRouteRoute,
   } as any)
 const AuthenticatedAdminAcademyCoachesRoute =
   AuthenticatedAdminAcademyCoachesRouteImport.update({
-    id: '/academy/coaches',
-    path: '/academy/coaches',
-    getParentRoute: () => AuthenticatedAdminRouteRoute,
+    id: '/coaches',
+    path: '/coaches',
+    getParentRoute: () => AuthenticatedAdminAcademyRouteRoute,
   } as any)
 const AuthenticatedAdminAcademyFinanceRoute =
   AuthenticatedAdminAcademyFinanceRouteImport.update({
-    id: '/academy/finance',
-    path: '/academy/finance',
-    getParentRoute: () => AuthenticatedAdminRouteRoute,
+    id: '/finance',
+    path: '/finance',
+    getParentRoute: () => AuthenticatedAdminAcademyRouteRoute,
   } as any)
 const AuthenticatedAdminAcademyGroupsRoute =
   AuthenticatedAdminAcademyGroupsRouteImport.update({
-    id: '/academy/groups',
-    path: '/academy/groups',
-    getParentRoute: () => AuthenticatedAdminRouteRoute,
+    id: '/groups',
+    path: '/groups',
+    getParentRoute: () => AuthenticatedAdminAcademyRouteRoute,
   } as any)
 const AuthenticatedAdminAcademyHrRoute =
   AuthenticatedAdminAcademyHrRouteImport.update({
-    id: '/academy/hr',
-    path: '/academy/hr',
-    getParentRoute: () => AuthenticatedAdminRouteRoute,
+    id: '/hr',
+    path: '/hr',
+    getParentRoute: () => AuthenticatedAdminAcademyRouteRoute,
   } as any)
 const AuthenticatedAdminAcademyHrReportsRoute =
   AuthenticatedAdminAcademyHrReportsRouteImport.update({
-    id: '/academy/hr-reports',
-    path: '/academy/hr-reports',
-    getParentRoute: () => AuthenticatedAdminRouteRoute,
+    id: '/hr-reports',
+    path: '/hr-reports',
+    getParentRoute: () => AuthenticatedAdminAcademyRouteRoute,
   } as any)
 const AuthenticatedAdminAcademyInventoryRoute =
   AuthenticatedAdminAcademyInventoryRouteImport.update({
-    id: '/academy/inventory',
-    path: '/academy/inventory',
-    getParentRoute: () => AuthenticatedAdminRouteRoute,
+    id: '/inventory',
+    path: '/inventory',
+    getParentRoute: () => AuthenticatedAdminAcademyRouteRoute,
   } as any)
 const AuthenticatedAdminAcademyLaneLogRoute =
   AuthenticatedAdminAcademyLaneLogRouteImport.update({
-    id: '/academy/lane-log',
-    path: '/academy/lane-log',
-    getParentRoute: () => AuthenticatedAdminRouteRoute,
+    id: '/lane-log',
+    path: '/lane-log',
+    getParentRoute: () => AuthenticatedAdminAcademyRouteRoute,
   } as any)
 const AuthenticatedAdminAcademyLanesRoute =
   AuthenticatedAdminAcademyLanesRouteImport.update({
-    id: '/academy/lanes',
-    path: '/academy/lanes',
-    getParentRoute: () => AuthenticatedAdminRouteRoute,
+    id: '/lanes',
+    path: '/lanes',
+    getParentRoute: () => AuthenticatedAdminAcademyRouteRoute,
   } as any)
 const AuthenticatedAdminAcademyLeadsRoute =
   AuthenticatedAdminAcademyLeadsRouteImport.update({
-    id: '/academy/leads',
-    path: '/academy/leads',
-    getParentRoute: () => AuthenticatedAdminRouteRoute,
+    id: '/leads',
+    path: '/leads',
+    getParentRoute: () => AuthenticatedAdminAcademyRouteRoute,
   } as any)
 const AuthenticatedAdminAcademyMaintenanceRoute =
   AuthenticatedAdminAcademyMaintenanceRouteImport.update({
-    id: '/academy/maintenance',
-    path: '/academy/maintenance',
-    getParentRoute: () => AuthenticatedAdminRouteRoute,
+    id: '/maintenance',
+    path: '/maintenance',
+    getParentRoute: () => AuthenticatedAdminAcademyRouteRoute,
   } as any)
 const AuthenticatedAdminAcademyPermissionsRoute =
   AuthenticatedAdminAcademyPermissionsRouteImport.update({
-    id: '/academy/permissions',
-    path: '/academy/permissions',
-    getParentRoute: () => AuthenticatedAdminRouteRoute,
+    id: '/permissions',
+    path: '/permissions',
+    getParentRoute: () => AuthenticatedAdminAcademyRouteRoute,
   } as any)
 const AuthenticatedAdminAcademyPoolOperationsRoute =
   AuthenticatedAdminAcademyPoolOperationsRouteImport.update({
-    id: '/academy/pool-operations',
-    path: '/academy/pool-operations',
-    getParentRoute: () => AuthenticatedAdminRouteRoute,
+    id: '/pool-operations',
+    path: '/pool-operations',
+    getParentRoute: () => AuthenticatedAdminAcademyRouteRoute,
   } as any)
 const AuthenticatedAdminAcademyPoolsRoute =
   AuthenticatedAdminAcademyPoolsRouteImport.update({
-    id: '/academy/pools',
-    path: '/academy/pools',
-    getParentRoute: () => AuthenticatedAdminRouteRoute,
+    id: '/pools',
+    path: '/pools',
+    getParentRoute: () => AuthenticatedAdminAcademyRouteRoute,
   } as any)
 const AuthenticatedAdminAcademyProcurementRoute =
   AuthenticatedAdminAcademyProcurementRouteImport.update({
-    id: '/academy/procurement',
-    path: '/academy/procurement',
-    getParentRoute: () => AuthenticatedAdminRouteRoute,
+    id: '/procurement',
+    path: '/procurement',
+    getParentRoute: () => AuthenticatedAdminAcademyRouteRoute,
   } as any)
 const AuthenticatedAdminAcademyQrAttendanceRoute =
   AuthenticatedAdminAcademyQrAttendanceRouteImport.update({
-    id: '/academy/qr-attendance',
-    path: '/academy/qr-attendance',
-    getParentRoute: () => AuthenticatedAdminRouteRoute,
+    id: '/qr-attendance',
+    path: '/qr-attendance',
+    getParentRoute: () => AuthenticatedAdminAcademyRouteRoute,
   } as any)
 const AuthenticatedAdminAcademyReceiptsRoute =
   AuthenticatedAdminAcademyReceiptsRouteImport.update({
-    id: '/academy/receipts',
-    path: '/academy/receipts',
-    getParentRoute: () => AuthenticatedAdminRouteRoute,
+    id: '/receipts',
+    path: '/receipts',
+    getParentRoute: () => AuthenticatedAdminAcademyRouteRoute,
   } as any)
 const AuthenticatedAdminAcademyReportsRoute =
   AuthenticatedAdminAcademyReportsRouteImport.update({
-    id: '/academy/reports',
-    path: '/academy/reports',
-    getParentRoute: () => AuthenticatedAdminRouteRoute,
+    id: '/reports',
+    path: '/reports',
+    getParentRoute: () => AuthenticatedAdminAcademyRouteRoute,
   } as any)
 const AuthenticatedAdminAcademyScheduleRoute =
   AuthenticatedAdminAcademyScheduleRouteImport.update({
-    id: '/academy/schedule',
-    path: '/academy/schedule',
-    getParentRoute: () => AuthenticatedAdminRouteRoute,
+    id: '/schedule',
+    path: '/schedule',
+    getParentRoute: () => AuthenticatedAdminAcademyRouteRoute,
   } as any)
 const AuthenticatedAdminAcademySettingsRoute =
   AuthenticatedAdminAcademySettingsRouteImport.update({
-    id: '/academy/settings',
-    path: '/academy/settings',
-    getParentRoute: () => AuthenticatedAdminRouteRoute,
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedAdminAcademyRouteRoute,
   } as any)
 const AuthenticatedAdminAcademySubscriptionsRoute =
   AuthenticatedAdminAcademySubscriptionsRouteImport.update({
-    id: '/academy/subscriptions',
-    path: '/academy/subscriptions',
-    getParentRoute: () => AuthenticatedAdminRouteRoute,
+    id: '/subscriptions',
+    path: '/subscriptions',
+    getParentRoute: () => AuthenticatedAdminAcademyRouteRoute,
   } as any)
 const AuthenticatedAdminSettingsThemeRoute =
   AuthenticatedAdminSettingsThemeRouteImport.update({
@@ -391,6 +398,7 @@ export interface FileRoutesByFullPath {
   '/partners': typeof PartnersRoute
   '/programs': typeof ProgramsRoute
   '/admin': typeof AuthenticatedAdminRouteRouteWithChildren
+  '/admin/academy': typeof AuthenticatedAdminAcademyRouteRouteWithChildren
   '/admin/branches': typeof AuthenticatedAdminBranchesRoute
   '/admin/courses': typeof AuthenticatedAdminCoursesRoute
   '/admin/media': typeof AuthenticatedAdminMediaRoute
@@ -504,6 +512,7 @@ export interface FileRoutesById {
   '/partners': typeof PartnersRoute
   '/programs': typeof ProgramsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteRouteWithChildren
+  '/_authenticated/admin/academy': typeof AuthenticatedAdminAcademyRouteRouteWithChildren
   '/_authenticated/admin/branches': typeof AuthenticatedAdminBranchesRoute
   '/_authenticated/admin/courses': typeof AuthenticatedAdminCoursesRoute
   '/_authenticated/admin/media': typeof AuthenticatedAdminMediaRoute
@@ -562,6 +571,7 @@ export interface FileRouteTypes {
     | '/partners'
     | '/programs'
     | '/admin'
+    | '/admin/academy'
     | '/admin/branches'
     | '/admin/courses'
     | '/admin/media'
@@ -674,6 +684,7 @@ export interface FileRouteTypes {
     | '/partners'
     | '/programs'
     | '/_authenticated/admin'
+    | '/_authenticated/admin/academy'
     | '/_authenticated/admin/branches'
     | '/_authenticated/admin/courses'
     | '/_authenticated/admin/media'
@@ -826,6 +837,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
+    '/_authenticated/admin/academy': {
+      id: '/_authenticated/admin/academy'
+      path: '/academy'
+      fullPath: '/admin/academy'
+      preLoaderRoute: typeof AuthenticatedAdminAcademyRouteRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/_authenticated/admin/branches': {
       id: '/_authenticated/admin/branches'
       path: '/branches'
@@ -912,206 +930,206 @@ declare module '@tanstack/react-router' {
     }
     '/_authenticated/admin/academy/': {
       id: '/_authenticated/admin/academy/'
-      path: '/academy'
+      path: '/'
       fullPath: '/admin/academy/'
       preLoaderRoute: typeof AuthenticatedAdminAcademyIndexRouteImport
-      parentRoute: typeof AuthenticatedAdminRouteRoute
+      parentRoute: typeof AuthenticatedAdminAcademyRouteRoute
     }
     '/_authenticated/admin/academy/ai-agents': {
       id: '/_authenticated/admin/academy/ai-agents'
-      path: '/academy/ai-agents'
+      path: '/ai-agents'
       fullPath: '/admin/academy/ai-agents'
       preLoaderRoute: typeof AuthenticatedAdminAcademyAiAgentsRouteImport
-      parentRoute: typeof AuthenticatedAdminRouteRoute
+      parentRoute: typeof AuthenticatedAdminAcademyRouteRoute
     }
     '/_authenticated/admin/academy/analytics': {
       id: '/_authenticated/admin/academy/analytics'
-      path: '/academy/analytics'
+      path: '/analytics'
       fullPath: '/admin/academy/analytics'
       preLoaderRoute: typeof AuthenticatedAdminAcademyAnalyticsRouteImport
-      parentRoute: typeof AuthenticatedAdminRouteRoute
+      parentRoute: typeof AuthenticatedAdminAcademyRouteRoute
     }
     '/_authenticated/admin/academy/assessments': {
       id: '/_authenticated/admin/academy/assessments'
-      path: '/academy/assessments'
+      path: '/assessments'
       fullPath: '/admin/academy/assessments'
       preLoaderRoute: typeof AuthenticatedAdminAcademyAssessmentsRouteImport
-      parentRoute: typeof AuthenticatedAdminRouteRoute
+      parentRoute: typeof AuthenticatedAdminAcademyRouteRoute
     }
     '/_authenticated/admin/academy/attendance': {
       id: '/_authenticated/admin/academy/attendance'
-      path: '/academy/attendance'
+      path: '/attendance'
       fullPath: '/admin/academy/attendance'
       preLoaderRoute: typeof AuthenticatedAdminAcademyAttendanceRouteImport
-      parentRoute: typeof AuthenticatedAdminRouteRoute
+      parentRoute: typeof AuthenticatedAdminAcademyRouteRoute
     }
     '/_authenticated/admin/academy/branch-reports': {
       id: '/_authenticated/admin/academy/branch-reports'
-      path: '/academy/branch-reports'
+      path: '/branch-reports'
       fullPath: '/admin/academy/branch-reports'
       preLoaderRoute: typeof AuthenticatedAdminAcademyBranchReportsRouteImport
-      parentRoute: typeof AuthenticatedAdminRouteRoute
+      parentRoute: typeof AuthenticatedAdminAcademyRouteRoute
     }
     '/_authenticated/admin/academy/branches': {
       id: '/_authenticated/admin/academy/branches'
-      path: '/academy/branches'
+      path: '/branches'
       fullPath: '/admin/academy/branches'
       preLoaderRoute: typeof AuthenticatedAdminAcademyBranchesRouteImport
-      parentRoute: typeof AuthenticatedAdminRouteRoute
+      parentRoute: typeof AuthenticatedAdminAcademyRouteRoute
     }
     '/_authenticated/admin/academy/capacity': {
       id: '/_authenticated/admin/academy/capacity'
-      path: '/academy/capacity'
+      path: '/capacity'
       fullPath: '/admin/academy/capacity'
       preLoaderRoute: typeof AuthenticatedAdminAcademyCapacityRouteImport
-      parentRoute: typeof AuthenticatedAdminRouteRoute
+      parentRoute: typeof AuthenticatedAdminAcademyRouteRoute
     }
     '/_authenticated/admin/academy/clients': {
       id: '/_authenticated/admin/academy/clients'
-      path: '/academy/clients'
+      path: '/clients'
       fullPath: '/admin/academy/clients'
       preLoaderRoute: typeof AuthenticatedAdminAcademyClientsRouteImport
-      parentRoute: typeof AuthenticatedAdminRouteRoute
+      parentRoute: typeof AuthenticatedAdminAcademyRouteRoute
     }
     '/_authenticated/admin/academy/coaches': {
       id: '/_authenticated/admin/academy/coaches'
-      path: '/academy/coaches'
+      path: '/coaches'
       fullPath: '/admin/academy/coaches'
       preLoaderRoute: typeof AuthenticatedAdminAcademyCoachesRouteImport
-      parentRoute: typeof AuthenticatedAdminRouteRoute
+      parentRoute: typeof AuthenticatedAdminAcademyRouteRoute
     }
     '/_authenticated/admin/academy/finance': {
       id: '/_authenticated/admin/academy/finance'
-      path: '/academy/finance'
+      path: '/finance'
       fullPath: '/admin/academy/finance'
       preLoaderRoute: typeof AuthenticatedAdminAcademyFinanceRouteImport
-      parentRoute: typeof AuthenticatedAdminRouteRoute
+      parentRoute: typeof AuthenticatedAdminAcademyRouteRoute
     }
     '/_authenticated/admin/academy/groups': {
       id: '/_authenticated/admin/academy/groups'
-      path: '/academy/groups'
+      path: '/groups'
       fullPath: '/admin/academy/groups'
       preLoaderRoute: typeof AuthenticatedAdminAcademyGroupsRouteImport
-      parentRoute: typeof AuthenticatedAdminRouteRoute
+      parentRoute: typeof AuthenticatedAdminAcademyRouteRoute
     }
     '/_authenticated/admin/academy/hr': {
       id: '/_authenticated/admin/academy/hr'
-      path: '/academy/hr'
+      path: '/hr'
       fullPath: '/admin/academy/hr'
       preLoaderRoute: typeof AuthenticatedAdminAcademyHrRouteImport
-      parentRoute: typeof AuthenticatedAdminRouteRoute
+      parentRoute: typeof AuthenticatedAdminAcademyRouteRoute
     }
     '/_authenticated/admin/academy/hr-reports': {
       id: '/_authenticated/admin/academy/hr-reports'
-      path: '/academy/hr-reports'
+      path: '/hr-reports'
       fullPath: '/admin/academy/hr-reports'
       preLoaderRoute: typeof AuthenticatedAdminAcademyHrReportsRouteImport
-      parentRoute: typeof AuthenticatedAdminRouteRoute
+      parentRoute: typeof AuthenticatedAdminAcademyRouteRoute
     }
     '/_authenticated/admin/academy/inventory': {
       id: '/_authenticated/admin/academy/inventory'
-      path: '/academy/inventory'
+      path: '/inventory'
       fullPath: '/admin/academy/inventory'
       preLoaderRoute: typeof AuthenticatedAdminAcademyInventoryRouteImport
-      parentRoute: typeof AuthenticatedAdminRouteRoute
+      parentRoute: typeof AuthenticatedAdminAcademyRouteRoute
     }
     '/_authenticated/admin/academy/lane-log': {
       id: '/_authenticated/admin/academy/lane-log'
-      path: '/academy/lane-log'
+      path: '/lane-log'
       fullPath: '/admin/academy/lane-log'
       preLoaderRoute: typeof AuthenticatedAdminAcademyLaneLogRouteImport
-      parentRoute: typeof AuthenticatedAdminRouteRoute
+      parentRoute: typeof AuthenticatedAdminAcademyRouteRoute
     }
     '/_authenticated/admin/academy/lanes': {
       id: '/_authenticated/admin/academy/lanes'
-      path: '/academy/lanes'
+      path: '/lanes'
       fullPath: '/admin/academy/lanes'
       preLoaderRoute: typeof AuthenticatedAdminAcademyLanesRouteImport
-      parentRoute: typeof AuthenticatedAdminRouteRoute
+      parentRoute: typeof AuthenticatedAdminAcademyRouteRoute
     }
     '/_authenticated/admin/academy/leads': {
       id: '/_authenticated/admin/academy/leads'
-      path: '/academy/leads'
+      path: '/leads'
       fullPath: '/admin/academy/leads'
       preLoaderRoute: typeof AuthenticatedAdminAcademyLeadsRouteImport
-      parentRoute: typeof AuthenticatedAdminRouteRoute
+      parentRoute: typeof AuthenticatedAdminAcademyRouteRoute
     }
     '/_authenticated/admin/academy/maintenance': {
       id: '/_authenticated/admin/academy/maintenance'
-      path: '/academy/maintenance'
+      path: '/maintenance'
       fullPath: '/admin/academy/maintenance'
       preLoaderRoute: typeof AuthenticatedAdminAcademyMaintenanceRouteImport
-      parentRoute: typeof AuthenticatedAdminRouteRoute
+      parentRoute: typeof AuthenticatedAdminAcademyRouteRoute
     }
     '/_authenticated/admin/academy/permissions': {
       id: '/_authenticated/admin/academy/permissions'
-      path: '/academy/permissions'
+      path: '/permissions'
       fullPath: '/admin/academy/permissions'
       preLoaderRoute: typeof AuthenticatedAdminAcademyPermissionsRouteImport
-      parentRoute: typeof AuthenticatedAdminRouteRoute
+      parentRoute: typeof AuthenticatedAdminAcademyRouteRoute
     }
     '/_authenticated/admin/academy/pool-operations': {
       id: '/_authenticated/admin/academy/pool-operations'
-      path: '/academy/pool-operations'
+      path: '/pool-operations'
       fullPath: '/admin/academy/pool-operations'
       preLoaderRoute: typeof AuthenticatedAdminAcademyPoolOperationsRouteImport
-      parentRoute: typeof AuthenticatedAdminRouteRoute
+      parentRoute: typeof AuthenticatedAdminAcademyRouteRoute
     }
     '/_authenticated/admin/academy/pools': {
       id: '/_authenticated/admin/academy/pools'
-      path: '/academy/pools'
+      path: '/pools'
       fullPath: '/admin/academy/pools'
       preLoaderRoute: typeof AuthenticatedAdminAcademyPoolsRouteImport
-      parentRoute: typeof AuthenticatedAdminRouteRoute
+      parentRoute: typeof AuthenticatedAdminAcademyRouteRoute
     }
     '/_authenticated/admin/academy/procurement': {
       id: '/_authenticated/admin/academy/procurement'
-      path: '/academy/procurement'
+      path: '/procurement'
       fullPath: '/admin/academy/procurement'
       preLoaderRoute: typeof AuthenticatedAdminAcademyProcurementRouteImport
-      parentRoute: typeof AuthenticatedAdminRouteRoute
+      parentRoute: typeof AuthenticatedAdminAcademyRouteRoute
     }
     '/_authenticated/admin/academy/qr-attendance': {
       id: '/_authenticated/admin/academy/qr-attendance'
-      path: '/academy/qr-attendance'
+      path: '/qr-attendance'
       fullPath: '/admin/academy/qr-attendance'
       preLoaderRoute: typeof AuthenticatedAdminAcademyQrAttendanceRouteImport
-      parentRoute: typeof AuthenticatedAdminRouteRoute
+      parentRoute: typeof AuthenticatedAdminAcademyRouteRoute
     }
     '/_authenticated/admin/academy/receipts': {
       id: '/_authenticated/admin/academy/receipts'
-      path: '/academy/receipts'
+      path: '/receipts'
       fullPath: '/admin/academy/receipts'
       preLoaderRoute: typeof AuthenticatedAdminAcademyReceiptsRouteImport
-      parentRoute: typeof AuthenticatedAdminRouteRoute
+      parentRoute: typeof AuthenticatedAdminAcademyRouteRoute
     }
     '/_authenticated/admin/academy/reports': {
       id: '/_authenticated/admin/academy/reports'
-      path: '/academy/reports'
+      path: '/reports'
       fullPath: '/admin/academy/reports'
       preLoaderRoute: typeof AuthenticatedAdminAcademyReportsRouteImport
-      parentRoute: typeof AuthenticatedAdminRouteRoute
+      parentRoute: typeof AuthenticatedAdminAcademyRouteRoute
     }
     '/_authenticated/admin/academy/schedule': {
       id: '/_authenticated/admin/academy/schedule'
-      path: '/academy/schedule'
+      path: '/schedule'
       fullPath: '/admin/academy/schedule'
       preLoaderRoute: typeof AuthenticatedAdminAcademyScheduleRouteImport
-      parentRoute: typeof AuthenticatedAdminRouteRoute
+      parentRoute: typeof AuthenticatedAdminAcademyRouteRoute
     }
     '/_authenticated/admin/academy/settings': {
       id: '/_authenticated/admin/academy/settings'
-      path: '/academy/settings'
+      path: '/settings'
       fullPath: '/admin/academy/settings'
       preLoaderRoute: typeof AuthenticatedAdminAcademySettingsRouteImport
-      parentRoute: typeof AuthenticatedAdminRouteRoute
+      parentRoute: typeof AuthenticatedAdminAcademyRouteRoute
     }
     '/_authenticated/admin/academy/subscriptions': {
       id: '/_authenticated/admin/academy/subscriptions'
-      path: '/academy/subscriptions'
+      path: '/subscriptions'
       fullPath: '/admin/academy/subscriptions'
       preLoaderRoute: typeof AuthenticatedAdminAcademySubscriptionsRouteImport
-      parentRoute: typeof AuthenticatedAdminRouteRoute
+      parentRoute: typeof AuthenticatedAdminAcademyRouteRoute
     }
     '/_authenticated/admin/settings/theme': {
       id: '/_authenticated/admin/settings/theme'
@@ -1123,34 +1141,7 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface AuthenticatedAdminSettingsRouteChildren {
-  AuthenticatedAdminSettingsThemeRoute: typeof AuthenticatedAdminSettingsThemeRoute
-}
-
-const AuthenticatedAdminSettingsRouteChildren: AuthenticatedAdminSettingsRouteChildren =
-  {
-    AuthenticatedAdminSettingsThemeRoute: AuthenticatedAdminSettingsThemeRoute,
-  }
-
-const AuthenticatedAdminSettingsRouteWithChildren =
-  AuthenticatedAdminSettingsRoute._addFileChildren(
-    AuthenticatedAdminSettingsRouteChildren,
-  )
-
-interface AuthenticatedAdminRouteRouteChildren {
-  AuthenticatedAdminBranchesRoute: typeof AuthenticatedAdminBranchesRoute
-  AuthenticatedAdminCoursesRoute: typeof AuthenticatedAdminCoursesRoute
-  AuthenticatedAdminMediaRoute: typeof AuthenticatedAdminMediaRoute
-  AuthenticatedAdminNotificationsRoute: typeof AuthenticatedAdminNotificationsRoute
-  AuthenticatedAdminPartnersRoute: typeof AuthenticatedAdminPartnersRoute
-  AuthenticatedAdminPipelineRoute: typeof AuthenticatedAdminPipelineRoute
-  AuthenticatedAdminPostsRoute: typeof AuthenticatedAdminPostsRoute
-  AuthenticatedAdminReportsRoute: typeof AuthenticatedAdminReportsRoute
-  AuthenticatedAdminSeasonsRoute: typeof AuthenticatedAdminSeasonsRoute
-  AuthenticatedAdminSettingsRoute: typeof AuthenticatedAdminSettingsRouteWithChildren
-  AuthenticatedAdminSubmissionsRoute: typeof AuthenticatedAdminSubmissionsRoute
-  AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
-  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+interface AuthenticatedAdminAcademyRouteRouteChildren {
   AuthenticatedAdminAcademyAiAgentsRoute: typeof AuthenticatedAdminAcademyAiAgentsRoute
   AuthenticatedAdminAcademyAnalyticsRoute: typeof AuthenticatedAdminAcademyAnalyticsRoute
   AuthenticatedAdminAcademyAssessmentsRoute: typeof AuthenticatedAdminAcademyAssessmentsRoute
@@ -1182,22 +1173,8 @@ interface AuthenticatedAdminRouteRouteChildren {
   AuthenticatedAdminAcademyIndexRoute: typeof AuthenticatedAdminAcademyIndexRoute
 }
 
-const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren =
+const AuthenticatedAdminAcademyRouteRouteChildren: AuthenticatedAdminAcademyRouteRouteChildren =
   {
-    AuthenticatedAdminBranchesRoute: AuthenticatedAdminBranchesRoute,
-    AuthenticatedAdminCoursesRoute: AuthenticatedAdminCoursesRoute,
-    AuthenticatedAdminMediaRoute: AuthenticatedAdminMediaRoute,
-    AuthenticatedAdminNotificationsRoute: AuthenticatedAdminNotificationsRoute,
-    AuthenticatedAdminPartnersRoute: AuthenticatedAdminPartnersRoute,
-    AuthenticatedAdminPipelineRoute: AuthenticatedAdminPipelineRoute,
-    AuthenticatedAdminPostsRoute: AuthenticatedAdminPostsRoute,
-    AuthenticatedAdminReportsRoute: AuthenticatedAdminReportsRoute,
-    AuthenticatedAdminSeasonsRoute: AuthenticatedAdminSeasonsRoute,
-    AuthenticatedAdminSettingsRoute:
-      AuthenticatedAdminSettingsRouteWithChildren,
-    AuthenticatedAdminSubmissionsRoute: AuthenticatedAdminSubmissionsRoute,
-    AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
-    AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
     AuthenticatedAdminAcademyAiAgentsRoute:
       AuthenticatedAdminAcademyAiAgentsRoute,
     AuthenticatedAdminAcademyAnalyticsRoute:
@@ -1250,6 +1227,62 @@ const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren
     AuthenticatedAdminAcademySubscriptionsRoute:
       AuthenticatedAdminAcademySubscriptionsRoute,
     AuthenticatedAdminAcademyIndexRoute: AuthenticatedAdminAcademyIndexRoute,
+  }
+
+const AuthenticatedAdminAcademyRouteRouteWithChildren =
+  AuthenticatedAdminAcademyRouteRoute._addFileChildren(
+    AuthenticatedAdminAcademyRouteRouteChildren,
+  )
+
+interface AuthenticatedAdminSettingsRouteChildren {
+  AuthenticatedAdminSettingsThemeRoute: typeof AuthenticatedAdminSettingsThemeRoute
+}
+
+const AuthenticatedAdminSettingsRouteChildren: AuthenticatedAdminSettingsRouteChildren =
+  {
+    AuthenticatedAdminSettingsThemeRoute: AuthenticatedAdminSettingsThemeRoute,
+  }
+
+const AuthenticatedAdminSettingsRouteWithChildren =
+  AuthenticatedAdminSettingsRoute._addFileChildren(
+    AuthenticatedAdminSettingsRouteChildren,
+  )
+
+interface AuthenticatedAdminRouteRouteChildren {
+  AuthenticatedAdminAcademyRouteRoute: typeof AuthenticatedAdminAcademyRouteRouteWithChildren
+  AuthenticatedAdminBranchesRoute: typeof AuthenticatedAdminBranchesRoute
+  AuthenticatedAdminCoursesRoute: typeof AuthenticatedAdminCoursesRoute
+  AuthenticatedAdminMediaRoute: typeof AuthenticatedAdminMediaRoute
+  AuthenticatedAdminNotificationsRoute: typeof AuthenticatedAdminNotificationsRoute
+  AuthenticatedAdminPartnersRoute: typeof AuthenticatedAdminPartnersRoute
+  AuthenticatedAdminPipelineRoute: typeof AuthenticatedAdminPipelineRoute
+  AuthenticatedAdminPostsRoute: typeof AuthenticatedAdminPostsRoute
+  AuthenticatedAdminReportsRoute: typeof AuthenticatedAdminReportsRoute
+  AuthenticatedAdminSeasonsRoute: typeof AuthenticatedAdminSeasonsRoute
+  AuthenticatedAdminSettingsRoute: typeof AuthenticatedAdminSettingsRouteWithChildren
+  AuthenticatedAdminSubmissionsRoute: typeof AuthenticatedAdminSubmissionsRoute
+  AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+}
+
+const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren =
+  {
+    AuthenticatedAdminAcademyRouteRoute:
+      AuthenticatedAdminAcademyRouteRouteWithChildren,
+    AuthenticatedAdminBranchesRoute: AuthenticatedAdminBranchesRoute,
+    AuthenticatedAdminCoursesRoute: AuthenticatedAdminCoursesRoute,
+    AuthenticatedAdminMediaRoute: AuthenticatedAdminMediaRoute,
+    AuthenticatedAdminNotificationsRoute: AuthenticatedAdminNotificationsRoute,
+    AuthenticatedAdminPartnersRoute: AuthenticatedAdminPartnersRoute,
+    AuthenticatedAdminPipelineRoute: AuthenticatedAdminPipelineRoute,
+    AuthenticatedAdminPostsRoute: AuthenticatedAdminPostsRoute,
+    AuthenticatedAdminReportsRoute: AuthenticatedAdminReportsRoute,
+    AuthenticatedAdminSeasonsRoute: AuthenticatedAdminSeasonsRoute,
+    AuthenticatedAdminSettingsRoute:
+      AuthenticatedAdminSettingsRouteWithChildren,
+    AuthenticatedAdminSubmissionsRoute: AuthenticatedAdminSubmissionsRoute,
+    AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
+    AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
   }
 
 const AuthenticatedAdminRouteRouteWithChildren =
