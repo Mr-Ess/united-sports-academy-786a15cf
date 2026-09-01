@@ -2,8 +2,9 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
+import { OPEN_ACCESS } from "@/lib/access";
 
-type AppRole = Database["public"]["Enums"]["academy_role"];
+export type AppRole = Database["public"]["Enums"]["academy_role"];
 type Branch = { id: string; name: string; name_ar: string | null; settings: any };
 type Role = { role: AppRole; branch_id: string | null };
 
@@ -24,6 +25,8 @@ interface SessionCtx {
 
 const Ctx = createContext<SessionCtx | null>(null);
 const LS_BRANCH = "legends-current-branch";
+
+const OPEN_ROLES: Role[] = [{ role: "super_admin", branch_id: null }];
 
 export function SessionProvider({ children }: { children: ReactNode }) {
   const qc = useQueryClient();
@@ -46,12 +49,16 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       setEmail(session?.user.email ?? null);
       if (event !== "SIGNED_OUT") qc.invalidateQueries();
     });
-    return () => { mounted = false; sub.subscription.unsubscribe(); };
+    return () => {
+      mounted = false;
+      sub.subscription.unsubscribe();
+    };
   }, [qc]);
 
+  // Roles come from ac_user_roles. In open-access mode everyone acts as super_admin.
   const rolesQ = useQuery({
-    queryKey: ["my-roles", userId],
-    enabled: !!userId,
+    queryKey: ["ac-my-roles", userId],
+    enabled: !!userId && !OPEN_ACCESS,
     queryFn: async (): Promise<Role[]> => {
       const { data, error } = await supabase.from("ac_user_roles").select("role, branch_id");
       if (error) throw error;
@@ -59,9 +66,12 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     },
   });
 
+  const roles: Role[] = OPEN_ACCESS ? OPEN_ROLES : (rolesQ.data ?? []);
+  const isSuperAdmin = OPEN_ACCESS || roles.some((r) => r.role === "super_admin");
+
   const branchesQ = useQuery({
-    queryKey: ["my-branches", userId, (rolesQ.data ?? []).map(r => `${r.role}:${r.branch_id ?? "g"}`).join(",")],
-    enabled: !!userId && !rolesQ.isLoading,
+    queryKey: ["ac-my-branches", userId, roles.map((r) => `${r.role}:${r.branch_id ?? "g"}`).join(",")],
+    enabled: OPEN_ACCESS || (!!userId && !rolesQ.isLoading),
     queryFn: async (): Promise<Branch[]> => {
       const { data, error } = await supabase
         .from("branches")
@@ -69,17 +79,12 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         .order("name");
       if (error) throw error;
       const all = (data ?? []) as Branch[];
-      const roles = rolesQ.data ?? [];
-      const isSuper = roles.some((r) => r.role === "super_admin");
-      if (isSuper) return all;
-      // Restrict to the branches the user is explicitly assigned to via user_roles.
-      // Branch-scoped role rows carry branch_id; global rows (null) don't grant branch access on their own.
+      if (isSuperAdmin) return all;
       const allowed = new Set(roles.map((r) => r.branch_id).filter((x): x is string => !!x));
       return allowed.size === 0 ? [] : all.filter((b) => allowed.has(b.id));
     },
   });
 
-  // Choose initial branch
   useEffect(() => {
     if (!branchesQ.data || branchesQ.data.length === 0) return;
     const stored = typeof window !== "undefined" ? window.localStorage.getItem(LS_BRANCH) : null;
@@ -90,22 +95,27 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
   const setCurrentBranchId = (id: string) => {
     _setCurrentBranchId(id);
-    try { window.localStorage.setItem(LS_BRANCH, id); } catch {}
+    try {
+      window.localStorage.setItem(LS_BRANCH, id);
+    } catch {}
   };
 
-  const roles = rolesQ.data ?? [];
-  const isSuperAdmin = roles.some((r) => r.role === "super_admin");
-  const assignedBranchIds = Array.from(new Set(roles.map((r) => r.branch_id).filter((x): x is string => !!x)));
+  const assignedBranchIds = Array.from(
+    new Set(roles.map((r) => r.branch_id).filter((x): x is string => !!x)),
+  );
   const canAccessBranch = (branchId: string | null | undefined) =>
     isSuperAdmin || (!!branchId && assignedBranchIds.includes(branchId));
   const hasRole = (role: AppRole, branchId?: string | null) =>
-    isSuperAdmin || roles.some((r) => r.role === role && (!branchId || !r.branch_id || r.branch_id === branchId));
+    isSuperAdmin ||
+    roles.some((r) => r.role === role && (!branchId || !r.branch_id || r.branch_id === branchId));
 
   const signOut = async () => {
     await qc.cancelQueries();
     qc.clear();
     await supabase.auth.signOut();
-    try { window.localStorage.removeItem(LS_BRANCH); } catch {}
+    try {
+      window.localStorage.removeItem(LS_BRANCH);
+    } catch {}
     window.location.replace("/auth");
   };
 
@@ -120,7 +130,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     assignedBranchIds,
     canAccessBranch,
     hasRole,
-    loading: bootstrapping || rolesQ.isLoading || branchesQ.isLoading,
+    loading: (OPEN_ACCESS ? false : bootstrapping || rolesQ.isLoading) || branchesQ.isLoading,
     signOut,
   };
 
