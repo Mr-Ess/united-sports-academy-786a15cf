@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { openAdminAccess as requireSupabaseAuth } from "@/lib/open-admin-middleware";
 
 export const getAgentWebhookInfo = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
