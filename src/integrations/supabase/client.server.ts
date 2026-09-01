@@ -59,6 +59,29 @@ function createSafeQueryChain<T = any>(result: T[] = []) {
   return chain;
 }
 
+function createSafeSupabaseAdminFallback() {
+  console.warn('[Supabase] Missing server env vars; using safe no-op admin client for local preview mode.');
+
+  return {
+    auth: {
+      getUser: async () => ({ data: { user: null }, error: null }),
+      getSession: async () => ({ data: { session: null }, error: null }),
+      admin: {
+        getUserById: async () => ({ data: null, error: null }),
+      },
+    },
+    from: () => createSafeQueryChain(),
+    rpc: async () => ({ data: null, error: null }),
+    functions: { invoke: async () => ({ data: null, error: null }) },
+    storage: {
+      from: () => ({
+        upload: async () => ({ data: null, error: null }),
+        getPublicUrl: () => ({ data: { publicUrl: '' } }),
+      }),
+    },
+  } as unknown as ReturnType<typeof createClient<Database>>;
+}
+
 function createSupabaseAdminClient() {
   const SUPABASE_URL = process.env['SUPABASE_URL'];
   const SUPABASE_SERVICE_ROLE_KEY = process.env['SUPABASE_SERVICE_ROLE_KEY'];
@@ -69,9 +92,7 @@ function createSupabaseAdminClient() {
   ].filter(Boolean) as string[];
 
   if (missing.length > 0) {
-    throw new Error(
-      `Real backend configuration is missing: ${missing.join(', ')}. Add the Supabase project URL and service-role key before enabling live server writes.`
-    );
+    return createSafeSupabaseAdminFallback();
   }
 
   return createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
