@@ -26,6 +26,13 @@ interface SessionCtx {
 const Ctx = createContext<SessionCtx | null>(null);
 const LS_BRANCH = "legends-current-branch";
 
+const FALLBACK_BRANCHES: Branch[] = [
+  { id: "main", name: "Main Branch — Downtown HQ", name_ar: "الفرع الرئيسي — وسط المدينة", settings: {} },
+  { id: "west", name: "West City Branch", name_ar: "فرع غرب المدينة", settings: {} },
+  { id: "coastal", name: "Coastal Campus", name_ar: "الحرم الساحلي", settings: {} },
+  { id: "east", name: "East Hub", name_ar: "المركز الشرقي", settings: {} },
+];
+
 const OPEN_ROLES: Role[] = [{ role: "super_admin", branch_id: null }];
 
 export function SessionProvider({ children }: { children: ReactNode }) {
@@ -73,25 +80,36 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     queryKey: ["ac-my-branches", userId, roles.map((r) => `${r.role}:${r.branch_id ?? "g"}`).join(",")],
     enabled: OPEN_ACCESS || (!!userId && !rolesQ.isLoading),
     queryFn: async (): Promise<Branch[]> => {
-      const { data, error } = await supabase
-        .from("branches")
-        .select("id, name, name_ar, settings")
-        .order("name");
-      if (error) throw error;
-      const all = (data ?? []) as Branch[];
-      if (isSuperAdmin) return all;
-      const allowed = new Set(roles.map((r) => r.branch_id).filter((x): x is string => !!x));
-      return allowed.size === 0 ? [] : all.filter((b) => allowed.has(b.id));
+      try {
+        const { data, error } = await supabase
+          .from("branches")
+          .select("id, name, name_ar, settings")
+          .order("name");
+        if (error) throw error;
+
+        const all = (data ?? []) as Branch[];
+        if (all.length > 0) {
+          if (isSuperAdmin) return all;
+          const allowed = new Set(roles.map((r) => r.branch_id).filter((x): x is string => !!x));
+          return allowed.size === 0 ? [] : all.filter((b) => allowed.has(b.id));
+        }
+
+        return OPEN_ACCESS ? FALLBACK_BRANCHES : [];
+      } catch {
+        return OPEN_ACCESS ? FALLBACK_BRANCHES : [];
+      }
     },
   });
 
+  const resolvedBranches = branchesQ.data && branchesQ.data.length > 0 ? branchesQ.data : OPEN_ACCESS ? FALLBACK_BRANCHES : [];
+
   useEffect(() => {
-    if (!branchesQ.data || branchesQ.data.length === 0) return;
+    if (!resolvedBranches.length) return;
     const stored = typeof window !== "undefined" ? window.localStorage.getItem(LS_BRANCH) : null;
-    const exists = stored && branchesQ.data.some((b) => b.id === stored);
-    const next = exists ? stored! : branchesQ.data[0].id;
-    _setCurrentBranchId(next);
-  }, [branchesQ.data]);
+    const exists = stored && resolvedBranches.some((b) => b.id === stored);
+    const next = exists ? stored! : resolvedBranches[0].id;
+    if (currentBranchId !== next) _setCurrentBranchId(next);
+  }, [resolvedBranches, currentBranchId]);
 
   const setCurrentBranchId = (id: string) => {
     _setCurrentBranchId(id);
@@ -123,7 +141,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     userId,
     email,
     roles,
-    branches: branchesQ.data ?? [],
+    branches: resolvedBranches,
     currentBranchId,
     setCurrentBranchId,
     isSuperAdmin,

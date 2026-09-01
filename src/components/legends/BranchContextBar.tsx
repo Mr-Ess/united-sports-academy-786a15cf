@@ -41,7 +41,8 @@ export function BranchContextBar() {
     );
   }
 
-  const current = branches.find((b) => b.id === currentBranchId);
+  const selectValue = currentBranchId ?? branches[0].id;
+  const current = branches.find((b) => b.id === selectValue) ?? branches[0];
   const currentName = current ? (lang === "ar" ? current.name_ar || current.name : current.name) : "—";
 
   return (
@@ -64,10 +65,10 @@ export function BranchContextBar() {
             ? "كل سجل جديد سيتم ربطه بهذا الفرع"
             : "Every new record will be linked to this branch"}
         </span>
-        <Select value={currentBranchId ?? undefined} onValueChange={setCurrentBranchId}>
+        <Select value={selectValue} onValueChange={setCurrentBranchId}>
           <SelectTrigger className="h-8 text-xs gap-1.5 min-w-[160px] bg-background/50 border-teal/40">
             <ChevronsUpDown className="h-3.5 w-3.5 text-cyan-glow shrink-0" />
-            <SelectValue />
+            <SelectValue placeholder={lang === "ar" ? "اختر الفرع" : "Select branch"} />
           </SelectTrigger>
           <SelectContent>
             {branches.map((b) => (

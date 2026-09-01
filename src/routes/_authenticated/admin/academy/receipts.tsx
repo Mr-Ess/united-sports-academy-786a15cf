@@ -262,19 +262,21 @@ function ReceiptsPage() {
     <div className="space-y-5">
       <FinanceSubNav />
 
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-[#0b1723]/80 p-3 shadow-[0_0_0_1px_rgba(45,212,191,0.08)] backdrop-blur-sm">
         <div className="flex items-center gap-3">
-          <div className="rounded-xl bg-teal/15 p-2.5 ring-1 ring-teal/30"><ReceiptIcon className="h-5 w-5 text-cyan-glow" /></div>
+          <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500/20 to-teal-500/15 ring-1 ring-teal/30">
+            <ReceiptIcon className="h-5 w-5 text-cyan-glow" />
+          </div>
           <div>
-            <h2 className="text-xl font-bold">{t("rec.title")}</h2>
-            <p className="text-xs text-muted-foreground">{filtered.length} · EGP {totalAmt.toLocaleString()}</p>
+            <h2 className="text-3xl font-black tracking-tight text-white">{t("rec.title")}</h2>
+            <p className="text-xs text-slate-300">{filtered.length} · EGP {totalAmt.toLocaleString()}</p>
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 min-w-0">
+        <div className="ml-auto flex flex-wrap items-center justify-end gap-2 min-w-0">
           {branches.length > 1 && (
             <Select value={currentBranchId ?? ""} onValueChange={setCurrentBranchId}>
-              <SelectTrigger className="w-[180px] min-w-[180px] bg-background/30 shrink-0">
+              <SelectTrigger className="h-12 w-[200px] min-w-[200px] rounded-xl border border-white/10 bg-slate-900/70 text-sm text-slate-100 shadow-inner shadow-black/20">
                 <SelectValue placeholder={t("c.branch") ?? "Branch"} />
               </SelectTrigger>
               <SelectContent>
@@ -290,7 +292,7 @@ function ReceiptsPage() {
               <Button
                 onClick={() => start()}
                 disabled={!currentBranchId}
-                className="w-[170px] min-w-[170px] shrink-0 bg-gradient-to-r from-teal to-cyan-glow text-primary-foreground shadow-lg shadow-cyan-500/20 hover:opacity-90"
+                className="h-12 min-w-[190px] rounded-xl bg-gradient-to-r from-[#3ec6c2] via-[#23b0d8] to-[#17a5b8] px-5 text-base font-bold text-white shadow-[0_10px_20px_rgba(27,188,196,0.35)] transition-all hover:scale-[1.01] hover:shadow-[0_14px_24px_rgba(27,188,196,0.45)] disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <Plus className="h-4 w-4" /> {t("rec.new")}
               </Button>
