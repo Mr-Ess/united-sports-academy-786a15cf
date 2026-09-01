@@ -35,34 +35,35 @@ import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authen
 import { Route as AuthenticatedAdminSubmissionsRouteImport } from './routes/_authenticated/admin/submissions'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin/users'
 import { Route as AuthenticatedAdminAcademyIndexRouteImport } from './routes/_authenticated/admin/academy/index'
+import { Route as AuthenticatedAdminAcademyAiAgentsRouteImport } from './routes/_authenticated/admin/academy/ai-agents'
 import { Route as AuthenticatedAdminAcademyAnalyticsRouteImport } from './routes/_authenticated/admin/academy/analytics'
 import { Route as AuthenticatedAdminAcademyAssessmentsRouteImport } from './routes/_authenticated/admin/academy/assessments'
 import { Route as AuthenticatedAdminAcademyAttendanceRouteImport } from './routes/_authenticated/admin/academy/attendance'
 import { Route as AuthenticatedAdminAcademyBranchReportsRouteImport } from './routes/_authenticated/admin/academy/branch-reports'
 import { Route as AuthenticatedAdminAcademyBranchesRouteImport } from './routes/_authenticated/admin/academy/branches'
+import { Route as AuthenticatedAdminAcademyCapacityRouteImport } from './routes/_authenticated/admin/academy/capacity'
 import { Route as AuthenticatedAdminAcademyClientsRouteImport } from './routes/_authenticated/admin/academy/clients'
 import { Route as AuthenticatedAdminAcademyCoachesRouteImport } from './routes/_authenticated/admin/academy/coaches'
-import { Route as AuthenticatedAdminAcademyFinanceRouteRouteImport } from './routes/_authenticated/admin/academy/finance/route'
-import { Route as AuthenticatedAdminAcademyHrRouteRouteImport } from './routes/_authenticated/admin/academy/hr/route'
+import { Route as AuthenticatedAdminAcademyFinanceRouteImport } from './routes/_authenticated/admin/academy/finance'
+import { Route as AuthenticatedAdminAcademyGroupsRouteImport } from './routes/_authenticated/admin/academy/groups'
+import { Route as AuthenticatedAdminAcademyHrRouteImport } from './routes/_authenticated/admin/academy/hr'
 import { Route as AuthenticatedAdminAcademyHrReportsRouteImport } from './routes/_authenticated/admin/academy/hr-reports'
+import { Route as AuthenticatedAdminAcademyInventoryRouteImport } from './routes/_authenticated/admin/academy/inventory'
 import { Route as AuthenticatedAdminAcademyLaneLogRouteImport } from './routes/_authenticated/admin/academy/lane-log'
+import { Route as AuthenticatedAdminAcademyLanesRouteImport } from './routes/_authenticated/admin/academy/lanes'
 import { Route as AuthenticatedAdminAcademyLeadsRouteImport } from './routes/_authenticated/admin/academy/leads'
+import { Route as AuthenticatedAdminAcademyMaintenanceRouteImport } from './routes/_authenticated/admin/academy/maintenance'
 import { Route as AuthenticatedAdminAcademyPermissionsRouteImport } from './routes/_authenticated/admin/academy/permissions'
 import { Route as AuthenticatedAdminAcademyPoolOperationsRouteImport } from './routes/_authenticated/admin/academy/pool-operations'
+import { Route as AuthenticatedAdminAcademyPoolsRouteImport } from './routes/_authenticated/admin/academy/pools'
+import { Route as AuthenticatedAdminAcademyProcurementRouteImport } from './routes/_authenticated/admin/academy/procurement'
 import { Route as AuthenticatedAdminAcademyQrAttendanceRouteImport } from './routes/_authenticated/admin/academy/qr-attendance'
+import { Route as AuthenticatedAdminAcademyReceiptsRouteImport } from './routes/_authenticated/admin/academy/receipts'
 import { Route as AuthenticatedAdminAcademyReportsRouteImport } from './routes/_authenticated/admin/academy/reports'
 import { Route as AuthenticatedAdminAcademyScheduleRouteImport } from './routes/_authenticated/admin/academy/schedule'
 import { Route as AuthenticatedAdminAcademySettingsRouteImport } from './routes/_authenticated/admin/academy/settings'
+import { Route as AuthenticatedAdminAcademySubscriptionsRouteImport } from './routes/_authenticated/admin/academy/subscriptions'
 import { Route as AuthenticatedAdminSettingsThemeRouteImport } from './routes/_authenticated/admin/settings.theme'
-import { Route as AuthenticatedAdminAcademyFinanceIndexRouteImport } from './routes/_authenticated/admin/academy/finance/index'
-import { Route as AuthenticatedAdminAcademyFinanceInvoicingRouteImport } from './routes/_authenticated/admin/academy/finance/invoicing'
-import { Route as AuthenticatedAdminAcademyFinanceLedgerRouteImport } from './routes/_authenticated/admin/academy/finance/ledger'
-import { Route as AuthenticatedAdminAcademyFinanceReceiptsRouteImport } from './routes/_authenticated/admin/academy/finance/receipts'
-import { Route as AuthenticatedAdminAcademyFinanceSubscriptionsRouteImport } from './routes/_authenticated/admin/academy/finance/subscriptions'
-import { Route as AuthenticatedAdminAcademyHrIndexRouteImport } from './routes/_authenticated/admin/academy/hr/index'
-import { Route as AuthenticatedAdminAcademyHrAttendanceRouteImport } from './routes/_authenticated/admin/academy/hr/attendance'
-import { Route as AuthenticatedAdminAcademyHrLeavesRouteImport } from './routes/_authenticated/admin/academy/hr/leaves'
-import { Route as AuthenticatedAdminAcademyHrPayrollRouteImport } from './routes/_authenticated/admin/academy/hr/payroll'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -203,6 +204,12 @@ const AuthenticatedAdminAcademyIndexRoute =
     path: '/academy/',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
+const AuthenticatedAdminAcademyAiAgentsRoute =
+  AuthenticatedAdminAcademyAiAgentsRouteImport.update({
+    id: '/academy/ai-agents',
+    path: '/academy/ai-agents',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 const AuthenticatedAdminAcademyAnalyticsRoute =
   AuthenticatedAdminAcademyAnalyticsRouteImport.update({
     id: '/academy/analytics',
@@ -233,6 +240,12 @@ const AuthenticatedAdminAcademyBranchesRoute =
     path: '/academy/branches',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
+const AuthenticatedAdminAcademyCapacityRoute =
+  AuthenticatedAdminAcademyCapacityRouteImport.update({
+    id: '/academy/capacity',
+    path: '/academy/capacity',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 const AuthenticatedAdminAcademyClientsRoute =
   AuthenticatedAdminAcademyClientsRouteImport.update({
     id: '/academy/clients',
@@ -245,14 +258,20 @@ const AuthenticatedAdminAcademyCoachesRoute =
     path: '/academy/coaches',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
-const AuthenticatedAdminAcademyFinanceRouteRoute =
-  AuthenticatedAdminAcademyFinanceRouteRouteImport.update({
+const AuthenticatedAdminAcademyFinanceRoute =
+  AuthenticatedAdminAcademyFinanceRouteImport.update({
     id: '/academy/finance',
     path: '/academy/finance',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
-const AuthenticatedAdminAcademyHrRouteRoute =
-  AuthenticatedAdminAcademyHrRouteRouteImport.update({
+const AuthenticatedAdminAcademyGroupsRoute =
+  AuthenticatedAdminAcademyGroupsRouteImport.update({
+    id: '/academy/groups',
+    path: '/academy/groups',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminAcademyHrRoute =
+  AuthenticatedAdminAcademyHrRouteImport.update({
     id: '/academy/hr',
     path: '/academy/hr',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
@@ -263,16 +282,34 @@ const AuthenticatedAdminAcademyHrReportsRoute =
     path: '/academy/hr-reports',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
+const AuthenticatedAdminAcademyInventoryRoute =
+  AuthenticatedAdminAcademyInventoryRouteImport.update({
+    id: '/academy/inventory',
+    path: '/academy/inventory',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 const AuthenticatedAdminAcademyLaneLogRoute =
   AuthenticatedAdminAcademyLaneLogRouteImport.update({
     id: '/academy/lane-log',
     path: '/academy/lane-log',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
+const AuthenticatedAdminAcademyLanesRoute =
+  AuthenticatedAdminAcademyLanesRouteImport.update({
+    id: '/academy/lanes',
+    path: '/academy/lanes',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 const AuthenticatedAdminAcademyLeadsRoute =
   AuthenticatedAdminAcademyLeadsRouteImport.update({
     id: '/academy/leads',
     path: '/academy/leads',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminAcademyMaintenanceRoute =
+  AuthenticatedAdminAcademyMaintenanceRouteImport.update({
+    id: '/academy/maintenance',
+    path: '/academy/maintenance',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
 const AuthenticatedAdminAcademyPermissionsRoute =
@@ -287,10 +324,28 @@ const AuthenticatedAdminAcademyPoolOperationsRoute =
     path: '/academy/pool-operations',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
+const AuthenticatedAdminAcademyPoolsRoute =
+  AuthenticatedAdminAcademyPoolsRouteImport.update({
+    id: '/academy/pools',
+    path: '/academy/pools',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminAcademyProcurementRoute =
+  AuthenticatedAdminAcademyProcurementRouteImport.update({
+    id: '/academy/procurement',
+    path: '/academy/procurement',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 const AuthenticatedAdminAcademyQrAttendanceRoute =
   AuthenticatedAdminAcademyQrAttendanceRouteImport.update({
     id: '/academy/qr-attendance',
     path: '/academy/qr-attendance',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminAcademyReceiptsRoute =
+  AuthenticatedAdminAcademyReceiptsRouteImport.update({
+    id: '/academy/receipts',
+    path: '/academy/receipts',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
 const AuthenticatedAdminAcademyReportsRoute =
@@ -311,65 +366,17 @@ const AuthenticatedAdminAcademySettingsRoute =
     path: '/academy/settings',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
+const AuthenticatedAdminAcademySubscriptionsRoute =
+  AuthenticatedAdminAcademySubscriptionsRouteImport.update({
+    id: '/academy/subscriptions',
+    path: '/academy/subscriptions',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 const AuthenticatedAdminSettingsThemeRoute =
   AuthenticatedAdminSettingsThemeRouteImport.update({
     id: '/theme',
     path: '/theme',
     getParentRoute: () => AuthenticatedAdminSettingsRoute,
-  } as any)
-const AuthenticatedAdminAcademyFinanceIndexRoute =
-  AuthenticatedAdminAcademyFinanceIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => AuthenticatedAdminAcademyFinanceRouteRoute,
-  } as any)
-const AuthenticatedAdminAcademyFinanceInvoicingRoute =
-  AuthenticatedAdminAcademyFinanceInvoicingRouteImport.update({
-    id: '/invoicing',
-    path: '/invoicing',
-    getParentRoute: () => AuthenticatedAdminAcademyFinanceRouteRoute,
-  } as any)
-const AuthenticatedAdminAcademyFinanceLedgerRoute =
-  AuthenticatedAdminAcademyFinanceLedgerRouteImport.update({
-    id: '/ledger',
-    path: '/ledger',
-    getParentRoute: () => AuthenticatedAdminAcademyFinanceRouteRoute,
-  } as any)
-const AuthenticatedAdminAcademyFinanceReceiptsRoute =
-  AuthenticatedAdminAcademyFinanceReceiptsRouteImport.update({
-    id: '/receipts',
-    path: '/receipts',
-    getParentRoute: () => AuthenticatedAdminAcademyFinanceRouteRoute,
-  } as any)
-const AuthenticatedAdminAcademyFinanceSubscriptionsRoute =
-  AuthenticatedAdminAcademyFinanceSubscriptionsRouteImport.update({
-    id: '/subscriptions',
-    path: '/subscriptions',
-    getParentRoute: () => AuthenticatedAdminAcademyFinanceRouteRoute,
-  } as any)
-const AuthenticatedAdminAcademyHrIndexRoute =
-  AuthenticatedAdminAcademyHrIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => AuthenticatedAdminAcademyHrRouteRoute,
-  } as any)
-const AuthenticatedAdminAcademyHrAttendanceRoute =
-  AuthenticatedAdminAcademyHrAttendanceRouteImport.update({
-    id: '/attendance',
-    path: '/attendance',
-    getParentRoute: () => AuthenticatedAdminAcademyHrRouteRoute,
-  } as any)
-const AuthenticatedAdminAcademyHrLeavesRoute =
-  AuthenticatedAdminAcademyHrLeavesRouteImport.update({
-    id: '/leaves',
-    path: '/leaves',
-    getParentRoute: () => AuthenticatedAdminAcademyHrRouteRoute,
-  } as any)
-const AuthenticatedAdminAcademyHrPayrollRoute =
-  AuthenticatedAdminAcademyHrPayrollRouteImport.update({
-    id: '/payroll',
-    path: '/payroll',
-    getParentRoute: () => AuthenticatedAdminAcademyHrRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -397,35 +404,36 @@ export interface FileRoutesByFullPath {
   '/admin/submissions': typeof AuthenticatedAdminSubmissionsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
-  '/admin/academy/finance': typeof AuthenticatedAdminAcademyFinanceRouteRouteWithChildren
-  '/admin/academy/hr': typeof AuthenticatedAdminAcademyHrRouteRouteWithChildren
+  '/admin/academy/ai-agents': typeof AuthenticatedAdminAcademyAiAgentsRoute
   '/admin/academy/analytics': typeof AuthenticatedAdminAcademyAnalyticsRoute
   '/admin/academy/assessments': typeof AuthenticatedAdminAcademyAssessmentsRoute
   '/admin/academy/attendance': typeof AuthenticatedAdminAcademyAttendanceRoute
   '/admin/academy/branch-reports': typeof AuthenticatedAdminAcademyBranchReportsRoute
   '/admin/academy/branches': typeof AuthenticatedAdminAcademyBranchesRoute
+  '/admin/academy/capacity': typeof AuthenticatedAdminAcademyCapacityRoute
   '/admin/academy/clients': typeof AuthenticatedAdminAcademyClientsRoute
   '/admin/academy/coaches': typeof AuthenticatedAdminAcademyCoachesRoute
+  '/admin/academy/finance': typeof AuthenticatedAdminAcademyFinanceRoute
+  '/admin/academy/groups': typeof AuthenticatedAdminAcademyGroupsRoute
+  '/admin/academy/hr': typeof AuthenticatedAdminAcademyHrRoute
   '/admin/academy/hr-reports': typeof AuthenticatedAdminAcademyHrReportsRoute
+  '/admin/academy/inventory': typeof AuthenticatedAdminAcademyInventoryRoute
   '/admin/academy/lane-log': typeof AuthenticatedAdminAcademyLaneLogRoute
+  '/admin/academy/lanes': typeof AuthenticatedAdminAcademyLanesRoute
   '/admin/academy/leads': typeof AuthenticatedAdminAcademyLeadsRoute
+  '/admin/academy/maintenance': typeof AuthenticatedAdminAcademyMaintenanceRoute
   '/admin/academy/permissions': typeof AuthenticatedAdminAcademyPermissionsRoute
   '/admin/academy/pool-operations': typeof AuthenticatedAdminAcademyPoolOperationsRoute
+  '/admin/academy/pools': typeof AuthenticatedAdminAcademyPoolsRoute
+  '/admin/academy/procurement': typeof AuthenticatedAdminAcademyProcurementRoute
   '/admin/academy/qr-attendance': typeof AuthenticatedAdminAcademyQrAttendanceRoute
+  '/admin/academy/receipts': typeof AuthenticatedAdminAcademyReceiptsRoute
   '/admin/academy/reports': typeof AuthenticatedAdminAcademyReportsRoute
   '/admin/academy/schedule': typeof AuthenticatedAdminAcademyScheduleRoute
   '/admin/academy/settings': typeof AuthenticatedAdminAcademySettingsRoute
+  '/admin/academy/subscriptions': typeof AuthenticatedAdminAcademySubscriptionsRoute
   '/admin/settings/theme': typeof AuthenticatedAdminSettingsThemeRoute
   '/admin/academy/': typeof AuthenticatedAdminAcademyIndexRoute
-  '/admin/academy/finance/invoicing': typeof AuthenticatedAdminAcademyFinanceInvoicingRoute
-  '/admin/academy/finance/ledger': typeof AuthenticatedAdminAcademyFinanceLedgerRoute
-  '/admin/academy/finance/receipts': typeof AuthenticatedAdminAcademyFinanceReceiptsRoute
-  '/admin/academy/finance/subscriptions': typeof AuthenticatedAdminAcademyFinanceSubscriptionsRoute
-  '/admin/academy/hr/attendance': typeof AuthenticatedAdminAcademyHrAttendanceRoute
-  '/admin/academy/hr/leaves': typeof AuthenticatedAdminAcademyHrLeavesRoute
-  '/admin/academy/hr/payroll': typeof AuthenticatedAdminAcademyHrPayrollRoute
-  '/admin/academy/finance/': typeof AuthenticatedAdminAcademyFinanceIndexRoute
-  '/admin/academy/hr/': typeof AuthenticatedAdminAcademyHrIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -451,33 +459,36 @@ export interface FileRoutesByTo {
   '/admin/submissions': typeof AuthenticatedAdminSubmissionsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/admin/academy/ai-agents': typeof AuthenticatedAdminAcademyAiAgentsRoute
   '/admin/academy/analytics': typeof AuthenticatedAdminAcademyAnalyticsRoute
   '/admin/academy/assessments': typeof AuthenticatedAdminAcademyAssessmentsRoute
   '/admin/academy/attendance': typeof AuthenticatedAdminAcademyAttendanceRoute
   '/admin/academy/branch-reports': typeof AuthenticatedAdminAcademyBranchReportsRoute
   '/admin/academy/branches': typeof AuthenticatedAdminAcademyBranchesRoute
+  '/admin/academy/capacity': typeof AuthenticatedAdminAcademyCapacityRoute
   '/admin/academy/clients': typeof AuthenticatedAdminAcademyClientsRoute
   '/admin/academy/coaches': typeof AuthenticatedAdminAcademyCoachesRoute
+  '/admin/academy/finance': typeof AuthenticatedAdminAcademyFinanceRoute
+  '/admin/academy/groups': typeof AuthenticatedAdminAcademyGroupsRoute
+  '/admin/academy/hr': typeof AuthenticatedAdminAcademyHrRoute
   '/admin/academy/hr-reports': typeof AuthenticatedAdminAcademyHrReportsRoute
+  '/admin/academy/inventory': typeof AuthenticatedAdminAcademyInventoryRoute
   '/admin/academy/lane-log': typeof AuthenticatedAdminAcademyLaneLogRoute
+  '/admin/academy/lanes': typeof AuthenticatedAdminAcademyLanesRoute
   '/admin/academy/leads': typeof AuthenticatedAdminAcademyLeadsRoute
+  '/admin/academy/maintenance': typeof AuthenticatedAdminAcademyMaintenanceRoute
   '/admin/academy/permissions': typeof AuthenticatedAdminAcademyPermissionsRoute
   '/admin/academy/pool-operations': typeof AuthenticatedAdminAcademyPoolOperationsRoute
+  '/admin/academy/pools': typeof AuthenticatedAdminAcademyPoolsRoute
+  '/admin/academy/procurement': typeof AuthenticatedAdminAcademyProcurementRoute
   '/admin/academy/qr-attendance': typeof AuthenticatedAdminAcademyQrAttendanceRoute
+  '/admin/academy/receipts': typeof AuthenticatedAdminAcademyReceiptsRoute
   '/admin/academy/reports': typeof AuthenticatedAdminAcademyReportsRoute
   '/admin/academy/schedule': typeof AuthenticatedAdminAcademyScheduleRoute
   '/admin/academy/settings': typeof AuthenticatedAdminAcademySettingsRoute
+  '/admin/academy/subscriptions': typeof AuthenticatedAdminAcademySubscriptionsRoute
   '/admin/settings/theme': typeof AuthenticatedAdminSettingsThemeRoute
   '/admin/academy': typeof AuthenticatedAdminAcademyIndexRoute
-  '/admin/academy/finance/invoicing': typeof AuthenticatedAdminAcademyFinanceInvoicingRoute
-  '/admin/academy/finance/ledger': typeof AuthenticatedAdminAcademyFinanceLedgerRoute
-  '/admin/academy/finance/receipts': typeof AuthenticatedAdminAcademyFinanceReceiptsRoute
-  '/admin/academy/finance/subscriptions': typeof AuthenticatedAdminAcademyFinanceSubscriptionsRoute
-  '/admin/academy/hr/attendance': typeof AuthenticatedAdminAcademyHrAttendanceRoute
-  '/admin/academy/hr/leaves': typeof AuthenticatedAdminAcademyHrLeavesRoute
-  '/admin/academy/hr/payroll': typeof AuthenticatedAdminAcademyHrPayrollRoute
-  '/admin/academy/finance': typeof AuthenticatedAdminAcademyFinanceIndexRoute
-  '/admin/academy/hr': typeof AuthenticatedAdminAcademyHrIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -506,35 +517,36 @@ export interface FileRoutesById {
   '/_authenticated/admin/submissions': typeof AuthenticatedAdminSubmissionsRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
-  '/_authenticated/admin/academy/finance': typeof AuthenticatedAdminAcademyFinanceRouteRouteWithChildren
-  '/_authenticated/admin/academy/hr': typeof AuthenticatedAdminAcademyHrRouteRouteWithChildren
+  '/_authenticated/admin/academy/ai-agents': typeof AuthenticatedAdminAcademyAiAgentsRoute
   '/_authenticated/admin/academy/analytics': typeof AuthenticatedAdminAcademyAnalyticsRoute
   '/_authenticated/admin/academy/assessments': typeof AuthenticatedAdminAcademyAssessmentsRoute
   '/_authenticated/admin/academy/attendance': typeof AuthenticatedAdminAcademyAttendanceRoute
   '/_authenticated/admin/academy/branch-reports': typeof AuthenticatedAdminAcademyBranchReportsRoute
   '/_authenticated/admin/academy/branches': typeof AuthenticatedAdminAcademyBranchesRoute
+  '/_authenticated/admin/academy/capacity': typeof AuthenticatedAdminAcademyCapacityRoute
   '/_authenticated/admin/academy/clients': typeof AuthenticatedAdminAcademyClientsRoute
   '/_authenticated/admin/academy/coaches': typeof AuthenticatedAdminAcademyCoachesRoute
+  '/_authenticated/admin/academy/finance': typeof AuthenticatedAdminAcademyFinanceRoute
+  '/_authenticated/admin/academy/groups': typeof AuthenticatedAdminAcademyGroupsRoute
+  '/_authenticated/admin/academy/hr': typeof AuthenticatedAdminAcademyHrRoute
   '/_authenticated/admin/academy/hr-reports': typeof AuthenticatedAdminAcademyHrReportsRoute
+  '/_authenticated/admin/academy/inventory': typeof AuthenticatedAdminAcademyInventoryRoute
   '/_authenticated/admin/academy/lane-log': typeof AuthenticatedAdminAcademyLaneLogRoute
+  '/_authenticated/admin/academy/lanes': typeof AuthenticatedAdminAcademyLanesRoute
   '/_authenticated/admin/academy/leads': typeof AuthenticatedAdminAcademyLeadsRoute
+  '/_authenticated/admin/academy/maintenance': typeof AuthenticatedAdminAcademyMaintenanceRoute
   '/_authenticated/admin/academy/permissions': typeof AuthenticatedAdminAcademyPermissionsRoute
   '/_authenticated/admin/academy/pool-operations': typeof AuthenticatedAdminAcademyPoolOperationsRoute
+  '/_authenticated/admin/academy/pools': typeof AuthenticatedAdminAcademyPoolsRoute
+  '/_authenticated/admin/academy/procurement': typeof AuthenticatedAdminAcademyProcurementRoute
   '/_authenticated/admin/academy/qr-attendance': typeof AuthenticatedAdminAcademyQrAttendanceRoute
+  '/_authenticated/admin/academy/receipts': typeof AuthenticatedAdminAcademyReceiptsRoute
   '/_authenticated/admin/academy/reports': typeof AuthenticatedAdminAcademyReportsRoute
   '/_authenticated/admin/academy/schedule': typeof AuthenticatedAdminAcademyScheduleRoute
   '/_authenticated/admin/academy/settings': typeof AuthenticatedAdminAcademySettingsRoute
+  '/_authenticated/admin/academy/subscriptions': typeof AuthenticatedAdminAcademySubscriptionsRoute
   '/_authenticated/admin/settings/theme': typeof AuthenticatedAdminSettingsThemeRoute
   '/_authenticated/admin/academy/': typeof AuthenticatedAdminAcademyIndexRoute
-  '/_authenticated/admin/academy/finance/invoicing': typeof AuthenticatedAdminAcademyFinanceInvoicingRoute
-  '/_authenticated/admin/academy/finance/ledger': typeof AuthenticatedAdminAcademyFinanceLedgerRoute
-  '/_authenticated/admin/academy/finance/receipts': typeof AuthenticatedAdminAcademyFinanceReceiptsRoute
-  '/_authenticated/admin/academy/finance/subscriptions': typeof AuthenticatedAdminAcademyFinanceSubscriptionsRoute
-  '/_authenticated/admin/academy/hr/attendance': typeof AuthenticatedAdminAcademyHrAttendanceRoute
-  '/_authenticated/admin/academy/hr/leaves': typeof AuthenticatedAdminAcademyHrLeavesRoute
-  '/_authenticated/admin/academy/hr/payroll': typeof AuthenticatedAdminAcademyHrPayrollRoute
-  '/_authenticated/admin/academy/finance/': typeof AuthenticatedAdminAcademyFinanceIndexRoute
-  '/_authenticated/admin/academy/hr/': typeof AuthenticatedAdminAcademyHrIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -563,35 +575,36 @@ export interface FileRouteTypes {
     | '/admin/submissions'
     | '/admin/users'
     | '/admin/'
-    | '/admin/academy/finance'
-    | '/admin/academy/hr'
+    | '/admin/academy/ai-agents'
     | '/admin/academy/analytics'
     | '/admin/academy/assessments'
     | '/admin/academy/attendance'
     | '/admin/academy/branch-reports'
     | '/admin/academy/branches'
+    | '/admin/academy/capacity'
     | '/admin/academy/clients'
     | '/admin/academy/coaches'
+    | '/admin/academy/finance'
+    | '/admin/academy/groups'
+    | '/admin/academy/hr'
     | '/admin/academy/hr-reports'
+    | '/admin/academy/inventory'
     | '/admin/academy/lane-log'
+    | '/admin/academy/lanes'
     | '/admin/academy/leads'
+    | '/admin/academy/maintenance'
     | '/admin/academy/permissions'
     | '/admin/academy/pool-operations'
+    | '/admin/academy/pools'
+    | '/admin/academy/procurement'
     | '/admin/academy/qr-attendance'
+    | '/admin/academy/receipts'
     | '/admin/academy/reports'
     | '/admin/academy/schedule'
     | '/admin/academy/settings'
+    | '/admin/academy/subscriptions'
     | '/admin/settings/theme'
     | '/admin/academy/'
-    | '/admin/academy/finance/invoicing'
-    | '/admin/academy/finance/ledger'
-    | '/admin/academy/finance/receipts'
-    | '/admin/academy/finance/subscriptions'
-    | '/admin/academy/hr/attendance'
-    | '/admin/academy/hr/leaves'
-    | '/admin/academy/hr/payroll'
-    | '/admin/academy/finance/'
-    | '/admin/academy/hr/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -617,33 +630,36 @@ export interface FileRouteTypes {
     | '/admin/submissions'
     | '/admin/users'
     | '/admin'
+    | '/admin/academy/ai-agents'
     | '/admin/academy/analytics'
     | '/admin/academy/assessments'
     | '/admin/academy/attendance'
     | '/admin/academy/branch-reports'
     | '/admin/academy/branches'
+    | '/admin/academy/capacity'
     | '/admin/academy/clients'
     | '/admin/academy/coaches'
+    | '/admin/academy/finance'
+    | '/admin/academy/groups'
+    | '/admin/academy/hr'
     | '/admin/academy/hr-reports'
+    | '/admin/academy/inventory'
     | '/admin/academy/lane-log'
+    | '/admin/academy/lanes'
     | '/admin/academy/leads'
+    | '/admin/academy/maintenance'
     | '/admin/academy/permissions'
     | '/admin/academy/pool-operations'
+    | '/admin/academy/pools'
+    | '/admin/academy/procurement'
     | '/admin/academy/qr-attendance'
+    | '/admin/academy/receipts'
     | '/admin/academy/reports'
     | '/admin/academy/schedule'
     | '/admin/academy/settings'
+    | '/admin/academy/subscriptions'
     | '/admin/settings/theme'
     | '/admin/academy'
-    | '/admin/academy/finance/invoicing'
-    | '/admin/academy/finance/ledger'
-    | '/admin/academy/finance/receipts'
-    | '/admin/academy/finance/subscriptions'
-    | '/admin/academy/hr/attendance'
-    | '/admin/academy/hr/leaves'
-    | '/admin/academy/hr/payroll'
-    | '/admin/academy/finance'
-    | '/admin/academy/hr'
   id:
     | '__root__'
     | '/'
@@ -671,35 +687,36 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/submissions'
     | '/_authenticated/admin/users'
     | '/_authenticated/admin/'
-    | '/_authenticated/admin/academy/finance'
-    | '/_authenticated/admin/academy/hr'
+    | '/_authenticated/admin/academy/ai-agents'
     | '/_authenticated/admin/academy/analytics'
     | '/_authenticated/admin/academy/assessments'
     | '/_authenticated/admin/academy/attendance'
     | '/_authenticated/admin/academy/branch-reports'
     | '/_authenticated/admin/academy/branches'
+    | '/_authenticated/admin/academy/capacity'
     | '/_authenticated/admin/academy/clients'
     | '/_authenticated/admin/academy/coaches'
+    | '/_authenticated/admin/academy/finance'
+    | '/_authenticated/admin/academy/groups'
+    | '/_authenticated/admin/academy/hr'
     | '/_authenticated/admin/academy/hr-reports'
+    | '/_authenticated/admin/academy/inventory'
     | '/_authenticated/admin/academy/lane-log'
+    | '/_authenticated/admin/academy/lanes'
     | '/_authenticated/admin/academy/leads'
+    | '/_authenticated/admin/academy/maintenance'
     | '/_authenticated/admin/academy/permissions'
     | '/_authenticated/admin/academy/pool-operations'
+    | '/_authenticated/admin/academy/pools'
+    | '/_authenticated/admin/academy/procurement'
     | '/_authenticated/admin/academy/qr-attendance'
+    | '/_authenticated/admin/academy/receipts'
     | '/_authenticated/admin/academy/reports'
     | '/_authenticated/admin/academy/schedule'
     | '/_authenticated/admin/academy/settings'
+    | '/_authenticated/admin/academy/subscriptions'
     | '/_authenticated/admin/settings/theme'
     | '/_authenticated/admin/academy/'
-    | '/_authenticated/admin/academy/finance/invoicing'
-    | '/_authenticated/admin/academy/finance/ledger'
-    | '/_authenticated/admin/academy/finance/receipts'
-    | '/_authenticated/admin/academy/finance/subscriptions'
-    | '/_authenticated/admin/academy/hr/attendance'
-    | '/_authenticated/admin/academy/hr/leaves'
-    | '/_authenticated/admin/academy/hr/payroll'
-    | '/_authenticated/admin/academy/finance/'
-    | '/_authenticated/admin/academy/hr/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -900,6 +917,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAcademyIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
+    '/_authenticated/admin/academy/ai-agents': {
+      id: '/_authenticated/admin/academy/ai-agents'
+      path: '/academy/ai-agents'
+      fullPath: '/admin/academy/ai-agents'
+      preLoaderRoute: typeof AuthenticatedAdminAcademyAiAgentsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/_authenticated/admin/academy/analytics': {
       id: '/_authenticated/admin/academy/analytics'
       path: '/academy/analytics'
@@ -935,6 +959,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAcademyBranchesRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
+    '/_authenticated/admin/academy/capacity': {
+      id: '/_authenticated/admin/academy/capacity'
+      path: '/academy/capacity'
+      fullPath: '/admin/academy/capacity'
+      preLoaderRoute: typeof AuthenticatedAdminAcademyCapacityRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/_authenticated/admin/academy/clients': {
       id: '/_authenticated/admin/academy/clients'
       path: '/academy/clients'
@@ -953,14 +984,21 @@ declare module '@tanstack/react-router' {
       id: '/_authenticated/admin/academy/finance'
       path: '/academy/finance'
       fullPath: '/admin/academy/finance'
-      preLoaderRoute: typeof AuthenticatedAdminAcademyFinanceRouteRouteImport
+      preLoaderRoute: typeof AuthenticatedAdminAcademyFinanceRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/academy/groups': {
+      id: '/_authenticated/admin/academy/groups'
+      path: '/academy/groups'
+      fullPath: '/admin/academy/groups'
+      preLoaderRoute: typeof AuthenticatedAdminAcademyGroupsRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
     '/_authenticated/admin/academy/hr': {
       id: '/_authenticated/admin/academy/hr'
       path: '/academy/hr'
       fullPath: '/admin/academy/hr'
-      preLoaderRoute: typeof AuthenticatedAdminAcademyHrRouteRouteImport
+      preLoaderRoute: typeof AuthenticatedAdminAcademyHrRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
     '/_authenticated/admin/academy/hr-reports': {
@@ -970,6 +1008,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAcademyHrReportsRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
+    '/_authenticated/admin/academy/inventory': {
+      id: '/_authenticated/admin/academy/inventory'
+      path: '/academy/inventory'
+      fullPath: '/admin/academy/inventory'
+      preLoaderRoute: typeof AuthenticatedAdminAcademyInventoryRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/_authenticated/admin/academy/lane-log': {
       id: '/_authenticated/admin/academy/lane-log'
       path: '/academy/lane-log'
@@ -977,11 +1022,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAcademyLaneLogRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
+    '/_authenticated/admin/academy/lanes': {
+      id: '/_authenticated/admin/academy/lanes'
+      path: '/academy/lanes'
+      fullPath: '/admin/academy/lanes'
+      preLoaderRoute: typeof AuthenticatedAdminAcademyLanesRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/_authenticated/admin/academy/leads': {
       id: '/_authenticated/admin/academy/leads'
       path: '/academy/leads'
       fullPath: '/admin/academy/leads'
       preLoaderRoute: typeof AuthenticatedAdminAcademyLeadsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/academy/maintenance': {
+      id: '/_authenticated/admin/academy/maintenance'
+      path: '/academy/maintenance'
+      fullPath: '/admin/academy/maintenance'
+      preLoaderRoute: typeof AuthenticatedAdminAcademyMaintenanceRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
     '/_authenticated/admin/academy/permissions': {
@@ -998,11 +1057,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAcademyPoolOperationsRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
+    '/_authenticated/admin/academy/pools': {
+      id: '/_authenticated/admin/academy/pools'
+      path: '/academy/pools'
+      fullPath: '/admin/academy/pools'
+      preLoaderRoute: typeof AuthenticatedAdminAcademyPoolsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/academy/procurement': {
+      id: '/_authenticated/admin/academy/procurement'
+      path: '/academy/procurement'
+      fullPath: '/admin/academy/procurement'
+      preLoaderRoute: typeof AuthenticatedAdminAcademyProcurementRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/_authenticated/admin/academy/qr-attendance': {
       id: '/_authenticated/admin/academy/qr-attendance'
       path: '/academy/qr-attendance'
       fullPath: '/admin/academy/qr-attendance'
       preLoaderRoute: typeof AuthenticatedAdminAcademyQrAttendanceRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/academy/receipts': {
+      id: '/_authenticated/admin/academy/receipts'
+      path: '/academy/receipts'
+      fullPath: '/admin/academy/receipts'
+      preLoaderRoute: typeof AuthenticatedAdminAcademyReceiptsRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
     '/_authenticated/admin/academy/reports': {
@@ -1026,75 +1106,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAcademySettingsRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
+    '/_authenticated/admin/academy/subscriptions': {
+      id: '/_authenticated/admin/academy/subscriptions'
+      path: '/academy/subscriptions'
+      fullPath: '/admin/academy/subscriptions'
+      preLoaderRoute: typeof AuthenticatedAdminAcademySubscriptionsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/_authenticated/admin/settings/theme': {
       id: '/_authenticated/admin/settings/theme'
       path: '/theme'
       fullPath: '/admin/settings/theme'
       preLoaderRoute: typeof AuthenticatedAdminSettingsThemeRouteImport
       parentRoute: typeof AuthenticatedAdminSettingsRoute
-    }
-    '/_authenticated/admin/academy/finance/': {
-      id: '/_authenticated/admin/academy/finance/'
-      path: '/'
-      fullPath: '/admin/academy/finance/'
-      preLoaderRoute: typeof AuthenticatedAdminAcademyFinanceIndexRouteImport
-      parentRoute: typeof AuthenticatedAdminAcademyFinanceRouteRoute
-    }
-    '/_authenticated/admin/academy/finance/invoicing': {
-      id: '/_authenticated/admin/academy/finance/invoicing'
-      path: '/invoicing'
-      fullPath: '/admin/academy/finance/invoicing'
-      preLoaderRoute: typeof AuthenticatedAdminAcademyFinanceInvoicingRouteImport
-      parentRoute: typeof AuthenticatedAdminAcademyFinanceRouteRoute
-    }
-    '/_authenticated/admin/academy/finance/ledger': {
-      id: '/_authenticated/admin/academy/finance/ledger'
-      path: '/ledger'
-      fullPath: '/admin/academy/finance/ledger'
-      preLoaderRoute: typeof AuthenticatedAdminAcademyFinanceLedgerRouteImport
-      parentRoute: typeof AuthenticatedAdminAcademyFinanceRouteRoute
-    }
-    '/_authenticated/admin/academy/finance/receipts': {
-      id: '/_authenticated/admin/academy/finance/receipts'
-      path: '/receipts'
-      fullPath: '/admin/academy/finance/receipts'
-      preLoaderRoute: typeof AuthenticatedAdminAcademyFinanceReceiptsRouteImport
-      parentRoute: typeof AuthenticatedAdminAcademyFinanceRouteRoute
-    }
-    '/_authenticated/admin/academy/finance/subscriptions': {
-      id: '/_authenticated/admin/academy/finance/subscriptions'
-      path: '/subscriptions'
-      fullPath: '/admin/academy/finance/subscriptions'
-      preLoaderRoute: typeof AuthenticatedAdminAcademyFinanceSubscriptionsRouteImport
-      parentRoute: typeof AuthenticatedAdminAcademyFinanceRouteRoute
-    }
-    '/_authenticated/admin/academy/hr/': {
-      id: '/_authenticated/admin/academy/hr/'
-      path: '/'
-      fullPath: '/admin/academy/hr/'
-      preLoaderRoute: typeof AuthenticatedAdminAcademyHrIndexRouteImport
-      parentRoute: typeof AuthenticatedAdminAcademyHrRouteRoute
-    }
-    '/_authenticated/admin/academy/hr/attendance': {
-      id: '/_authenticated/admin/academy/hr/attendance'
-      path: '/attendance'
-      fullPath: '/admin/academy/hr/attendance'
-      preLoaderRoute: typeof AuthenticatedAdminAcademyHrAttendanceRouteImport
-      parentRoute: typeof AuthenticatedAdminAcademyHrRouteRoute
-    }
-    '/_authenticated/admin/academy/hr/leaves': {
-      id: '/_authenticated/admin/academy/hr/leaves'
-      path: '/leaves'
-      fullPath: '/admin/academy/hr/leaves'
-      preLoaderRoute: typeof AuthenticatedAdminAcademyHrLeavesRouteImport
-      parentRoute: typeof AuthenticatedAdminAcademyHrRouteRoute
-    }
-    '/_authenticated/admin/academy/hr/payroll': {
-      id: '/_authenticated/admin/academy/hr/payroll'
-      path: '/payroll'
-      fullPath: '/admin/academy/hr/payroll'
-      preLoaderRoute: typeof AuthenticatedAdminAcademyHrPayrollRouteImport
-      parentRoute: typeof AuthenticatedAdminAcademyHrRouteRoute
     }
   }
 }
@@ -1113,57 +1137,6 @@ const AuthenticatedAdminSettingsRouteWithChildren =
     AuthenticatedAdminSettingsRouteChildren,
   )
 
-interface AuthenticatedAdminAcademyFinanceRouteRouteChildren {
-  AuthenticatedAdminAcademyFinanceInvoicingRoute: typeof AuthenticatedAdminAcademyFinanceInvoicingRoute
-  AuthenticatedAdminAcademyFinanceLedgerRoute: typeof AuthenticatedAdminAcademyFinanceLedgerRoute
-  AuthenticatedAdminAcademyFinanceReceiptsRoute: typeof AuthenticatedAdminAcademyFinanceReceiptsRoute
-  AuthenticatedAdminAcademyFinanceSubscriptionsRoute: typeof AuthenticatedAdminAcademyFinanceSubscriptionsRoute
-  AuthenticatedAdminAcademyFinanceIndexRoute: typeof AuthenticatedAdminAcademyFinanceIndexRoute
-}
-
-const AuthenticatedAdminAcademyFinanceRouteRouteChildren: AuthenticatedAdminAcademyFinanceRouteRouteChildren =
-  {
-    AuthenticatedAdminAcademyFinanceInvoicingRoute:
-      AuthenticatedAdminAcademyFinanceInvoicingRoute,
-    AuthenticatedAdminAcademyFinanceLedgerRoute:
-      AuthenticatedAdminAcademyFinanceLedgerRoute,
-    AuthenticatedAdminAcademyFinanceReceiptsRoute:
-      AuthenticatedAdminAcademyFinanceReceiptsRoute,
-    AuthenticatedAdminAcademyFinanceSubscriptionsRoute:
-      AuthenticatedAdminAcademyFinanceSubscriptionsRoute,
-    AuthenticatedAdminAcademyFinanceIndexRoute:
-      AuthenticatedAdminAcademyFinanceIndexRoute,
-  }
-
-const AuthenticatedAdminAcademyFinanceRouteRouteWithChildren =
-  AuthenticatedAdminAcademyFinanceRouteRoute._addFileChildren(
-    AuthenticatedAdminAcademyFinanceRouteRouteChildren,
-  )
-
-interface AuthenticatedAdminAcademyHrRouteRouteChildren {
-  AuthenticatedAdminAcademyHrAttendanceRoute: typeof AuthenticatedAdminAcademyHrAttendanceRoute
-  AuthenticatedAdminAcademyHrLeavesRoute: typeof AuthenticatedAdminAcademyHrLeavesRoute
-  AuthenticatedAdminAcademyHrPayrollRoute: typeof AuthenticatedAdminAcademyHrPayrollRoute
-  AuthenticatedAdminAcademyHrIndexRoute: typeof AuthenticatedAdminAcademyHrIndexRoute
-}
-
-const AuthenticatedAdminAcademyHrRouteRouteChildren: AuthenticatedAdminAcademyHrRouteRouteChildren =
-  {
-    AuthenticatedAdminAcademyHrAttendanceRoute:
-      AuthenticatedAdminAcademyHrAttendanceRoute,
-    AuthenticatedAdminAcademyHrLeavesRoute:
-      AuthenticatedAdminAcademyHrLeavesRoute,
-    AuthenticatedAdminAcademyHrPayrollRoute:
-      AuthenticatedAdminAcademyHrPayrollRoute,
-    AuthenticatedAdminAcademyHrIndexRoute:
-      AuthenticatedAdminAcademyHrIndexRoute,
-  }
-
-const AuthenticatedAdminAcademyHrRouteRouteWithChildren =
-  AuthenticatedAdminAcademyHrRouteRoute._addFileChildren(
-    AuthenticatedAdminAcademyHrRouteRouteChildren,
-  )
-
 interface AuthenticatedAdminRouteRouteChildren {
   AuthenticatedAdminBranchesRoute: typeof AuthenticatedAdminBranchesRoute
   AuthenticatedAdminCoursesRoute: typeof AuthenticatedAdminCoursesRoute
@@ -1178,24 +1151,34 @@ interface AuthenticatedAdminRouteRouteChildren {
   AuthenticatedAdminSubmissionsRoute: typeof AuthenticatedAdminSubmissionsRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
-  AuthenticatedAdminAcademyFinanceRouteRoute: typeof AuthenticatedAdminAcademyFinanceRouteRouteWithChildren
-  AuthenticatedAdminAcademyHrRouteRoute: typeof AuthenticatedAdminAcademyHrRouteRouteWithChildren
+  AuthenticatedAdminAcademyAiAgentsRoute: typeof AuthenticatedAdminAcademyAiAgentsRoute
   AuthenticatedAdminAcademyAnalyticsRoute: typeof AuthenticatedAdminAcademyAnalyticsRoute
   AuthenticatedAdminAcademyAssessmentsRoute: typeof AuthenticatedAdminAcademyAssessmentsRoute
   AuthenticatedAdminAcademyAttendanceRoute: typeof AuthenticatedAdminAcademyAttendanceRoute
   AuthenticatedAdminAcademyBranchReportsRoute: typeof AuthenticatedAdminAcademyBranchReportsRoute
   AuthenticatedAdminAcademyBranchesRoute: typeof AuthenticatedAdminAcademyBranchesRoute
+  AuthenticatedAdminAcademyCapacityRoute: typeof AuthenticatedAdminAcademyCapacityRoute
   AuthenticatedAdminAcademyClientsRoute: typeof AuthenticatedAdminAcademyClientsRoute
   AuthenticatedAdminAcademyCoachesRoute: typeof AuthenticatedAdminAcademyCoachesRoute
+  AuthenticatedAdminAcademyFinanceRoute: typeof AuthenticatedAdminAcademyFinanceRoute
+  AuthenticatedAdminAcademyGroupsRoute: typeof AuthenticatedAdminAcademyGroupsRoute
+  AuthenticatedAdminAcademyHrRoute: typeof AuthenticatedAdminAcademyHrRoute
   AuthenticatedAdminAcademyHrReportsRoute: typeof AuthenticatedAdminAcademyHrReportsRoute
+  AuthenticatedAdminAcademyInventoryRoute: typeof AuthenticatedAdminAcademyInventoryRoute
   AuthenticatedAdminAcademyLaneLogRoute: typeof AuthenticatedAdminAcademyLaneLogRoute
+  AuthenticatedAdminAcademyLanesRoute: typeof AuthenticatedAdminAcademyLanesRoute
   AuthenticatedAdminAcademyLeadsRoute: typeof AuthenticatedAdminAcademyLeadsRoute
+  AuthenticatedAdminAcademyMaintenanceRoute: typeof AuthenticatedAdminAcademyMaintenanceRoute
   AuthenticatedAdminAcademyPermissionsRoute: typeof AuthenticatedAdminAcademyPermissionsRoute
   AuthenticatedAdminAcademyPoolOperationsRoute: typeof AuthenticatedAdminAcademyPoolOperationsRoute
+  AuthenticatedAdminAcademyPoolsRoute: typeof AuthenticatedAdminAcademyPoolsRoute
+  AuthenticatedAdminAcademyProcurementRoute: typeof AuthenticatedAdminAcademyProcurementRoute
   AuthenticatedAdminAcademyQrAttendanceRoute: typeof AuthenticatedAdminAcademyQrAttendanceRoute
+  AuthenticatedAdminAcademyReceiptsRoute: typeof AuthenticatedAdminAcademyReceiptsRoute
   AuthenticatedAdminAcademyReportsRoute: typeof AuthenticatedAdminAcademyReportsRoute
   AuthenticatedAdminAcademyScheduleRoute: typeof AuthenticatedAdminAcademyScheduleRoute
   AuthenticatedAdminAcademySettingsRoute: typeof AuthenticatedAdminAcademySettingsRoute
+  AuthenticatedAdminAcademySubscriptionsRoute: typeof AuthenticatedAdminAcademySubscriptionsRoute
   AuthenticatedAdminAcademyIndexRoute: typeof AuthenticatedAdminAcademyIndexRoute
 }
 
@@ -1215,10 +1198,8 @@ const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren
     AuthenticatedAdminSubmissionsRoute: AuthenticatedAdminSubmissionsRoute,
     AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
     AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
-    AuthenticatedAdminAcademyFinanceRouteRoute:
-      AuthenticatedAdminAcademyFinanceRouteRouteWithChildren,
-    AuthenticatedAdminAcademyHrRouteRoute:
-      AuthenticatedAdminAcademyHrRouteRouteWithChildren,
+    AuthenticatedAdminAcademyAiAgentsRoute:
+      AuthenticatedAdminAcademyAiAgentsRoute,
     AuthenticatedAdminAcademyAnalyticsRoute:
       AuthenticatedAdminAcademyAnalyticsRoute,
     AuthenticatedAdminAcademyAssessmentsRoute:
@@ -1229,27 +1210,45 @@ const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren
       AuthenticatedAdminAcademyBranchReportsRoute,
     AuthenticatedAdminAcademyBranchesRoute:
       AuthenticatedAdminAcademyBranchesRoute,
+    AuthenticatedAdminAcademyCapacityRoute:
+      AuthenticatedAdminAcademyCapacityRoute,
     AuthenticatedAdminAcademyClientsRoute:
       AuthenticatedAdminAcademyClientsRoute,
     AuthenticatedAdminAcademyCoachesRoute:
       AuthenticatedAdminAcademyCoachesRoute,
+    AuthenticatedAdminAcademyFinanceRoute:
+      AuthenticatedAdminAcademyFinanceRoute,
+    AuthenticatedAdminAcademyGroupsRoute: AuthenticatedAdminAcademyGroupsRoute,
+    AuthenticatedAdminAcademyHrRoute: AuthenticatedAdminAcademyHrRoute,
     AuthenticatedAdminAcademyHrReportsRoute:
       AuthenticatedAdminAcademyHrReportsRoute,
+    AuthenticatedAdminAcademyInventoryRoute:
+      AuthenticatedAdminAcademyInventoryRoute,
     AuthenticatedAdminAcademyLaneLogRoute:
       AuthenticatedAdminAcademyLaneLogRoute,
+    AuthenticatedAdminAcademyLanesRoute: AuthenticatedAdminAcademyLanesRoute,
     AuthenticatedAdminAcademyLeadsRoute: AuthenticatedAdminAcademyLeadsRoute,
+    AuthenticatedAdminAcademyMaintenanceRoute:
+      AuthenticatedAdminAcademyMaintenanceRoute,
     AuthenticatedAdminAcademyPermissionsRoute:
       AuthenticatedAdminAcademyPermissionsRoute,
     AuthenticatedAdminAcademyPoolOperationsRoute:
       AuthenticatedAdminAcademyPoolOperationsRoute,
+    AuthenticatedAdminAcademyPoolsRoute: AuthenticatedAdminAcademyPoolsRoute,
+    AuthenticatedAdminAcademyProcurementRoute:
+      AuthenticatedAdminAcademyProcurementRoute,
     AuthenticatedAdminAcademyQrAttendanceRoute:
       AuthenticatedAdminAcademyQrAttendanceRoute,
+    AuthenticatedAdminAcademyReceiptsRoute:
+      AuthenticatedAdminAcademyReceiptsRoute,
     AuthenticatedAdminAcademyReportsRoute:
       AuthenticatedAdminAcademyReportsRoute,
     AuthenticatedAdminAcademyScheduleRoute:
       AuthenticatedAdminAcademyScheduleRoute,
     AuthenticatedAdminAcademySettingsRoute:
       AuthenticatedAdminAcademySettingsRoute,
+    AuthenticatedAdminAcademySubscriptionsRoute:
+      AuthenticatedAdminAcademySubscriptionsRoute,
     AuthenticatedAdminAcademyIndexRoute: AuthenticatedAdminAcademyIndexRoute,
   }
 
