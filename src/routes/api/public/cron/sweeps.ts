@@ -24,8 +24,8 @@ export const Route = createFileRoute("/api/public/cron/sweeps")({
 
           // Expiring subs
           const { data: subs } = await supabaseAdmin
-            .from("subscriptions")
-            .select("id, end_date, trainees!inner(full_name, branch_id)")
+            .from("ac_subscriptions")
+            .select("id, end_date, trainees:ac_trainees!inner(full_name, branch_id)")
             .eq("status", "active")
             .gte("end_date", today)
             .lte("end_date", in7);
@@ -34,11 +34,11 @@ export const Route = createFileRoute("/api/public/cron/sweeps")({
             if (!tr || tr.branch_id !== b.id) continue;
             const days = Math.max(0, Math.ceil((new Date(s.end_date as string).getTime() - now.getTime()) / 86400000));
             const { data: ex } = await supabaseAdmin
-              .from("notifications").select("id")
+              .from("ac_notifications").select("id")
               .eq("branch_id", b.id).eq("kind", "subscription_expiry")
               .gte("created_at", today).contains("meta", { subscription_id: s.id }).maybeSingle();
             if (ex) continue;
-            await supabaseAdmin.from("notifications").insert({
+            await supabaseAdmin.from("ac_notifications").insert({
               branch_id: b.id, kind: "subscription_expiry",
               severity: days <= 2 ? "critical" : "warning",
               title: `اشتراك ${tr.full_name} ينتهي خلال ${days} يوم`,
@@ -51,16 +51,16 @@ export const Route = createFileRoute("/api/public/cron/sweeps")({
 
           // Low stock
           const { data: items } = await supabaseAdmin
-            .from("inventory_items").select("id, name, quantity, min_quantity")
+            .from("ac_inventory_items").select("id, name, quantity, min_quantity")
             .eq("branch_id", b.id);
           for (const it of items ?? []) {
             if ((it.quantity ?? 0) > (it.min_quantity ?? 0)) continue;
             const { data: ex } = await supabaseAdmin
-              .from("notifications").select("id")
+              .from("ac_notifications").select("id")
               .eq("branch_id", b.id).eq("kind", "low_stock")
               .gte("created_at", today).contains("meta", { item_id: it.id }).maybeSingle();
             if (ex) continue;
-            await supabaseAdmin.from("notifications").insert({
+            await supabaseAdmin.from("ac_notifications").insert({
               branch_id: b.id, kind: "low_stock", severity: "warning",
               title: `مخزون منخفض: ${it.name}`,
               body: `الكمية ${it.quantity} (الحد ${it.min_quantity})`,

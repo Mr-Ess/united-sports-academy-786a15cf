@@ -21,6 +21,7 @@ import { Route as MediaRouteImport } from './routes/media'
 import { Route as PartnersRouteImport } from './routes/partners'
 import { Route as ProgramsRouteImport } from './routes/programs'
 import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authenticated/admin/route'
+import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 import { Route as AuthenticatedAdminAcademyRouteRouteImport } from './routes/_authenticated/admin/academy/route'
 import { Route as AuthenticatedAdminBranchesRouteImport } from './routes/_authenticated/admin/branches'
@@ -35,6 +36,7 @@ import { Route as AuthenticatedAdminSeasonsRouteImport } from './routes/_authent
 import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated/admin/settings'
 import { Route as AuthenticatedAdminSubmissionsRouteImport } from './routes/_authenticated/admin/submissions'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin/users'
+import { Route as ApiPublicAiAgentsRouteImport } from './routes/api/public/ai-agents'
 import { Route as AuthenticatedAdminAcademyIndexRouteImport } from './routes/_authenticated/admin/academy/index'
 import { Route as AuthenticatedAdminAcademyAiAgentsRouteImport } from './routes/_authenticated/admin/academy/ai-agents'
 import { Route as AuthenticatedAdminAcademyAnalyticsRouteImport } from './routes/_authenticated/admin/academy/analytics'
@@ -65,6 +67,8 @@ import { Route as AuthenticatedAdminAcademyScheduleRouteImport } from './routes/
 import { Route as AuthenticatedAdminAcademySettingsRouteImport } from './routes/_authenticated/admin/academy/settings'
 import { Route as AuthenticatedAdminAcademySubscriptionsRouteImport } from './routes/_authenticated/admin/academy/subscriptions'
 import { Route as AuthenticatedAdminSettingsThemeRouteImport } from './routes/_authenticated/admin/settings.theme'
+import { Route as ApiPublicAgentsInvokeRouteImport } from './routes/api/public/agents/invoke'
+import { Route as ApiPublicCronSweepsRouteImport } from './routes/api/public/cron/sweeps'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -124,6 +128,11 @@ const AuthenticatedAdminRouteRoute = AuthenticatedAdminRouteRouteImport.update({
   id: '/admin',
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/',
@@ -204,6 +213,11 @@ const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
   id: '/users',
   path: '/users',
   getParentRoute: () => AuthenticatedAdminRouteRoute,
+} as any)
+const ApiPublicAiAgentsRoute = ApiPublicAiAgentsRouteImport.update({
+  id: '/api/public/ai-agents',
+  path: '/api/public/ai-agents',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminAcademyIndexRoute =
   AuthenticatedAdminAcademyIndexRouteImport.update({
@@ -385,6 +399,16 @@ const AuthenticatedAdminSettingsThemeRoute =
     path: '/theme',
     getParentRoute: () => AuthenticatedAdminSettingsRoute,
   } as any)
+const ApiPublicAgentsInvokeRoute = ApiPublicAgentsInvokeRouteImport.update({
+  id: '/api/public/agents/invoke',
+  path: '/api/public/agents/invoke',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicCronSweepsRoute = ApiPublicCronSweepsRouteImport.update({
+  id: '/api/public/cron/sweeps',
+  path: '/api/public/cron/sweeps',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -398,6 +422,7 @@ export interface FileRoutesByFullPath {
   '/partners': typeof PartnersRoute
   '/programs': typeof ProgramsRoute
   '/admin': typeof AuthenticatedAdminRouteRouteWithChildren
+  '/api/chat': typeof ApiChatRoute
   '/admin/academy': typeof AuthenticatedAdminAcademyRouteRouteWithChildren
   '/admin/branches': typeof AuthenticatedAdminBranchesRoute
   '/admin/courses': typeof AuthenticatedAdminCoursesRoute
@@ -411,6 +436,7 @@ export interface FileRoutesByFullPath {
   '/admin/settings': typeof AuthenticatedAdminSettingsRouteWithChildren
   '/admin/submissions': typeof AuthenticatedAdminSubmissionsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/api/public/ai-agents': typeof ApiPublicAiAgentsRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/admin/academy/ai-agents': typeof AuthenticatedAdminAcademyAiAgentsRoute
   '/admin/academy/analytics': typeof AuthenticatedAdminAcademyAnalyticsRoute
@@ -441,6 +467,8 @@ export interface FileRoutesByFullPath {
   '/admin/academy/settings': typeof AuthenticatedAdminAcademySettingsRoute
   '/admin/academy/subscriptions': typeof AuthenticatedAdminAcademySubscriptionsRoute
   '/admin/settings/theme': typeof AuthenticatedAdminSettingsThemeRoute
+  '/api/public/agents/invoke': typeof ApiPublicAgentsInvokeRoute
+  '/api/public/cron/sweeps': typeof ApiPublicCronSweepsRoute
   '/admin/academy/': typeof AuthenticatedAdminAcademyIndexRoute
 }
 export interface FileRoutesByTo {
@@ -454,6 +482,7 @@ export interface FileRoutesByTo {
   '/media': typeof MediaRoute
   '/partners': typeof PartnersRoute
   '/programs': typeof ProgramsRoute
+  '/api/chat': typeof ApiChatRoute
   '/admin/branches': typeof AuthenticatedAdminBranchesRoute
   '/admin/courses': typeof AuthenticatedAdminCoursesRoute
   '/admin/media': typeof AuthenticatedAdminMediaRoute
@@ -466,6 +495,7 @@ export interface FileRoutesByTo {
   '/admin/settings': typeof AuthenticatedAdminSettingsRouteWithChildren
   '/admin/submissions': typeof AuthenticatedAdminSubmissionsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/api/public/ai-agents': typeof ApiPublicAiAgentsRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/admin/academy/ai-agents': typeof AuthenticatedAdminAcademyAiAgentsRoute
   '/admin/academy/analytics': typeof AuthenticatedAdminAcademyAnalyticsRoute
@@ -496,6 +526,8 @@ export interface FileRoutesByTo {
   '/admin/academy/settings': typeof AuthenticatedAdminAcademySettingsRoute
   '/admin/academy/subscriptions': typeof AuthenticatedAdminAcademySubscriptionsRoute
   '/admin/settings/theme': typeof AuthenticatedAdminSettingsThemeRoute
+  '/api/public/agents/invoke': typeof ApiPublicAgentsInvokeRoute
+  '/api/public/cron/sweeps': typeof ApiPublicCronSweepsRoute
   '/admin/academy': typeof AuthenticatedAdminAcademyIndexRoute
 }
 export interface FileRoutesById {
@@ -512,6 +544,7 @@ export interface FileRoutesById {
   '/partners': typeof PartnersRoute
   '/programs': typeof ProgramsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteRouteWithChildren
+  '/api/chat': typeof ApiChatRoute
   '/_authenticated/admin/academy': typeof AuthenticatedAdminAcademyRouteRouteWithChildren
   '/_authenticated/admin/branches': typeof AuthenticatedAdminBranchesRoute
   '/_authenticated/admin/courses': typeof AuthenticatedAdminCoursesRoute
@@ -525,6 +558,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRouteWithChildren
   '/_authenticated/admin/submissions': typeof AuthenticatedAdminSubmissionsRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/api/public/ai-agents': typeof ApiPublicAiAgentsRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/admin/academy/ai-agents': typeof AuthenticatedAdminAcademyAiAgentsRoute
   '/_authenticated/admin/academy/analytics': typeof AuthenticatedAdminAcademyAnalyticsRoute
@@ -555,6 +589,8 @@ export interface FileRoutesById {
   '/_authenticated/admin/academy/settings': typeof AuthenticatedAdminAcademySettingsRoute
   '/_authenticated/admin/academy/subscriptions': typeof AuthenticatedAdminAcademySubscriptionsRoute
   '/_authenticated/admin/settings/theme': typeof AuthenticatedAdminSettingsThemeRoute
+  '/api/public/agents/invoke': typeof ApiPublicAgentsInvokeRoute
+  '/api/public/cron/sweeps': typeof ApiPublicCronSweepsRoute
   '/_authenticated/admin/academy/': typeof AuthenticatedAdminAcademyIndexRoute
 }
 export interface FileRouteTypes {
@@ -571,6 +607,7 @@ export interface FileRouteTypes {
     | '/partners'
     | '/programs'
     | '/admin'
+    | '/api/chat'
     | '/admin/academy'
     | '/admin/branches'
     | '/admin/courses'
@@ -584,6 +621,7 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin/submissions'
     | '/admin/users'
+    | '/api/public/ai-agents'
     | '/admin/'
     | '/admin/academy/ai-agents'
     | '/admin/academy/analytics'
@@ -614,6 +652,8 @@ export interface FileRouteTypes {
     | '/admin/academy/settings'
     | '/admin/academy/subscriptions'
     | '/admin/settings/theme'
+    | '/api/public/agents/invoke'
+    | '/api/public/cron/sweeps'
     | '/admin/academy/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -627,6 +667,7 @@ export interface FileRouteTypes {
     | '/media'
     | '/partners'
     | '/programs'
+    | '/api/chat'
     | '/admin/branches'
     | '/admin/courses'
     | '/admin/media'
@@ -639,6 +680,7 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin/submissions'
     | '/admin/users'
+    | '/api/public/ai-agents'
     | '/admin'
     | '/admin/academy/ai-agents'
     | '/admin/academy/analytics'
@@ -669,6 +711,8 @@ export interface FileRouteTypes {
     | '/admin/academy/settings'
     | '/admin/academy/subscriptions'
     | '/admin/settings/theme'
+    | '/api/public/agents/invoke'
+    | '/api/public/cron/sweeps'
     | '/admin/academy'
   id:
     | '__root__'
@@ -684,6 +728,7 @@ export interface FileRouteTypes {
     | '/partners'
     | '/programs'
     | '/_authenticated/admin'
+    | '/api/chat'
     | '/_authenticated/admin/academy'
     | '/_authenticated/admin/branches'
     | '/_authenticated/admin/courses'
@@ -697,6 +742,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/settings'
     | '/_authenticated/admin/submissions'
     | '/_authenticated/admin/users'
+    | '/api/public/ai-agents'
     | '/_authenticated/admin/'
     | '/_authenticated/admin/academy/ai-agents'
     | '/_authenticated/admin/academy/analytics'
@@ -727,6 +773,8 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/academy/settings'
     | '/_authenticated/admin/academy/subscriptions'
     | '/_authenticated/admin/settings/theme'
+    | '/api/public/agents/invoke'
+    | '/api/public/cron/sweeps'
     | '/_authenticated/admin/academy/'
   fileRoutesById: FileRoutesById
 }
@@ -742,6 +790,10 @@ export interface RootRouteChildren {
   MediaRoute: typeof MediaRoute
   PartnersRoute: typeof PartnersRoute
   ProgramsRoute: typeof ProgramsRoute
+  ApiChatRoute: typeof ApiChatRoute
+  ApiPublicAiAgentsRoute: typeof ApiPublicAiAgentsRoute
+  ApiPublicAgentsInvokeRoute: typeof ApiPublicAgentsInvokeRoute
+  ApiPublicCronSweepsRoute: typeof ApiPublicCronSweepsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -829,6 +881,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin'
       preLoaderRoute: typeof AuthenticatedAdminRouteRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin/': {
       id: '/_authenticated/admin/'
@@ -927,6 +986,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/users'
       preLoaderRoute: typeof AuthenticatedAdminUsersRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/api/public/ai-agents': {
+      id: '/api/public/ai-agents'
+      path: '/api/public/ai-agents'
+      fullPath: '/api/public/ai-agents'
+      preLoaderRoute: typeof ApiPublicAiAgentsRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin/academy/': {
       id: '/_authenticated/admin/academy/'
@@ -1138,6 +1204,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminSettingsThemeRouteImport
       parentRoute: typeof AuthenticatedAdminSettingsRoute
     }
+    '/api/public/agents/invoke': {
+      id: '/api/public/agents/invoke'
+      path: '/api/public/agents/invoke'
+      fullPath: '/api/public/agents/invoke'
+      preLoaderRoute: typeof ApiPublicAgentsInvokeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/sweeps': {
+      id: '/api/public/cron/sweeps'
+      path: '/api/public/cron/sweeps'
+      fullPath: '/api/public/cron/sweeps'
+      preLoaderRoute: typeof ApiPublicCronSweepsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -1313,6 +1393,10 @@ const rootRouteChildren: RootRouteChildren = {
   MediaRoute: MediaRoute,
   PartnersRoute: PartnersRoute,
   ProgramsRoute: ProgramsRoute,
+  ApiChatRoute: ApiChatRoute,
+  ApiPublicAiAgentsRoute: ApiPublicAiAgentsRoute,
+  ApiPublicAgentsInvokeRoute: ApiPublicAgentsInvokeRoute,
+  ApiPublicCronSweepsRoute: ApiPublicCronSweepsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

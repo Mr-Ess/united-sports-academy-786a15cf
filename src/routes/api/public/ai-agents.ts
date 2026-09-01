@@ -33,7 +33,7 @@ export const Route = createFileRoute("/api/public/ai-agents")({
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         let q = supabaseAdmin
-          .from("ai_agents")
+          .from("ac_ai_agents")
           .select("id, branch_id, name, name_ar, description, description_ar, agent_type, system_prompt, model, temperature, max_tokens, tools, webhook_url, n8n_workflow_id, trigger_event, schedule_cron, config, is_active, last_run_at, updated_at");
 
         if (id) q = q.eq("id", id);
@@ -58,7 +58,7 @@ export const Route = createFileRoute("/api/public/ai-agents")({
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const { error } = await supabaseAdmin
-          .from("ai_agents")
+          .from("ac_ai_agents")
           .update({ last_run_at: new Date().toISOString() })
           .eq("id", body.id);
         if (error) return Response.json({ ok: false, error: error.message }, { status: 500 });
