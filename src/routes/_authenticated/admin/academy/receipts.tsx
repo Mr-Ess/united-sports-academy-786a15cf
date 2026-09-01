@@ -85,7 +85,7 @@ function metaOf(inv: InvoiceRow): ReceiptMeta {
 
 function ReceiptsPage() {
   const { t } = useI18n();
-  const { currentBranchId } = useSession();
+  const { currentBranchId, branches, setCurrentBranchId } = useSession();
   const { ensureBranch } = useRequireBranch();
   const qc = useQueryClient();
 
@@ -270,71 +270,95 @@ function ReceiptsPage() {
             <p className="text-xs text-muted-foreground">{filtered.length} · EGP {totalAmt.toLocaleString()}</p>
           </div>
         </div>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <Button onClick={() => start()} disabled={!currentBranchId} className="bg-gradient-to-r from-teal to-cyan-glow text-primary-foreground hover:opacity-90">
-              <Plus className="h-4 w-4" /> {t("rec.new")}
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="glass-strong max-h-[90vh] max-w-3xl overflow-y-auto">
-            <DialogHeader><DialogTitle>{editing ? `${t("rec.edit")} · ${metaOf(editing).clientId}` : t("rec.new")}</DialogTitle></DialogHeader>
-            <BranchGuard compact>
-              {!editing && (
-                <div className="rounded-lg border border-teal/30 bg-teal/5 p-3 mb-2">
-                  <Label className="text-xs uppercase tracking-wider text-cyan-glow flex items-center gap-1.5"><Zap className="h-3 w-3" />{t("rec.clientLookup")}</Label>
-                  <div className="mt-1.5 flex gap-2">
-                    <Input value={lookup} onChange={e => setLookup(e.target.value)} placeholder="CL-XXXXXX" className="bg-background/40 font-mono"
-                      onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); doLookup(); } }} />
-                    <Button type="button" onClick={doLookup} variant="outline" className="border-teal/40"><Search className="h-4 w-4" /></Button>
-                  </div>
-                </div>
-              )}
 
-              <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-                <F label={t("rec.studentName")}><Input value={form.studentName} onChange={e => setForm({ ...form, studentName: e.target.value })} /></F>
-                <F label={t("rec.clientId")}><Input value={form.clientId} placeholder="CL-XXXXXX" onChange={e => setForm({ ...form, clientId: e.target.value })} /></F>
-                <F label={t("rec.membershipId")}><Input value={form.membershipId} onChange={e => setForm({ ...form, membershipId: e.target.value })} /></F>
-                <F label={t("rec.phone")}><Input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} /></F>
-                <F label={t("rec.emergency")}><Input value={form.emergencyContact ?? ""} onChange={e => setForm({ ...form, emergencyContact: e.target.value })} /></F>
-                <F label={t("rec.address")}><Textarea rows={1} value={form.address ?? ""} onChange={e => setForm({ ...form, address: e.target.value })} /></F>
-                <F label={t("rec.category")}><P value={form.category} options={CATEGORIES} onChange={v => setForm({ ...form, category: v })} /></F>
-                <F label={t("rec.age")}><Input type="number" value={form.age} onChange={e => setForm({ ...form, age: Number(e.target.value) })} /></F>
-                <F label={t("rec.level")}><P value={form.level} options={LEVELS} onChange={v => setForm({ ...form, level: v })} /></F>
-                <F label={t("rec.type")}><P value={form.type} options={SESSION_TYPES} onChange={v => setForm({ ...form, type: v })} /></F>
-                <F label={t("rec.sessions")}><P value={form.sessionsCount} options={SESSION_COUNTS} onChange={v => setForm({ ...form, sessionsCount: v })} /></F>
-                <F label={t("rec.receiptNum")}><Input value={form.receiptNumber} onChange={e => setForm({ ...form, receiptNumber: e.target.value })} /></F>
-                <F label={t("rec.amount")}><Input type="number" value={form.amountPaid} onChange={e => setForm({ ...form, amountPaid: Number(e.target.value) })} /></F>
-                <F label={t("rec.payDate")}><Input type="date" value={form.paymentDate} onChange={e => setForm({ ...form, paymentDate: e.target.value })} /></F>
-                <F label={t("rec.payMethod")}><P value={form.paymentMethod} options={PAYMENT_METHODS} onChange={v => setForm({ ...form, paymentMethod: v })} /></F>
-                <F label={t("rec.daySchedule")}><P value={form.dayGroup} options={DAY_GROUPS} onChange={v => setForm({ ...form, dayGroup: v })} /></F>
-                <F label={t("rec.timeSlot")}><P value={form.timeSlot} options={TIME_SLOTS} onChange={v => setForm({ ...form, timeSlot: v })} /></F>
-                <F label={t("rec.coach")}>
-                  <Select value={form.coachId ?? "none"} onValueChange={v => setForm({ ...form, coachId: v === "none" ? null : v })}>
-                    <SelectTrigger className="bg-background/30"><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">{t("c.unassigned")}</SelectItem>
-                      {(coachesQ.data ?? [])
-                        .filter(c => {
-                          if (!form.timeSlot) return true;
-                          const m = coachSlotsQ.data;
-                          if (!m || m.size === 0) return true;
-                          const s = m.get(c.id);
-                          return s ? s.has(form.timeSlot) : false;
-                        })
-                        .map(c => <SelectItem key={c.id} value={c.id}>{c.full_name}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                </F>
-                <F label={t("rec.skill")}><Input type="number" min={1} max={10} value={form.skillRating ?? 5} onChange={e => setForm({ ...form, skillRating: Number(e.target.value) })} /></F>
-                <F label={t("rec.sessionsUsed")}><Input type="number" min={0} value={form.sessionsUsed} onChange={e => setForm({ ...form, sessionsUsed: Number(e.target.value) })} /></F>
-              </div>
-              <div className="mt-3 flex justify-end gap-2">
-                <Button variant="ghost" onClick={() => setOpen(false)}>{t("c.cancel")}</Button>
-                <Button onClick={() => saveM.mutate()} disabled={saveM.isPending} className="bg-gradient-to-r from-teal to-cyan-glow text-primary-foreground">{editing ? t("c.save") : t("c.add")}</Button>
-              </div>
-            </BranchGuard>
-          </DialogContent>
-        </Dialog>
+        <div className="flex flex-wrap items-center gap-2 min-w-0">
+          {branches.length > 1 && (
+            <Select value={currentBranchId ?? ""} onValueChange={setCurrentBranchId}>
+              <SelectTrigger className="w-[180px] min-w-[180px] bg-background/30 shrink-0">
+                <SelectValue placeholder={t("c.branch") ?? "Branch"} />
+              </SelectTrigger>
+              <SelectContent>
+                {branches.map((branch) => (
+                  <SelectItem key={branch.id} value={branch.id}>{branch.name_ar ?? branch.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <Button
+                onClick={() => start()}
+                disabled={!currentBranchId}
+                className="w-[170px] min-w-[170px] shrink-0 bg-gradient-to-r from-teal to-cyan-glow text-primary-foreground shadow-lg shadow-cyan-500/20 hover:opacity-90"
+              >
+                <Plus className="h-4 w-4" /> {t("rec.new")}
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="glass-strong max-h-[90vh] max-w-3xl overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>{editing ? `${t("rec.edit")} · ${metaOf(editing).clientId}` : t("rec.new")}</DialogTitle>
+              </DialogHeader>
+
+              <BranchGuard compact>
+                {!editing && (
+                  <div className="rounded-lg border border-teal/30 bg-teal/5 p-3 mb-2">
+                    <Label className="text-xs uppercase tracking-wider text-cyan-glow flex items-center gap-1.5"><Zap className="h-3 w-3" />{t("rec.clientLookup")}</Label>
+                    <div className="mt-1.5 flex gap-2">
+                      <Input value={lookup} onChange={e => setLookup(e.target.value)} placeholder="CL-XXXXXX" className="bg-background/40 font-mono"
+                        onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); doLookup(); } }} />
+                      <Button type="button" onClick={doLookup} variant="outline" className="border-teal/40"><Search className="h-4 w-4" /></Button>
+                    </div>
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+                  <F label={t("rec.studentName")}><Input value={form.studentName} onChange={e => setForm({ ...form, studentName: e.target.value })} /></F>
+                  <F label={t("rec.clientId")}><Input value={form.clientId} placeholder="CL-XXXXXX" onChange={e => setForm({ ...form, clientId: e.target.value })} /></F>
+                  <F label={t("rec.membershipId")}><Input value={form.membershipId} onChange={e => setForm({ ...form, membershipId: e.target.value })} /></F>
+                  <F label={t("rec.phone")}><Input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} /></F>
+                  <F label={t("rec.emergency")}><Input value={form.emergencyContact ?? ""} onChange={e => setForm({ ...form, emergencyContact: e.target.value })} /></F>
+                  <F label={t("rec.address")}><Textarea rows={1} value={form.address ?? ""} onChange={e => setForm({ ...form, address: e.target.value })} /></F>
+                  <F label={t("rec.category")}><P value={form.category} options={CATEGORIES} onChange={v => setForm({ ...form, category: v })} /></F>
+                  <F label={t("rec.age")}><Input type="number" value={form.age} onChange={e => setForm({ ...form, age: Number(e.target.value) })} /></F>
+                  <F label={t("rec.level")}><P value={form.level} options={LEVELS} onChange={v => setForm({ ...form, level: v })} /></F>
+                  <F label={t("rec.type")}><P value={form.type} options={SESSION_TYPES} onChange={v => setForm({ ...form, type: v })} /></F>
+                  <F label={t("rec.sessions")}><P value={form.sessionsCount} options={SESSION_COUNTS} onChange={v => setForm({ ...form, sessionsCount: v })} /></F>
+                  <F label={t("rec.receiptNum")}><Input value={form.receiptNumber} onChange={e => setForm({ ...form, receiptNumber: e.target.value })} /></F>
+                  <F label={t("rec.amount")}><Input type="number" value={form.amountPaid} onChange={e => setForm({ ...form, amountPaid: Number(e.target.value) })} /></F>
+                  <F label={t("rec.payDate")}><Input type="date" value={form.paymentDate} onChange={e => setForm({ ...form, paymentDate: e.target.value })} /></F>
+                  <F label={t("rec.payMethod")}><P value={form.paymentMethod} options={PAYMENT_METHODS} onChange={v => setForm({ ...form, paymentMethod: v })} /></F>
+                  <F label={t("rec.daySchedule")}><P value={form.dayGroup} options={DAY_GROUPS} onChange={v => setForm({ ...form, dayGroup: v })} /></F>
+                  <F label={t("rec.timeSlot")}><P value={form.timeSlot} options={TIME_SLOTS} onChange={v => setForm({ ...form, timeSlot: v })} /></F>
+                  <F label={t("rec.coach")}>
+                    <Select value={form.coachId ?? "none"} onValueChange={v => setForm({ ...form, coachId: v === "none" ? null : v })}>
+                      <SelectTrigger className="bg-background/30"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">{t("c.unassigned")}</SelectItem>
+                        {(coachesQ.data ?? [])
+                          .filter(c => {
+                            if (!form.timeSlot) return true;
+                            const m = coachSlotsQ.data;
+                            if (!m || m.size === 0) return true;
+                            const s = m.get(c.id);
+                            return s ? s.has(form.timeSlot) : false;
+                          })
+                          .map(c => <SelectItem key={c.id} value={c.id}>{c.full_name}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  </F>
+                  <F label={t("rec.skill")}><Input type="number" min={1} max={10} value={form.skillRating ?? 5} onChange={e => setForm({ ...form, skillRating: Number(e.target.value) })} /></F>
+                  <F label={t("rec.sessionsUsed")}><Input type="number" min={0} value={form.sessionsUsed} onChange={e => setForm({ ...form, sessionsUsed: Number(e.target.value) })} /></F>
+                </div>
+
+                <div className="mt-3 flex justify-end gap-2">
+                  <Button variant="ghost" onClick={() => setOpen(false)}>{t("c.cancel")}</Button>
+                  <Button onClick={() => saveM.mutate()} disabled={saveM.isPending} className="bg-gradient-to-r from-teal to-cyan-glow text-primary-foreground">{editing ? t("c.save") : t("c.add")}</Button>
+                </div>
+              </BranchGuard>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       <BranchGuard compact>
@@ -427,6 +451,7 @@ function ReceiptsPage() {
 function F({ label, children }: { label: string; children: React.ReactNode }) {
   return <div className="space-y-1.5"><Label className="text-xs uppercase tracking-wider text-muted-foreground">{label}</Label>{children}</div>;
 }
+
 function P({ value, options, onChange, className }: { value: string; options: readonly string[] | string[]; onChange: (v: string) => void; className?: string }) {
   return (
     <Select value={value} onValueChange={onChange}>
