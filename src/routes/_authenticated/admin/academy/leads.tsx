@@ -1,312 +1,256 @@
-import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Users, Plus, Search, Trash2, Pencil, X, Loader2, LayoutGrid, KanbanSquare, ArrowRightLeft } from "lucide-react";
-import { useServerFn } from "@tanstack/react-start";
-import { toast } from "sonner";
+import { useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { SERVICES, LEAD_SOURCES, OFFERS, LEAD_STATUSES, AGENTS } from "@/lib/legends/academy-types";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { BranchGuard } from "@/components/academy/BranchGuard";
-import { OsHeader, OsCard, StatusPill } from "@/components/academy/OsUI";
-import { useAcademyTable, str, type Row } from "@/lib/use-academy-table";
-import { convertLead } from "@/lib/leads.functions";
-import { exportCSV, exportExcel, exportPDF } from "@/lib/export-utils";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Switch } from "@/components/ui/switch";
+import { Plus, Pencil, Trash2, Search, Users } from "lucide-react";
+import { toast } from "sonner";
+import { useI18n } from "@/lib/legends/i18n";
+import { useSession } from "@/lib/legends/session";
+import { BranchGuard, useRequireBranch } from "@/components/legends/BranchGuard";
 
 export const Route = createFileRoute("/_authenticated/admin/academy/leads")({
+  head: () => ({ meta: [{ title: "Leads CRM · United Sports Academy" }] }),
   component: LeadsPage,
 });
 
-const STATUSES = [
-  { value: "warm", label: "بانتظار المتابعة", tone: "orange" as const },
-  { value: "hot", label: "مهتم جداً", tone: "cyan" as const },
-  { value: "converted", label: "عميل دائم", tone: "cyan" as const },
-  { value: "cold", label: "بارد", tone: "muted" as const },
-  { value: "lost", label: "مفقود", tone: "red" as const },
-];
-
-const SERVICES = ["Kids", "Adults", "Ladies only", "Diving", "Aqua Baby", "Para Swim", "Open Pool", "Hydrotherapy"];
-const SOURCES = ["Social media", "Call", "WhatsApp", "Referral", "Walk-in"];
-const SUBSCRIPTIONS = ["Sessions 8", "Sessions 12", "Sessions 16", "Monthly", "Quarterly"];
-const OFFERS = ["None", "5%", "10%", "15%", "20%", "25%"];
-const STAFF = ["Mero", "Nada", "Abdelkader", "Mohamed Ali", "Salma"];
-
-const EMPTY: Row = {
-  full_name: "",
-  phone: "",
-  service: "Kids",
-  source: "Social media",
-  evaluation_date: "",
-  attended: false,
-  subscription_type: "Sessions 8",
-  offer_label: "None",
-  status: "warm",
-  assigned_staff: "Mero",
-  notes: "",
+type LeadRow = {
+  id: string;
+  branch_id: string;
+  name: string;
+  contact: string;
+  service: string;
+  source: string;
+  assessment_date: string | null;
+  assessment_attended: boolean;
+  subscription_type: string;
+  offer: string;
+  status: string;
+  agent: string;
+  comments: string;
 };
 
-function statusMeta(v: unknown) {
-  return STATUSES.find((s) => s.value === str(v)) ?? STATUSES[0];
-}
+type LeadForm = Omit<LeadRow, "id" | "branch_id">;
+
+const empty: LeadForm = {
+  name: "", contact: "", service: "Kids", source: "Social media",
+  assessment_date: new Date().toISOString().slice(0, 10), assessment_attended: false,
+  subscription_type: "", offer: "None", status: "Pending Follow-up", agent: "Mero", comments: "",
+};
+
+const statusColor: Record<string, string> = {
+  "Interested": "bg-mint/20 text-mint border-mint/40",
+  "Long-time customer": "bg-teal/20 text-cyan-glow border-teal/40",
+  "Refused": "bg-destructive/20 text-destructive-foreground border-destructive/40",
+  "Pending Follow-up": "bg-warn/20 text-warn border-warn/40",
+};
 
 function LeadsPage() {
-  const { rows, isLoading, upsert, destroy, invalidate } = useAcademyTable("leads", { realtime: true });
-  const convert = useServerFn(convertLead);
-  const [q, setQ] = useState("");
-  const [fService, setFService] = useState("الكل");
-  const [fStatus, setFStatus] = useState("الكل");
+  const { t } = useI18n();
+  const { currentBranchId } = useSession();
+  const { ensureBranch } = useRequireBranch();
+  const qc = useQueryClient();
+
+  const leadsQ = useQuery({
+    queryKey: ["leads", currentBranchId],
+    enabled: !!currentBranchId,
+    queryFn: async (): Promise<LeadRow[]> => {
+      const { data, error } = await supabase
+        .from("leads" as any)
+        .select("*")
+        .eq("branch_id", currentBranchId!)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return (data ?? []) as unknown as LeadRow[];
+    },
+  });
+
   const [open, setOpen] = useState(false);
-  const [draft, setDraft] = useState<Row>(EMPTY);
-  const [saving, setSaving] = useState(false);
-  const [busy, setBusy] = useState<string | null>(null);
+  const [editing, setEditing] = useState<LeadRow | null>(null);
+  const [form, setForm] = useState<LeadForm>(empty);
+  const [search, setSearch] = useState("");
+  const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [filterAgent, setFilterAgent] = useState<string>("all");
 
-  const filtered = useMemo(
-    () =>
-      rows.filter((r) => {
-        const hit = !q || `${str(r.full_name)} ${str(r.phone)}`.toLowerCase().includes(q.toLowerCase());
-        const s = fService === "الكل" || str(r.service) === fService;
-        const st = fStatus === "الكل" || str(r.status) === fStatus;
-        return hit && s && st;
-      }),
-    [rows, q, fService, fStatus],
-  );
+  const tStatus = (s: string) => t(`ls.${s}`) !== `ls.${s}` ? t(`ls.${s}`) : s;
 
-  function openNew() {
-    setDraft({ ...EMPTY });
+  const start = (l?: LeadRow) => {
+    if (l) {
+      setEditing(l);
+      setForm({
+        name: l.name, contact: l.contact, service: l.service, source: l.source,
+        assessment_date: l.assessment_date, assessment_attended: l.assessment_attended,
+        subscription_type: l.subscription_type, offer: l.offer, status: l.status,
+        agent: l.agent, comments: l.comments,
+      });
+    } else { setEditing(null); setForm(empty); }
     setOpen(true);
-  }
-  function openEdit(r: Row) {
-    setDraft({ ...r });
-    setOpen(true);
-  }
+  };
 
-  async function submit() {
-    if (!str(draft.full_name).trim()) {
-      toast.error("الاسم مطلوب");
-      return;
-    }
-    setSaving(true);
-    const payload: Row = { ...draft };
-    if (!payload.evaluation_date) delete payload.evaluation_date;
-    const ok = await upsert(payload);
-    setSaving(false);
-    if (ok) {
-      toast.success("تم الحفظ");
+  const saveM = useMutation({
+    mutationFn: async () => {
+      const branchId = ensureBranch();
+      if (!branchId) throw new Error("no-branch");
+      if (!form.name.trim()) throw new Error(t("lead.nameRequired"));
+      if (editing) {
+        const { error } = await supabase.from("leads" as any).update(form).eq("id", editing.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("leads" as any).insert({ ...form, branch_id: branchId });
+        if (error) throw error;
+      }
+    },
+    onSuccess: () => {
+      toast.success(editing ? t("lead.updated") : t("lead.added"));
+      qc.invalidateQueries({ queryKey: ["leads", currentBranchId] });
       setOpen(false);
-    }
-  }
+    },
+    onError: (e: any) => { if (e?.message !== "no-branch") toast.error(e?.message ?? "Error"); },
+  });
 
-  async function handleConvert(id: string) {
-    setBusy(id);
-    try {
-      await convert({ data: { leadId: id } });
-      toast.success("تم تحويل العميل المحتمل لمتدرب");
-      invalidate();
-    } catch (e) {
-      toast.error((e as Error).message);
-    } finally {
-      setBusy(null);
-    }
-  }
+  const deleteM = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("leads" as any).delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success(t("lead.deleted"));
+      qc.invalidateQueries({ queryKey: ["leads", currentBranchId] });
+    },
+    onError: (e: any) => toast.error(e?.message ?? "Error"),
+  });
 
-  function doExport(kind: "csv" | "xlsx" | "pdf") {
-    const flat = filtered.map((r) => ({
-      name: str(r.full_name),
-      phone: str(r.phone),
-      service: str(r.service),
-      source: str(r.source),
-      staff: str(r.assigned_staff),
-      offer: str(r.offer_label),
-      subscription: str(r.subscription_type),
-      status: statusMeta(r.status).label,
-    }));
-    if (kind === "csv") exportCSV(flat, "leads");
-    if (kind === "xlsx") exportExcel(flat, "leads", "Leads");
-    if (kind === "pdf") exportPDF(flat, "leads", "Leads");
-  }
+  const leads = leadsQ.data ?? [];
+  const filtered = leads.filter(l => {
+    if (search && !l.name.toLowerCase().includes(search.toLowerCase()) && !l.contact.includes(search)) return false;
+    if (filterStatus !== "all" && l.status !== filterStatus) return false;
+    if (filterAgent !== "all" && l.agent !== filterAgent) return false;
+    return true;
+  });
 
   return (
-    <BranchGuard>
-      <OsHeader
-        icon={Users}
-        title="العملاء المحتملون وإدارة العلاقات"
-        subtitle="كل سجل جديد سيتم ربطه بالفرع النشط"
-        count={filtered.length}
-        actions={
-          <>
-            <Button variant="outline" size="sm" onClick={() => doExport("csv")}>CSV</Button>
-            <Button variant="outline" size="sm" onClick={() => doExport("xlsx")}>Excel</Button>
-            <Button variant="outline" size="sm" onClick={() => doExport("pdf")}>PDF</Button>
-            <Button size="sm" onClick={openNew}>
-              <Plus className="ml-1 h-4 w-4" /> عميل جديد
-            </Button>
-          </>
-        }
-      />
-
-      <OsCard className="mb-4">
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="relative min-w-[220px] flex-1">
-            <Search className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input className="pr-9" placeholder="ابحث بالاسم أو الهاتف" value={q} onChange={(e) => setQ(e.target.value)} />
+    <div className="space-y-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="rounded-xl bg-teal/15 p-2.5 ring-1 ring-teal/30"><Users className="h-5 w-5 text-cyan-glow" /></div>
+          <div>
+            <h2 className="text-xl font-bold">{t("pg.leads.h")}</h2>
+            <p className="text-xs text-muted-foreground">{leads.length} · {filtered.length}</p>
           </div>
-          <select
-            className="h-9 rounded-md border border-input bg-background px-3 text-xs"
-            value={fService}
-            onChange={(e) => setFService(e.target.value)}
-          >
-            <option>الكل</option>
-            {SERVICES.map((s) => <option key={s}>{s}</option>)}
-          </select>
-          <select
-            className="h-9 rounded-md border border-input bg-background px-3 text-xs"
-            value={fStatus}
-            onChange={(e) => setFStatus(e.target.value)}
-          >
-            <option value="الكل">الكل</option>
-            {STATUSES.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
-          </select>
         </div>
-      </OsCard>
-
-      {isLoading ? (
-        <div className="p-10 text-center"><Loader2 className="mx-auto h-6 w-6 animate-spin text-primary" /></div>
-      ) : (
-        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-          {filtered.map((r) => {
-            const m = statusMeta(r.status);
-            return (
-              <div key={str(r.id)} className="os-card p-4">
-                <div className="mb-3 flex items-start justify-between gap-2">
-                  <div className="min-w-0">
-                    <div className="truncate font-bold">{str(r.full_name)}</div>
-                    <div className="text-xs text-muted-foreground" dir="ltr">{str(r.phone) || "—"}</div>
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild>
+            <Button onClick={() => start()} disabled={!currentBranchId} className="bg-gradient-to-r from-teal to-cyan-glow text-primary-foreground hover:opacity-90">
+              <Plus className="h-4 w-4" /> {t("lead.new")}
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="glass-strong max-w-2xl">
+            <DialogHeader><DialogTitle>{editing ? t("lead.edit") : t("lead.new")}</DialogTitle></DialogHeader>
+            <BranchGuard compact>
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                <Field label={t("c.name")}><Input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} /></Field>
+                <Field label={t("lead.contact")}><Input value={form.contact} onChange={e => setForm({ ...form, contact: e.target.value })} /></Field>
+                <Field label={t("lead.service")}><Picker value={form.service} options={SERVICES} onChange={v => setForm({ ...form, service: v })} /></Field>
+                <Field label={t("lead.source")}><Picker value={form.source} options={LEAD_SOURCES} onChange={v => setForm({ ...form, source: v })} /></Field>
+                <Field label={t("lead.assessmentDate")}><Input type="date" value={form.assessment_date ?? ""} onChange={e => setForm({ ...form, assessment_date: e.target.value || null })} /></Field>
+                <Field label={t("lead.assessmentAttended")}>
+                  <div className="flex h-10 items-center gap-2 rounded-md border border-input bg-background/30 px-3">
+                    <Switch checked={form.assessment_attended} onCheckedChange={v => setForm({ ...form, assessment_attended: v })} />
+                    <span className="text-sm text-muted-foreground">{form.assessment_attended ? t("c.yes") : t("c.no")}</span>
                   </div>
-                  <StatusPill tone={m.tone}>{m.label}</StatusPill>
-                </div>
-                <div className="grid grid-cols-2 gap-2 text-xs">
-                  <Field label="الخدمة" value={str(r.service)} />
-                  <Field label="المصدر" value={str(r.source)} />
-                  <Field label="الموظف المسؤول" value={str(r.assigned_staff)} />
-                  <Field label="العرض / الخصم" value={str(r.offer_label) || "None"} />
-                  <Field label="التقييم" value={str(r.evaluation_date) || "—"} />
-                  <Field label="الاشتراك" value={str(r.subscription_type)} />
-                </div>
-                {r.notes ? (
-                  <p className="mt-3 border-t border-white/5 pt-2 text-[11px] italic text-muted-foreground">"{str(r.notes)}"</p>
-                ) : null}
-                <div className="mt-3 flex items-center gap-1">
-                  <Button size="icon" variant="ghost" className="h-8 w-8 text-red-400 hover:text-red-300"
-                    onClick={() => destroy(str(r.id))}>
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                  <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => openEdit(r)}>
-                    <Pencil className="h-4 w-4" />
-                  </Button>
-                  {str(r.status) !== "converted" && (
-                    <Button size="sm" variant="ghost" className="h-8 px-2 text-[11px] text-primary"
-                      disabled={busy === str(r.id)} onClick={() => handleConvert(str(r.id))}>
-                      <ArrowRightLeft className="ml-1 h-3.5 w-3.5" /> تحويل لمتدرب
-                    </Button>
-                  )}
-                </div>
+                </Field>
+                <Field label={t("lead.subType")}><Input value={form.subscription_type} onChange={e => setForm({ ...form, subscription_type: e.target.value })} placeholder="8 Sessions" /></Field>
+                <Field label={t("lead.offer")}><Picker value={form.offer} options={OFFERS} onChange={v => setForm({ ...form, offer: v })} /></Field>
+                <Field label={t("c.status")}><Picker value={form.status} options={LEAD_STATUSES} onChange={v => setForm({ ...form, status: v })} translate={tStatus} /></Field>
+                <Field label={t("lead.agent")}><Picker value={form.agent} options={AGENTS} onChange={v => setForm({ ...form, agent: v })} /></Field>
+                <div className="md:col-span-2"><Field label={t("lead.comments")}><Textarea rows={3} value={form.comments} onChange={e => setForm({ ...form, comments: e.target.value })} /></Field></div>
               </div>
-            );
-          })}
-          {!filtered.length && (
-            <div className="os-card col-span-full p-10 text-center text-sm text-muted-foreground">
-              <LayoutGrid className="mx-auto mb-2 h-6 w-6" /> لا توجد نتائج
+              <div className="mt-3 flex justify-end gap-2">
+                <Button variant="ghost" onClick={() => setOpen(false)}>{t("c.cancel")}</Button>
+                <Button onClick={() => saveM.mutate()} disabled={saveM.isPending} className="bg-gradient-to-r from-teal to-cyan-glow text-primary-foreground">{editing ? t("c.save") : t("c.add")}</Button>
+              </div>
+            </BranchGuard>
+          </DialogContent>
+        </Dialog>
+      </div>
+
+      <BranchGuard compact>
+        <Card className="glass p-3 md:p-4">
+          <div className="flex flex-wrap gap-2">
+            <div className="relative flex-1 min-w-[200px]">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground rtl:left-auto rtl:right-3" />
+              <Input placeholder={t("lead.searchPh")} value={search} onChange={e => setSearch(e.target.value)} className="pl-9 rtl:pl-3 rtl:pr-9 bg-background/30" />
             </div>
+            <Picker value={filterStatus} options={["all", ...LEAD_STATUSES]} onChange={setFilterStatus} className="w-[200px]" translate={tStatus} />
+            <Picker value={filterAgent} options={["all", ...AGENTS]} onChange={setFilterAgent} className="w-[160px]" />
+          </div>
+        </Card>
+
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3 mt-3">
+          {filtered.map(l => (
+            <Card key={l.id} className="glass group relative p-4 transition-all hover:ring-1 hover:ring-teal/40">
+              <div className="flex items-start justify-between">
+                <div>
+                  <div className="font-semibold text-foreground">{l.name}</div>
+                  <div className="text-xs text-muted-foreground">{l.contact}</div>
+                </div>
+                <Badge className={"rounded-full border " + (statusColor[l.status] ?? "")}>{tStatus(l.status)}</Badge>
+              </div>
+              <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
+                <Info k={t("lead.service")} v={l.service} />
+                <Info k={t("lead.source")} v={l.source} />
+                <Info k={t("lead.agent")} v={l.agent} />
+                <Info k={t("lead.offer")} v={l.offer} />
+                <Info k={t("lead.assessment")} v={`${l.assessment_date ?? "—"} ${l.assessment_attended ? "✓" : "—"}`} />
+                <Info k={t("lead.sub")} v={l.subscription_type || "—"} />
+              </div>
+              {l.comments && <p className="mt-3 line-clamp-2 text-xs text-muted-foreground/90">"{l.comments}"</p>}
+              <div className="mt-3 flex justify-end gap-1 opacity-70 transition-opacity group-hover:opacity-100">
+                <Button size="sm" variant="ghost" onClick={() => start(l)}><Pencil className="h-3.5 w-3.5" /></Button>
+                <Button size="sm" variant="ghost" onClick={() => deleteM.mutate(l.id)}><Trash2 className="h-3.5 w-3.5 text-destructive" /></Button>
+              </div>
+            </Card>
+          ))}
+          {filtered.length === 0 && !leadsQ.isLoading && (
+            <Card className="glass col-span-full grid place-items-center p-10 text-sm text-muted-foreground">{t("lead.empty")}</Card>
           )}
         </div>
-      )}
-
-      {open && (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-black/70 p-3" onClick={() => setOpen(false)}>
-          <div
-            dir="rtl"
-            className="os-card max-h-[90vh] w-full max-w-3xl overflow-y-auto p-5"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="flex items-center gap-2 text-lg font-bold">
-                <KanbanSquare className="h-5 w-5 text-primary" /> {draft.id ? "تعديل عميل" : "عميل جديد"}
-              </h2>
-              <Button size="icon" variant="ghost" onClick={() => setOpen(false)}><X className="h-4 w-4" /></Button>
-            </div>
-
-            <div className="grid gap-3 sm:grid-cols-2">
-              <Text label="الاسم" value={str(draft.full_name)} onChange={(v) => setDraft({ ...draft, full_name: v })} />
-              <Text label="رقم التواصل" value={str(draft.phone)} onChange={(v) => setDraft({ ...draft, phone: v })} />
-              <Sel label="الخدمة" value={str(draft.service)} options={SERVICES} onChange={(v) => setDraft({ ...draft, service: v })} />
-              <Sel label="المصدر" value={str(draft.source)} options={SOURCES} onChange={(v) => setDraft({ ...draft, source: v })} />
-              <div>
-                <Label className="mb-1.5 block text-xs">تاريخ التقييم</Label>
-                <Input type="date" value={str(draft.evaluation_date)} onChange={(e) => setDraft({ ...draft, evaluation_date: e.target.value })} />
-              </div>
-              <div>
-                <Label className="mb-1.5 block text-xs">حضر التقييم</Label>
-                <div className="flex gap-2">
-                  {[{ v: false, l: "لا" }, { v: true, l: "نعم" }].map((o) => (
-                    <Button key={o.l} type="button" size="sm" variant={draft.attended === o.v ? "default" : "outline"}
-                      onClick={() => setDraft({ ...draft, attended: o.v })}>{o.l}</Button>
-                  ))}
-                </div>
-              </div>
-              <Sel label="نوع الاشتراك" value={str(draft.subscription_type)} options={SUBSCRIPTIONS} onChange={(v) => setDraft({ ...draft, subscription_type: v })} />
-              <Sel label="العرض / الخصم" value={str(draft.offer_label)} options={OFFERS} onChange={(v) => setDraft({ ...draft, offer_label: v })} />
-              <div>
-                <Label className="mb-1.5 block text-xs">الحالة</Label>
-                <select className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
-                  value={str(draft.status)} onChange={(e) => setDraft({ ...draft, status: e.target.value })}>
-                  {STATUSES.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
-                </select>
-              </div>
-              <Sel label="الموظف المسؤول" value={str(draft.assigned_staff)} options={STAFF} onChange={(v) => setDraft({ ...draft, assigned_staff: v })} />
-              <div className="sm:col-span-2">
-                <Label className="mb-1.5 block text-xs">ملاحظات</Label>
-                <Textarea rows={3} value={str(draft.notes)} onChange={(e) => setDraft({ ...draft, notes: e.target.value })} />
-              </div>
-            </div>
-
-            <div className="mt-5 flex items-center gap-2">
-              <Button onClick={submit} disabled={saving}>
-                {saving && <Loader2 className="ml-2 h-4 w-4 animate-spin" />} {draft.id ? "حفظ" : "إضافة"}
-              </Button>
-              <Button variant="ghost" onClick={() => setOpen(false)}>إلغاء</Button>
-            </div>
-          </div>
-        </div>
-      )}
-    </BranchGuard>
-  );
-}
-
-function Field({ label, value }: { label: string; value: string }) {
-  return (
-    <div>
-      <div className="text-[10px] text-muted-foreground">{label}</div>
-      <div className="truncate font-semibold">{value || "—"}</div>
+      </BranchGuard>
     </div>
   );
 }
 
-function Text({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div>
-      <Label className="mb-1.5 block text-xs">{label}</Label>
-      <Input value={value} onChange={(e) => onChange(e.target.value)} />
+    <div className="space-y-1.5">
+      <Label className="text-xs uppercase tracking-wider text-muted-foreground">{label}</Label>
+      {children}
     </div>
   );
 }
-
-function Sel({ label, value, options, onChange }: { label: string; value: string; options: string[]; onChange: (v: string) => void }) {
+function Info({ k, v }: { k: string; v: string }) {
   return (
-    <div>
-      <Label className="mb-1.5 block text-xs">{label}</Label>
-      <select className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm" value={value} onChange={(e) => onChange(e.target.value)}>
-        {options.map((o) => <option key={o} value={o}>{o}</option>)}
-      </select>
+    <div className="rounded-md bg-background/30 px-2 py-1.5">
+      <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{k}</div>
+      <div className="text-xs font-medium text-foreground/95 truncate">{v}</div>
     </div>
+  );
+}
+function Picker({ value, options, onChange, className, translate }: { value: string; options: readonly string[] | string[]; onChange: (v: string) => void; className?: string; translate?: (s: string) => string }) {
+  const { t } = useI18n();
+  return (
+    <Select value={value} onValueChange={onChange}>
+      <SelectTrigger className={"bg-background/30 " + (className ?? "")}><SelectValue /></SelectTrigger>
+      <SelectContent>{options.map(o => <SelectItem key={o} value={o}>{o === "all" ? t("c.all") : (translate ? translate(o) : o)}</SelectItem>)}</SelectContent>
+    </Select>
   );
 }

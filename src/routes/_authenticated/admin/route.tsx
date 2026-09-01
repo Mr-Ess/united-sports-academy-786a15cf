@@ -40,6 +40,11 @@ import {
   MapPinned,
   Globe2,
   Building2,
+  Package,
+  Truck,
+  Wrench,
+  Bot,
+  ShieldCheck,
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -97,10 +102,9 @@ const ACADEMY_GROUPS: AcademyGroup[] = [
   {
     label: "المالية",
     items: [
-      { to: "/admin/academy/finance/ledger", label: "الدفتر", icon: BookOpen },
-      { to: "/admin/academy/finance/receipts", label: "الإيصالات", icon: Receipt },
-      { to: "/admin/academy/finance/subscriptions", label: "الاشتراكات", icon: Repeat },
-      { to: "/admin/academy/finance/invoicing", label: "الفوترة", icon: FileText },
+      { to: "/admin/academy/finance", label: "المالية", icon: BookOpen },
+      { to: "/admin/academy/receipts", label: "الإيصالات", icon: Receipt },
+      { to: "/admin/academy/subscriptions", label: "الاشتراكات", icon: Repeat },
     ],
   },
   {
@@ -113,23 +117,32 @@ const ACADEMY_GROUPS: AcademyGroup[] = [
     ],
   },
   {
-    label: "الجداول",
+    label: "إعداد المسابح",
     items: [
-      { to: "/admin/academy/schedule", label: "الجداول", icon: CalendarDays },
-      { to: "/admin/academy/coaches", label: "المدربين", icon: Award },
+      { to: "/admin/academy/pools", label: "المسابح", icon: Waves },
+      { to: "/admin/academy/lanes", label: "الحارات", icon: MapPin },
+      { to: "/admin/academy/groups", label: "المجموعات", icon: UsersRound },
+      { to: "/admin/academy/capacity", label: "ساعات الحارات", icon: CalendarRange },
     ],
   },
   {
-    label: "أكاديمي",
-    items: [{ to: "/admin/academy/assessments", label: "التقييمات", icon: ClipboardList }],
+    label: "الجداول والتدريب",
+    items: [
+      { to: "/admin/academy/schedule", label: "الجداول", icon: CalendarDays },
+      { to: "/admin/academy/coaches", label: "المدربين", icon: Award },
+      { to: "/admin/academy/assessments", label: "التقييمات", icon: ClipboardList },
+    ],
   },
   {
     label: "الموارد البشرية",
+    items: [{ to: "/admin/academy/hr", label: "الموظفون والرواتب", icon: UserCog }],
+  },
+  {
+    label: "المخزون والمشتريات",
     items: [
-      { to: "/admin/academy/hr", label: "الموظفون", icon: UserCog },
-      { to: "/admin/academy/hr/attendance", label: "حضور الموظفين", icon: ClipboardCheck },
-      { to: "/admin/academy/hr/leaves", label: "الإجازات", icon: CalendarRange },
-      { to: "/admin/academy/hr/payroll", label: "الرواتب", icon: Receipt },
+      { to: "/admin/academy/inventory", label: "المخزون", icon: Package },
+      { to: "/admin/academy/procurement", label: "المشتريات", icon: Truck },
+      { to: "/admin/academy/maintenance", label: "الصيانة", icon: Wrench },
     ],
   },
   {
@@ -142,9 +155,13 @@ const ACADEMY_GROUPS: AcademyGroup[] = [
     ],
   },
   {
+    label: "الذكاء الاصطناعي",
+    items: [{ to: "/admin/academy/ai-agents", label: "وكلاء AI", icon: Bot }],
+  },
+  {
     label: "النظام",
     items: [
-      { to: "/admin/academy/audit-log", label: "سجل التدقيق", icon: ClipboardList },
+      { to: "/admin/academy/permissions", label: "الصلاحيات والمستخدمين", icon: ShieldCheck },
       { to: "/admin/academy/branches", label: "الفروع", icon: MapPinned },
       { to: "/admin/academy/settings", label: "الإعدادات", icon: Settings },
     ],

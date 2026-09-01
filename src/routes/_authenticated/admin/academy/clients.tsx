@@ -1,241 +1,253 @@
-import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Users, Plus, Search, Trash2, Pencil, X, Loader2, Wallet } from "lucide-react";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useSession } from "@/lib/legends/session";
+import { useI18n } from "@/lib/legends/i18n";
+import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { BranchGuard } from "@/components/academy/BranchGuard";
-import { OsHeader, OsCard, StatusPill } from "@/components/academy/OsUI";
-import { useAcademyTable, str, num, money, dmy, type Row } from "@/lib/use-academy-table";
-import { useBranch } from "@/lib/branch-context";
+import { Badge } from "@/components/ui/badge";
+import { BranchGuard } from "@/components/legends/BranchGuard";
+import { IdCard, Search, Waves, Calendar, Phone, User, ReceiptText, Building2 } from "lucide-react";
+import { AttachmentsPanel } from "@/components/legends/AttachmentsPanel";
 
 export const Route = createFileRoute("/_authenticated/admin/academy/clients")({
+  head: () => ({ meta: [{ title: "Client Lookup · United Sports Academy" }] }),
   component: ClientsPage,
 });
 
-const PILLS = [
-  { value: "upcoming", label: "دفع قادم" },
-  { value: "late", label: "متأخر" },
-  { value: "paid", label: "مدفوع بالكامل" },
-  { value: "cancelled", label: "ملغي" },
-  { value: "current", label: "مشترك حالي" },
-  { value: "new", label: "جديد" },
-];
-
-const CATEGORIES = ["Kids", "Adults", "Ladies", "Diving", "Baby", "Para Swim"];
-const LEVELS = ["Level 1", "Level 2", "Level 3", "Level 4"];
-const STAFF = ["Mero", "Nada", "Abdelkader", "Mohamed Ali", "Salma"];
-
-const EMPTY: Row = {
-  full_name: "",
-  phone: "",
-  membership_id: "",
-  category: "Kids",
-  level: "Level 1",
-  age: 8,
-  assigned_staff: "Mero",
-  address: "",
-  emergency_contact: "",
-  active: true,
+type Trainee = {
+  id: string; branch_id: string; client_code: string; full_name: string; full_name_ar: string | null;
+  phone: string | null; category: string | null; skill_level: string | null; active: boolean;
+};
+type Sub = {
+  id: string; branch_id: string; trainee_id: string; package_name: string; package_type: string | null;
+  total_sessions: number; used_sessions: number; price: number; paid_amount: number;
+  payment_method: string | null; start_date: string; end_date: string | null; status: string;
+  coach_id: string | null; receipt_number: string | null;
 };
 
 function ClientsPage() {
-  const { currentBranch } = useBranch();
-  const clients = useAcademyTable("clients", { realtime: true });
-  const subs = useAcademyTable("subscriptions", {});
+  const { t, lang } = useI18n();
+  const { currentBranchId } = useSession();
   const [q, setQ] = useState("");
-  const [cat, setCat] = useState("الكل");
-  const [pill, setPill] = useState("upcoming");
-  const [open, setOpen] = useState(false);
-  const [draft, setDraft] = useState<Row>(EMPTY);
-  const [saving, setSaving] = useState(false);
 
-  const subByClient = useMemo(() => {
-    const m = new Map<string, Row>();
-    subs.rows.forEach((s) => {
-      if (s.client_id) m.set(str(s.client_id), s);
-    });
-    return m;
-  }, [subs.rows]);
+  const traineesQ = useQuery({
+    queryKey: ["clients-trainees", currentBranchId],
+    enabled: !!currentBranchId,
+    queryFn: async (): Promise<Trainee[]> => {
+      const { data, error } = await supabase
+        .from("ac_trainees")
+        .select("id, branch_id, client_code, full_name, full_name_ar, phone, category, skill_level, active")
+        .eq("branch_id", currentBranchId!)
+        .is("deleted_at", null)
+        .order("full_name");
+      if (error) throw error;
+      return (data ?? []) as Trainee[];
+    },
+  });
 
-  const filtered = useMemo(
-    () =>
-      clients.rows.filter((c) => {
-        const hit = !q || `${str(c.full_name)} ${str(c.phone)} ${str(c.client_code)} ${str(c.membership_id)}`.toLowerCase().includes(q.toLowerCase());
-        const ct = cat === "الكل" || str(c.category) === cat;
-        return hit && ct;
-      }),
-    [clients.rows, q, cat],
-  );
+  const subsQ = useQuery({
+    queryKey: ["clients-subs", currentBranchId],
+    enabled: !!currentBranchId,
+    queryFn: async (): Promise<Sub[]> => {
+      const { data, error } = await supabase
+        .from("ac_subscriptions")
+        .select("id, branch_id, trainee_id, package_name, package_type, total_sessions, used_sessions, price, paid_amount, payment_method, start_date, end_date, status, coach_id, receipt_number")
+        .eq("branch_id", currentBranchId!)
+        .is("deleted_at", null)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return (data ?? []) as Sub[];
+    },
+  });
 
-  const total = useMemo(
-    () => filtered.reduce((a, c) => a + num(subByClient.get(str(c.id))?.total_amount), 0),
-    [filtered, subByClient],
-  );
+  const invoicesQ = useQuery({
+    queryKey: ["clients-invoices", currentBranchId],
+    enabled: !!currentBranchId,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("ac_invoices")
+        .select("id, trainee_id, invoice_number, issue_date, total, paid_amount, status")
+        .eq("branch_id", currentBranchId!)
+        .is("deleted_at", null)
+        .order("issue_date", { ascending: false });
+      if (error) throw error;
+      return (data ?? []) as Array<{ id: string; trainee_id: string | null; invoice_number: string; issue_date: string; total: number; paid_amount: number; status: string }>;
+    },
+  });
 
-  async function submit() {
-    if (!str(draft.full_name).trim()) {
-      toast.error("الاسم مطلوب");
-      return;
-    }
-    setSaving(true);
-    const payload: Row = { ...draft, age: num(draft.age) };
-    const ok = await clients.upsert(payload);
-    setSaving(false);
-    if (ok) {
-      toast.success("تم الحفظ");
-      setOpen(false);
-    }
+  const trainees = traineesQ.data ?? [];
+  const subs = subsQ.data ?? [];
+  const invoices = invoicesQ.data ?? [];
+
+  const subsByTrainee = new Map<string, Sub[]>();
+  for (const s of subs) {
+    const list = subsByTrainee.get(s.trainee_id) ?? [];
+    list.push(s);
+    subsByTrainee.set(s.trainee_id, list);
+  }
+  const invoicesByTrainee = new Map<string, typeof invoices>();
+  for (const inv of invoices) {
+    if (!inv.trainee_id) continue;
+    const list = invoicesByTrainee.get(inv.trainee_id) ?? [];
+    list.push(inv);
+    invoicesByTrainee.set(inv.trainee_id, list);
   }
 
+  const needle = q.trim().toLowerCase();
+  const filtered = needle
+    ? trainees.filter((tr) =>
+        tr.client_code.toLowerCase().includes(needle) ||
+        tr.full_name.toLowerCase().includes(needle) ||
+        (tr.full_name_ar ?? "").toLowerCase().includes(needle) ||
+        (tr.phone ?? "").includes(needle),
+      )
+    : trainees;
+
   return (
-    <BranchGuard>
-      <OsHeader
-        icon={Users}
-        title="إدارة العملاء والمدفوعات"
-        subtitle="ابحث بالاسم، الرقم، أو الهوية"
-        count={money(total).replace("EGP ", "")}
-        actions={
-          <Button size="sm" onClick={() => { setDraft({ ...EMPTY }); setOpen(true); }}>
-            <Plus className="ml-1 h-4 w-4" /> عميل جديد
-          </Button>
-        }
-      />
+    <div className="space-y-5">
+      <div className="flex items-center gap-3">
+        <div className="rounded-xl bg-teal/15 p-2.5 ring-1 ring-teal/30"><IdCard className="h-5 w-5 text-cyan-glow" /></div>
+        <div>
+          <h2 className="text-xl font-bold">{t("pg.clients.h")}</h2>
+          <p className="text-xs text-muted-foreground">{t("pg.clients.s")}</p>
+        </div>
+      </div>
 
-      <OsCard className="mb-3">
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="relative min-w-[220px] flex-1">
-            <Search className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input className="pr-9" placeholder="ابحث بالاسم، الرقم، أو الهوية" value={q} onChange={(e) => setQ(e.target.value)} />
+      <BranchGuard>
+        <Card className="glass p-4">
+          <div className="relative">
+            <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              autoFocus
+              placeholder={lang === "ar"
+                ? "ابحث بكود العميل (CL-XXXXXX)، الاسم أو الهاتف"
+                : "Search by Client ID (CL-XXXXXX), name, or phone"}
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              className="ps-10 h-12 text-base bg-background/30"
+            />
           </div>
-          <select className="h-9 rounded-md border border-input bg-background px-3 text-xs" value={cat} onChange={(e) => setCat(e.target.value)}>
-            <option>الكل</option>
-            {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
-          </select>
-        </div>
-        <div className="mt-3 flex flex-wrap gap-2">
-          {PILLS.map((p) => (
-            <button
-              key={p.value}
-              onClick={() => setPill(p.value)}
-              className={`os-pill transition-colors ${pill === p.value ? "border-primary bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground"}`}
-            >
-              {p.label}
-            </button>
-          ))}
-        </div>
-      </OsCard>
+          <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
+            <span>
+              {filtered.length} {lang === "ar" ? "نتيجة" : (filtered.length === 1 ? "client" : "clients")}
+            </span>
+            <span className="flex items-center gap-1.5">
+              <Building2 className="h-3 w-3" />
+              {lang === "ar" ? "نطاق البحث: الفرع الحالي" : "Scope: current branch only"}
+            </span>
+          </div>
+        </Card>
 
-      {clients.isLoading ? (
-        <div className="p-10 text-center"><Loader2 className="mx-auto h-6 w-6 animate-spin text-primary" /></div>
-      ) : (
-        <div className="space-y-3">
-          {filtered.map((c) => {
-            const s = subByClient.get(str(c.id));
-            const totalAmt = num(s?.total_amount);
-            const paid = num(s?.paid_amount);
-            const remaining = Math.max(totalAmt - paid, 0);
+        <div className="grid gap-4 lg:grid-cols-2">
+          {filtered.map((tr) => {
+            const traineeSubs = subsByTrainee.get(tr.id) ?? [];
+            const traineeInvs = invoicesByTrainee.get(tr.id) ?? [];
+            const active = traineeSubs.filter((r) => r.used_sessions < r.total_sessions && r.status !== "cancelled");
+            const totalSpent = traineeSubs.reduce((s, r) => s + Number(r.paid_amount || 0), 0);
+            const invTotal = traineeInvs.reduce((s, i) => s + Number(i.total || 0), 0);
+            const invPaid = traineeInvs.reduce((s, i) => s + Number(i.paid_amount || 0), 0);
+            const invOutstanding = invTotal - invPaid;
+            const displayName = lang === "ar" ? (tr.full_name_ar || tr.full_name) : tr.full_name;
             return (
-              <div key={str(c.id)} className="os-card grid gap-3 p-4 lg:grid-cols-6">
-                <div>
-                  <div className="mb-1 flex items-center gap-2">
-                    <span className="font-bold">{str(c.full_name)}</span>
-                    <StatusPill tone={remaining > 0 ? "orange" : "cyan"}>{remaining > 0 ? "متأخر" : "دفع قادم"}</StatusPill>
+              <Card key={tr.id} className="glass overflow-hidden p-0">
+                <div className="bg-gradient-to-r from-teal/20 to-cyan-glow/10 p-4 border-b border-border/40">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <Badge variant="outline" className="font-mono tracking-wider bg-background/40 text-cyan-glow border-teal/40">{tr.client_code}</Badge>
+                        {active.length > 0
+                          ? <Badge className="bg-mint/20 text-mint border border-mint/40">{lang === "ar" ? "نشط" : "Active"}</Badge>
+                          : <Badge className="bg-muted/30 text-muted-foreground">{lang === "ar" ? "غير نشط" : "Inactive"}</Badge>}
+                      </div>
+                      <div className="mt-2 text-lg font-bold flex items-center gap-2 truncate">
+                        <User className="h-4 w-4 text-cyan-glow shrink-0" />{displayName}
+                      </div>
+                      <div className="mt-0.5 text-xs text-muted-foreground flex items-center gap-3 flex-wrap">
+                        <span className="flex items-center gap-1"><Phone className="h-3 w-3" />{tr.phone ?? "—"}</span>
+                        <span>{tr.category ?? "—"} · {tr.skill_level ?? "—"}</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="text-xs text-muted-foreground" dir="ltr">{str(c.client_code)}</div>
-                  <div className="text-xs text-muted-foreground" dir="ltr">{str(c.phone)}</div>
                 </div>
-                <div>
-                  <Cell label="المبلغ الإجمالي" value={money(totalAmt)} />
-                  <Cell label="المبلغ المتبقي" value={money(remaining)} />
-                  <Button size="sm" variant="ghost" className="mt-1 h-7 px-2 text-[11px] text-primary">
-                    <Wallet className="ml-1 h-3.5 w-3.5" /> ادفع الآن
-                  </Button>
+
+                <div className="grid grid-cols-3 gap-2 px-4 py-3 border-b border-border/40 text-center text-xs">
+                  <div><div className="font-bold text-base text-foreground">{traineeSubs.length}</div><div className="text-muted-foreground">{lang === "ar" ? "اشتراكات" : "Subscriptions"}</div></div>
+                  <div><div className="font-bold text-base text-mint">{active.length}</div><div className="text-muted-foreground">{lang === "ar" ? "نشطة الآن" : "Active"}</div></div>
+                  <div><div className="font-bold text-base text-cyan-glow">EGP {totalSpent.toLocaleString()}</div><div className="text-muted-foreground">{lang === "ar" ? "الإجمالي" : "Lifetime"}</div></div>
                 </div>
-                <div>
-                  <Cell label="اسم الاشتراك" value={str(s?.name) || "—"} />
-                  <Cell label="تاريخ الاشتراك" value={dmy(s?.start_date)} />
-                  <Cell label="تاريخ الانتهاء" value={dmy(s?.end_date)} />
+
+                <div className="p-4 space-y-2">
+                  <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                    <ReceiptText className="h-3 w-3" />{lang === "ar" ? "سجل الاشتراكات" : "Subscription history"}
+                  </div>
+                  {traineeSubs.length === 0 && (
+                    <div className="text-xs text-muted-foreground italic">{lang === "ar" ? "لا توجد اشتراكات" : "No subscriptions yet"}</div>
+                  )}
+                  {traineeSubs.map((r) => {
+                    const left = r.total_sessions - r.used_sessions;
+                    const isActive = left > 0 && r.status !== "cancelled";
+                    return (
+                      <div key={r.id} className="rounded-lg border border-border/40 bg-background/20 p-3 text-sm">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="font-medium truncate">{r.package_name}{r.package_type ? ` · ${r.package_type}` : ""}</div>
+                          <Badge variant="outline" className={isActive ? "bg-mint/15 text-mint border-mint/30" : "bg-muted/30 text-muted-foreground"}>
+                            {isActive ? `${left} ${lang === "ar" ? "متبقي" : "left"}` : (lang === "ar" ? "منتهي" : "Expired")}
+                          </Badge>
+                        </div>
+                        <div className="mt-1 grid grid-cols-2 gap-1 text-xs text-muted-foreground">
+                          <span><Calendar className="inline h-3 w-3 me-1" />{r.start_date}</span>
+                          <span><Waves className="inline h-3 w-3 me-1" />{r.used_sessions}/{r.total_sessions}</span>
+                          <span>EGP {Number(r.paid_amount).toLocaleString()} · {r.payment_method ?? "—"}</span>
+                          <span className="truncate">{r.receipt_number ?? ""}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+
+                  <div className="pt-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center justify-between gap-1.5">
+                    <span className="flex items-center gap-1.5"><ReceiptText className="h-3 w-3" />{lang === "ar" ? "الفواتير" : "Invoices"}</span>
+                    {traineeInvs.length > 0 && (
+                      <span className="normal-case text-muted-foreground/80">
+                        {lang === "ar" ? "المستحق: " : "Outstanding: "}
+                        <span className={invOutstanding > 0 ? "text-warn font-bold" : "text-mint font-bold"}>EGP {invOutstanding.toLocaleString()}</span>
+                      </span>
+                    )}
+                  </div>
+                  {traineeInvs.length === 0 && (
+                    <div className="text-xs text-muted-foreground italic">{lang === "ar" ? "لا توجد فواتير" : "No invoices"}</div>
+                  )}
+                  {traineeInvs.slice(0, 5).map((inv) => {
+                    const due = Number(inv.total) - Number(inv.paid_amount);
+                    return (
+                      <div key={inv.id} className="rounded-lg border border-border/40 bg-background/20 p-2.5 text-xs flex items-center justify-between gap-2">
+                        <div className="min-w-0">
+                          <div className="font-mono">{inv.invoice_number}</div>
+                          <div className="text-muted-foreground">{inv.issue_date} · {inv.status}</div>
+                        </div>
+                        <div className="text-end">
+                          <div className="font-semibold">EGP {Number(inv.total).toLocaleString()}</div>
+                          <div className={due > 0 ? "text-warn" : "text-mint"}>{due > 0 ? (lang === "ar" ? `متبقي ${due.toLocaleString()}` : `Due ${due.toLocaleString()}`) : (lang === "ar" ? "مدفوع" : "Paid")}</div>
+                        </div>
+                      </div>
+                    );
+                  })}
+
+                  <div className="pt-3 border-t border-border/30">
+                    <AttachmentsPanel entityType="trainee" entityId={tr.id} compact />
+                  </div>
                 </div>
-                <div>
-                  <Cell label="اسم الخدمة" value={str(s?.service_name) || str(c.category)} />
-                  <Cell label="نوع الخدمة" value={str(s?.service_type) || str(c.level)} />
-                </div>
-                <div>
-                  <Cell label="الفرع" value={currentBranch?.name_ar ?? "—"} />
-                  <Cell label="الموظف المسؤول" value={str(c.assigned_staff) || "—"} />
-                </div>
-                <div className="flex items-start justify-end gap-1">
-                  <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => { setDraft({ ...c }); setOpen(true); }}>
-                    <Pencil className="h-4 w-4" />
-                  </Button>
-                  <Button size="icon" variant="ghost" className="h-8 w-8 text-red-400" onClick={() => clients.destroy(str(c.id))}>
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
+              </Card>
             );
           })}
-          {!filtered.length && <div className="os-card p-10 text-center text-sm text-muted-foreground">لا توجد نتائج</div>}
+          {filtered.length === 0 && !traineesQ.isLoading && (
+            <Card className="glass p-10 text-center text-sm text-muted-foreground lg:col-span-2">
+              {lang === "ar" ? "لا يوجد عميل مطابق في هذا الفرع." : "No matching client in this branch."}
+            </Card>
+          )}
         </div>
-      )}
-
-      {open && (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-black/70 p-3" onClick={() => setOpen(false)}>
-          <div dir="rtl" className="os-card max-h-[90vh] w-full max-w-2xl overflow-y-auto p-5" onClick={(e) => e.stopPropagation()}>
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-lg font-bold">{draft.id ? "تعديل عميل" : "عميل جديد"}</h2>
-              <Button size="icon" variant="ghost" onClick={() => setOpen(false)}><X className="h-4 w-4" /></Button>
-            </div>
-            <div className="grid gap-3 sm:grid-cols-3">
-              <F label="الاسم"><Input value={str(draft.full_name)} onChange={(e) => setDraft({ ...draft, full_name: e.target.value })} /></F>
-              <F label="الهاتف"><Input value={str(draft.phone)} onChange={(e) => setDraft({ ...draft, phone: e.target.value })} /></F>
-              <F label="رقم العضوية"><Input value={str(draft.membership_id)} onChange={(e) => setDraft({ ...draft, membership_id: e.target.value })} /></F>
-              <F label="الفئة">
-                <select className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm" value={str(draft.category)} onChange={(e) => setDraft({ ...draft, category: e.target.value })}>
-                  {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
-                </select>
-              </F>
-              <F label="المستوى">
-                <select className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm" value={str(draft.level)} onChange={(e) => setDraft({ ...draft, level: e.target.value })}>
-                  {LEVELS.map((c) => <option key={c}>{c}</option>)}
-                </select>
-              </F>
-              <F label="العمر"><Input type="number" value={str(draft.age)} onChange={(e) => setDraft({ ...draft, age: e.target.value })} /></F>
-              <F label="الموظف المسؤول">
-                <select className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm" value={str(draft.assigned_staff)} onChange={(e) => setDraft({ ...draft, assigned_staff: e.target.value })}>
-                  {STAFF.map((c) => <option key={c}>{c}</option>)}
-                </select>
-              </F>
-              <F label="جهة اتصال للطوارئ"><Input value={str(draft.emergency_contact)} onChange={(e) => setDraft({ ...draft, emergency_contact: e.target.value })} /></F>
-              <F label="العنوان"><Input value={str(draft.address)} onChange={(e) => setDraft({ ...draft, address: e.target.value })} /></F>
-            </div>
-            <div className="mt-5 flex gap-2">
-              <Button onClick={submit} disabled={saving}>{saving && <Loader2 className="ml-2 h-4 w-4 animate-spin" />} حفظ</Button>
-              <Button variant="ghost" onClick={() => setOpen(false)}>إلغاء</Button>
-            </div>
-          </div>
-        </div>
-      )}
-    </BranchGuard>
-  );
-}
-
-function Cell({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="mb-1">
-      <div className="text-[10px] text-muted-foreground">{label}</div>
-      <div className="text-xs font-semibold">{value}</div>
-    </div>
-  );
-}
-
-function F({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div>
-      <Label className="mb-1.5 block text-xs">{label}</Label>
-      {children}
+      </BranchGuard>
     </div>
   );
 }
