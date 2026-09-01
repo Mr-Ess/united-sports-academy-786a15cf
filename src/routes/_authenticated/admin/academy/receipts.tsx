@@ -19,6 +19,7 @@ import { Plus, Pencil, Trash2, Search, Receipt as ReceiptIcon, ShieldCheck, Star
 import { toast } from "sonner";
 import { PermissionGate } from "@/components/legends/PermissionGate";
 import { FinanceSubNav } from "@/components/legends/SubNav";
+import { fetchNewClientCode } from "@/lib/legends/phase2-helpers";
 
 
 export const Route = createFileRoute("/_authenticated/admin/academy/receipts")({
@@ -193,9 +194,13 @@ function ReceiptsPage() {
       const branchId = ensureBranch();
       if (!branchId) throw new Error("no-branch");
       if (!form.studentName.trim()) throw new Error(t("rec.studentRequired"));
+
       const totalSessions = sessionsForCount(form.sessionsCount as any);
+      const clientCode = (form.clientId || "").trim().toUpperCase() || (await fetchNewClientCode());
+      const active = form.sessionsUsed < totalSessions;
+
       const meta: ReceiptMeta = {
-        clientId: form.clientId || genClientId(),
+        clientId: clientCode,
         studentName: form.studentName, membershipId: form.membershipId, phone: form.phone,
         address: form.address, emergencyContact: form.emergencyContact,
         category: form.category, age: form.age, level: form.level, type: form.type,
@@ -203,29 +208,123 @@ function ReceiptsPage() {
         paymentMethod: form.paymentMethod, dayGroup: form.dayGroup, timeSlot: form.timeSlot,
         coachId: form.coachId ?? null, skillRating: form.skillRating, notes: form.notes,
       };
-      const active = meta.sessionsUsed < meta.totalSessions;
+
+      const invoiceNumber = form.receiptNumber || genReceiptNum();
+
+      const { data: existingTrainee, error: traineeLookupError } = await supabase
+        .from("ac_trainees")
+        .select("id")
+        .eq("branch_id", branchId)
+        .eq("client_code", clientCode)
+        .maybeSingle();
+
+      if (traineeLookupError && traineeLookupError.code !== "PGRST116") throw traineeLookupError;
+
+      let traineeId = existingTrainee?.id ?? null;
+      if (!traineeId) {
+        const { data: insertedTrainee, error: insertTraineeError } = await supabase
+          .from("ac_trainees")
+          .insert({
+            branch_id: branchId,
+            client_code: clientCode,
+            full_name: form.studentName,
+            phone: form.phone || null,
+            category: form.category,
+            skill_level: form.level,
+            active: true,
+          } as any)
+          .select("id")
+          .single();
+
+        if (insertTraineeError) throw insertTraineeError;
+        traineeId = insertedTrainee.id;
+      } else {
+        const { error: updateTraineeError } = await supabase
+          .from("ac_trainees")
+          .update({
+            full_name: form.studentName,
+            phone: form.phone || null,
+            category: form.category,
+            skill_level: form.level,
+            active: true,
+          })
+          .eq("id", traineeId);
+
+        if (updateTraineeError) throw updateTraineeError;
+      }
+
+      const subPayload = {
+        branch_id: branchId,
+        trainee_id: traineeId,
+        package_name: `${form.category} - ${form.type}`,
+        package_type: form.type,
+        total_sessions: totalSessions,
+        used_sessions: form.sessionsUsed,
+        start_date: form.paymentDate,
+        end_date: null,
+        status: active ? "active" : "expired",
+        price: Number(form.amountPaid || 0),
+        paid_amount: Number(form.amountPaid || 0),
+        payment_method: form.paymentMethod,
+        receipt_number: invoiceNumber,
+        coach_id: form.coachId ?? null,
+        time_slot_id: null,
+        lane_id: null,
+        group_id: null,
+      };
+
+      const { data: existingSub, error: subLookupError } = await supabase
+        .from("ac_subscriptions")
+        .select("id")
+        .eq("branch_id", branchId)
+        .eq("trainee_id", traineeId)
+        .eq("receipt_number", invoiceNumber)
+        .maybeSingle();
+
+      if (subLookupError && subLookupError.code !== "PGRST116") throw subLookupError;
+
+      let subscriptionId: string | null = existingSub?.id ?? null;
+      if (subscriptionId) {
+        const { error: updateSubError } = await supabase.from("ac_subscriptions").update(subPayload).eq("id", subscriptionId);
+        if (updateSubError) throw updateSubError;
+      } else {
+        const { data: insertedSub, error: insertSubError } = await supabase.from("ac_subscriptions").insert(subPayload as any).select("id").single();
+        if (insertSubError) throw insertSubError;
+        subscriptionId = insertedSub.id;
+      }
+
       const payload = {
         branch_id: branchId,
-        invoice_number: form.receiptNumber || genReceiptNum(),
+        trainee_id: traineeId,
+        subscription_id: subscriptionId,
+        invoice_number: invoiceNumber,
         issue_date: form.paymentDate,
-        subtotal: form.amountPaid,
-        total: form.amountPaid,
-        paid_amount: form.amountPaid,
+        subtotal: Number(form.amountPaid || 0),
+        total: Number(form.amountPaid || 0),
+        paid_amount: Number(form.amountPaid || 0),
         status: active ? "paid" : "expired",
         items: meta as any,
       };
+
       if (editing) {
         const { error } = await supabase.from("ac_invoices").update(payload).eq("id", editing.id);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("ac_invoices").insert(payload);
+        const { error } = await supabase.from("ac_invoices").insert(payload as any);
         if (error) throw error;
       }
-      return meta.clientId;
+
+      return clientCode;
     },
     onSuccess: (clientId) => {
       toast.success(editing ? t("rec.updated") : `${t("rec.added")} · ${clientId}`);
       qc.invalidateQueries({ queryKey: ["invoices", currentBranchId] });
+      qc.invalidateQueries({ queryKey: ["clients-trainees", currentBranchId] });
+      qc.invalidateQueries({ queryKey: ["clients-subs", currentBranchId] });
+      qc.invalidateQueries({ queryKey: ["clients-invoices", currentBranchId] });
+      qc.invalidateQueries({ queryKey: ["attendance-today", currentBranchId] });
+      qc.invalidateQueries({ queryKey: ["attendance", currentBranchId] });
+      qc.invalidateQueries({ queryKey: ["subs", currentBranchId] });
       setOpen(false);
     },
     onError: (e: any) => { if (e?.message !== "no-branch") toast.error(e?.message ?? "Error"); },

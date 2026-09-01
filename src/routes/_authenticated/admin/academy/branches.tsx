@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/lib/legends/session";
 import { useI18n } from "@/lib/legends/i18n";
+import { listBranches, saveBranch, deleteBranch } from "@/lib/branches.functions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,37 +36,30 @@ function BranchesPage() {
   const { lang } = useI18n();
   const { isSuperAdmin } = useSession();
   const L = (en: string, ar: string) => (lang === "ar" ? ar : en);
+  const listBranchesFn = useServerFn(listBranches);
+  const saveBranchFn = useServerFn(saveBranch);
+  const deleteBranchFn = useServerFn(deleteBranch);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Branch | null>(null);
   const [form, setForm] = useState(blank);
 
   const branchesQ = useQuery({
     queryKey: ["all-branches"],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("branches")
-        .select("id, name, name_ar, address, phone, active")
-        .is("deleted_at", null).order("name");
-      if (error) throw error;
-      return data as Branch[];
-    },
+    queryFn: () => listBranchesFn(),
   });
 
   const save = useMutation({
     mutationFn: async () => {
       if (!form.name.trim()) throw new Error(L("Name required", "الاسم مطلوب"));
-      if (editing) {
-        const { error } = await supabase.from("branches").update({
-          name: form.name, name_ar: form.name_ar || form.name,
-          address: form.address || null, phone: form.phone || null, active: form.active,
-        }).eq("id", editing.id);
-        if (error) throw error;
-      } else {
-        const { error } = await supabase.from("branches").insert({
-          name: form.name, name_ar: form.name_ar || form.name,
-          address: form.address || null, phone: form.phone || null, active: form.active,
-        });
-        if (error) throw error;
-      }
+      const payload = {
+        id: editing?.id,
+        name: form.name,
+        name_ar: form.name_ar || form.name,
+        address: form.address || null,
+        phone: form.phone || null,
+        active: form.active,
+      };
+      return saveBranchFn({ data: payload });
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["all-branches"] });
@@ -73,21 +67,17 @@ function BranchesPage() {
       toast.success(L("Saved", "تم الحفظ"));
       setOpen(false); setEditing(null); setForm(blank);
     },
-    onError: (e: any) => toast.error(e.message),
+    onError: (e: any) => toast.error(e.message ?? "Failed to save branch"),
   });
 
   const del = useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from("branches")
-        .update({ deleted_at: new Date().toISOString(), active: false }).eq("id", id);
-      if (error) throw error;
-    },
+    mutationFn: async (id: string) => deleteBranchFn({ data: { id } }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["all-branches"] });
       qc.invalidateQueries({ queryKey: ["my-branches"] });
       toast.success(L("Branch removed", "تم حذف الفرع"));
     },
-    onError: (e: any) => toast.error(e.message),
+    onError: (e: any) => toast.error(e.message ?? "Failed to delete branch"),
   });
 
   const start = (b?: Branch) => {

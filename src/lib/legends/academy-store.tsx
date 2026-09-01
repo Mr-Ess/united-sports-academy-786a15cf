@@ -1,4 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useSession } from "@/lib/legends/session";
 import {
   AGENTS, CATEGORIES, COACHES, COACH_COLORS, DAY_GROUPS, LEAD_SOURCES, LEAD_STATUSES, LEVELS,
   OFFERS, PAYMENT_METHODS, SERVICES, SESSION_COUNTS, SESSION_TYPES, TIME_SLOTS,
@@ -164,42 +166,157 @@ function seed(): State {
 }
 
 function load(): State {
-  if (typeof window === "undefined") return seed();
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) { const s = seed(); window.localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); return s; }
-    const parsed = JSON.parse(raw) as Partial<State>;
-    const fresh = seed();
-    const receipts = (parsed.receipts ?? fresh.receipts).map(r => ({
-      ...r,
-      clientId: r.clientId ?? makeClientId(),
-      evaluations: r.evaluations ?? [],
-    }));
-    return {
-      leads: parsed.leads ?? fresh.leads,
-      receipts,
-      shifts: parsed.shifts ?? fresh.shifts,
-      coachProfiles: parsed.coachProfiles?.length ? parsed.coachProfiles : fresh.coachProfiles,
-      groupTypes: parsed.groupTypes?.length ? parsed.groupTypes : fresh.groupTypes,
-      bookings: parsed.bookings ?? fresh.bookings,
-      coachEvaluations: parsed.coachEvaluations ?? fresh.coachEvaluations,
-      laneCapacities: parsed.laneCapacities ?? {},
-    };
-  } catch { return seed(); }
+  return seed();
+}
+
+function normalizeLead(raw: any): Lead | null {
+  if (!raw || !raw.name) return null;
+  const assessmentDate = raw.assessment_date ?? raw.assessmentDate ?? new Date().toISOString().slice(0, 10);
+  return {
+    id: raw.id ?? uid(),
+    name: raw.name ?? raw.full_name ?? "Unknown",
+    contact: raw.contact ?? raw.phone ?? "",
+    service: (raw.service ?? "Kids") as Lead["service"],
+    source: (raw.source ?? "Social media") as Lead["source"],
+    assessmentDate,
+    assessmentAttended: Boolean(raw.assessment_attended ?? false),
+    subscriptionType: raw.subscription_type ?? "Monthly",
+    offer: (raw.offer ?? "None") as Lead["offer"],
+    status: (raw.status ?? "Interested") as Lead["status"],
+    agent: (raw.agent ?? "Mero") as Lead["agent"],
+    comments: raw.comments ?? "",
+  };
+}
+
+function normalizeReceipt(raw: any): Receipt | null {
+  if (!raw || !raw.id) return null;
+  const totalSessions = Number(raw.total_sessions ?? raw.totalSessions ?? 8) || 8;
+  const usedSessions = Number(raw.used_sessions ?? raw.sessionsUsed ?? 0) || 0;
+  return {
+    id: raw.id,
+    clientId: raw.client_code ?? raw.clientId ?? makeClientId(),
+    studentName: raw.student_name ?? raw.full_name ?? raw.name ?? "Student",
+    membershipId: raw.membership_id ?? raw.membershipId ?? `M-${Math.random().toString(36).slice(2, 8).toUpperCase()}`,
+    phone: raw.phone ?? "",
+    category: (raw.category ?? "Kids") as Receipt["category"],
+    age: Number(raw.age ?? 18) || 18,
+    level: (raw.level ?? "Level 1") as Receipt["level"],
+    type: (raw.type ?? "Group") as Receipt["type"],
+    sessionsCount: (String(raw.sessions_count ?? raw.sessionsCount ?? totalSessions)) as Receipt["sessionsCount"],
+    totalSessions,
+    sessionsUsed: usedSessions,
+    receiptNumber: raw.receipt_number ?? raw.receiptNumber ?? `R-${Math.random().toString(36).slice(2, 8).toUpperCase()}`,
+    amountPaid: Number(raw.amount_paid ?? raw.amountPaid ?? raw.price ?? 0) || 0,
+    paymentDate: raw.payment_date ?? raw.created_at ?? new Date().toISOString().slice(0, 10),
+    paymentMethod: (raw.payment_method ?? raw.paymentMethod ?? "Cash") as Receipt["paymentMethod"],
+    dayGroup: (raw.day_group ?? raw.dayGroup ?? DAY_GROUPS[0]) as Receipt["dayGroup"],
+    timeSlot: (raw.time_slot ?? raw.timeSlot ?? TIME_SLOTS[0]) as Receipt["timeSlot"],
+    coachId: raw.coach_id ?? raw.coachId,
+    skillRating: Number(raw.skill_rating ?? raw.skillRating ?? 0) || undefined,
+    evaluations: Array.isArray(raw.evaluations) ? raw.evaluations : [],
+    notes: raw.notes ?? "",
+    clientId: raw.client_code ?? raw.clientId ?? makeClientId(),
+  };
 }
 
 export function AcademyProvider({ children }: { children: ReactNode }) {
+  const { currentBranchId } = useSession();
   const [state, setState] = useState<State>(() => ({
     leads: [], receipts: [], shifts: {}, coachProfiles: [], groupTypes: [], bookings: [],
     coachEvaluations: [], laneCapacities: {},
   }));
   const [ready, setReady] = useState(false);
 
-  useEffect(() => { setState(load()); setReady(true); }, []);
   useEffect(() => {
-    if (!ready) return;
-    try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
-  }, [state, ready]);
+    let active = true;
+
+    const hydrate = async () => {
+      try {
+        const fallback = load();
+        if (!currentBranchId) {
+          if (active) setState(fallback);
+          return;
+        }
+
+        const [leadsRes, traineesRes, subscriptionsRes, invoicesRes, employeesRes] = await Promise.all([
+          supabase.from("ac_leads").select("*").eq("branch_id", currentBranchId),
+          supabase.from("ac_trainees").select("*").eq("branch_id", currentBranchId).eq("active", true),
+          supabase.from("ac_subscriptions").select("*").eq("branch_id", currentBranchId).eq("status", "active"),
+          supabase.from("ac_invoices").select("*").eq("branch_id", currentBranchId).order("issue_date", { ascending: false }),
+          supabase.from("ac_employees").select("id, full_name, title, department, status").eq("branch_id", currentBranchId).eq("status", "active"),
+        ]);
+
+        const leads = (leadsRes.data ?? []).map(normalizeLead).filter(Boolean) as Lead[];
+        const employees = employeesRes.data ?? [];
+        const coachProfiles: CoachProfile[] = (employees as any[]).map((emp, index) => ({
+          id: emp.id,
+          name: emp.full_name ?? `Coach ${index + 1}`,
+          specialization: emp.title ?? emp.department ?? "General",
+          assignedDayGroups: [DAY_GROUPS[0]],
+          availability: TIME_SLOTS.map((ts) => `${DAY_GROUPS[0]}__${ts}`),
+          color: COACH_COLORS[index % COACH_COLORS.length],
+        }));
+
+        const receipts: Receipt[] = (invoicesRes.data ?? []).map((row: any) => {
+          const subscription = (subscriptionsRes.data ?? []).find((sub: any) => sub.id === row.subscription_id);
+          const trainee = (traineesRes.data ?? []).find((tr: any) => tr.id === row.trainee_id);
+          const mapped = {
+            id: row.id,
+            clientId: trainee?.client_code ?? row.client_id ?? makeClientId(),
+            studentName: trainee?.full_name ?? row.student_name ?? "Student",
+            membershipId: subscription?.id ?? row.membership_id ?? `M-${Math.random().toString(36).slice(2, 8).toUpperCase()}`,
+            phone: trainee?.phone ?? "",
+            category: (trainee?.category ?? "Kids") as Receipt["category"],
+            age: Number(trainee?.birthdate ? Math.max(6, new Date().getFullYear() - new Date(trainee.birthdate).getFullYear()) : 18),
+            level: (trainee?.skill_level ?? "Level 1") as Receipt["level"],
+            type: (row.type ?? "Group") as Receipt["type"],
+            sessionsCount: String(subscription?.total_sessions ?? row.total_sessions ?? 8) as Receipt["sessionsCount"],
+            totalSessions: Number(subscription?.total_sessions ?? row.total_sessions ?? 8) || 8,
+            sessionsUsed: Number(subscription?.used_sessions ?? row.used_sessions ?? 0) || 0,
+            receiptNumber: row.invoice_number ?? row.receipt_number ?? `R-${Math.random().toString(36).slice(2, 8).toUpperCase()}`,
+            amountPaid: Number(row.paid_amount ?? row.total ?? 0) || 0,
+            paymentDate: row.issue_date ?? row.created_at ?? new Date().toISOString().slice(0, 10),
+            paymentMethod: (row.payment_method ?? "Cash") as Receipt["paymentMethod"],
+            dayGroup: (row.day_group ?? DAY_GROUPS[0]) as Receipt["dayGroup"],
+            timeSlot: (row.time_slot ?? TIME_SLOTS[0]) as Receipt["timeSlot"],
+            coachId: trainee?.assigned_coach_id ?? undefined,
+            skillRating: Number(row.skill_rating ?? 0) || undefined,
+            evaluations: [],
+            notes: row.notes ?? "",
+          };
+          return mapped;
+        });
+
+        const nextState: State = {
+          leads: leads.length ? leads : fallback.leads,
+          receipts: receipts.length ? receipts : fallback.receipts,
+          shifts: fallback.shifts,
+          coachProfiles: coachProfiles.length ? coachProfiles : fallback.coachProfiles,
+          groupTypes: fallback.groupTypes,
+          bookings: fallback.bookings,
+          coachEvaluations: fallback.coachEvaluations,
+          laneCapacities: fallback.laneCapacities,
+        };
+
+        if (active) setState(nextState);
+      } catch {
+        if (active) setState(load());
+      } finally {
+        if (active) setReady(true);
+      }
+    };
+
+    hydrate();
+    return () => { active = false; };
+  }, [currentBranchId]);
+
+  useEffect(() => {
+    if (!ready || typeof window === "undefined") return;
+    try {
+      // Do not persist the academy mock data to localStorage. The real source of truth is Supabase.
+      void window.localStorage.removeItem(STORAGE_KEY);
+    } catch {}
+  }, [ready]);
 
   const stateRef = useMemo(() => ({ current: state }), []);
   stateRef.current = state;
