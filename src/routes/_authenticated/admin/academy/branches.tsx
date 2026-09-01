@@ -55,13 +55,13 @@ function BranchesPage() {
       if (!form.name.trim()) throw new Error(L("Name required", "الاسم مطلوب"));
       if (editing) {
         const { error } = await supabase.from("branches").update({
-          name: form.name, name_ar: form.name_ar || null,
+          name: form.name, name_ar: form.name_ar || form.name,
           address: form.address || null, phone: form.phone || null, active: form.active,
         }).eq("id", editing.id);
         if (error) throw error;
       } else {
         const { error } = await supabase.from("branches").insert({
-          name: form.name, name_ar: form.name_ar || null,
+          name: form.name, name_ar: form.name_ar || form.name,
           address: form.address || null, phone: form.phone || null, active: form.active,
         });
         if (error) throw error;
