@@ -1,7 +1,7 @@
 /**
- * Temporary testing override: allow direct admin access so the system can be tested end-to-end
- * with real data and live flows before final production hardening.
+ * Production guard: keep auth and role enforcement enabled unless an explicit QA override is required.
+ * This app must not silently bypass authentication in the live environment.
  */
-export const OPEN_ACCESS = true;
+export const OPEN_ACCESS = false;
 
 export const OPEN_ACCESS_ROLES = ["admin", "editor", "moderator"] as const;

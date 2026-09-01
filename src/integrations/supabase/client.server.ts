@@ -59,33 +59,19 @@ function createSafeQueryChain<T = any>(result: T[] = []) {
   return chain;
 }
 
-function createSafeSupabaseFallback() {
-  console.warn('[Supabase] Missing service-role env vars; using safe server fallback for open-access mode.');
-
-  return {
-    auth: {
-      getSession: async () => ({ data: { session: null }, error: null }),
-      onAuthStateChange: () => ({ data: { subscription: { unsubscribe() {} } } }),
-      signOut: async () => ({ error: null }),
-    },
-    from: () => createSafeQueryChain(),
-    rpc: async () => ({ data: null, error: null }),
-    functions: { invoke: async () => ({ data: null, error: null }) },
-    storage: {
-      from: () => ({
-        upload: async () => ({ data: null, error: null }),
-        getPublicUrl: () => ({ data: { publicUrl: '' } }),
-      }),
-    },
-  } as unknown as ReturnType<typeof createClient<Database>>;
-}
-
 function createSupabaseAdminClient() {
   const SUPABASE_URL = process.env['SUPABASE_URL'];
   const SUPABASE_SERVICE_ROLE_KEY = process.env['SUPABASE_SERVICE_ROLE_KEY'];
 
-  if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
-    return createSafeSupabaseFallback();
+  const missing = [
+    !SUPABASE_URL ? 'SUPABASE_URL' : null,
+    !SUPABASE_SERVICE_ROLE_KEY ? 'SUPABASE_SERVICE_ROLE_KEY' : null,
+  ].filter(Boolean) as string[];
+
+  if (missing.length > 0) {
+    throw new Error(
+      `Real backend configuration is missing: ${missing.join(', ')}. Add the Supabase project URL and service-role key before enabling live server writes.`
+    );
   }
 
   return createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
